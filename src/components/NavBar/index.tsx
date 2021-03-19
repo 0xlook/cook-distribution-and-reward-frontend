@@ -3,6 +3,8 @@ import { useHistory } from 'react-router-dom';
 
 import { Bar, LinkBase, SidePanel, useViewport } from '@aragon/ui';
 import ConnectButton from './ConnectButton';
+import styled from 'styled-components';
+import logo from '../../assets/logo.png'
 
 type NavbarProps = {
   theme:string,
@@ -12,7 +14,7 @@ type NavbarProps = {
 }
 
 function NavBar({
-  theme, updateTheme, user, setUser,
+  user, setUser,
 }:NavbarProps) {
   const history = useHistory();
   const [isHome, updateIsHome] = useState(true);
@@ -31,15 +33,22 @@ function NavBar({
 
   return (
     <>
-    <SidePanel title={"Menu"} onClose={()=>{setOpened(false)}} opened={opened}>
-      <LinkButton
+    <StyledSidePanel title={
+      <LinkBase onClick={ ()=>{
+        history.push('/')
+      }}>
+        <img src={logo} style={{height:'100%'}} />
+      </LinkBase>
+    } onClose={()=>{setOpened(false)}} opened={opened}>
+      <LinkButtonMobile
         title="Home"
         onClick={() => {
+          setOpened(false)
           history.push('/');
         }}
         isSelected={page==='/'}
       />
-      <LinkButton
+      <LinkButtonMobile
         title="Distribution"
         onClick={() => {
           setOpened(false)
@@ -47,15 +56,23 @@ function NavBar({
         }}
         isSelected={page.includes('/distribution')}
       />
-      <LinkButton
-        title="Pools"
+      <LinkButtonMobile
+        title="LP Mining"
         onClick={() => {
           setOpened(false)
           history.push('/pools/');
         }}
         isSelected={page.includes('/pools')}
       />
-      <LinkButton
+      <LinkButtonMobile
+        title="Cook Mining"
+        onClick={() => {
+          setOpened(false)
+          history.push('/pools/');
+        }}
+        isSelected={page.includes('/pools')}
+      />
+      <LinkButtonMobile
         title="Admin (TESTING ONLY)"
         onClick={() => {
           setOpened(false)
@@ -63,14 +80,21 @@ function NavBar({
         }}
         isSelected={page.includes('/admin')}
       />
-      <ConnectButton user={user} setUser={setUser} />
-    </SidePanel>
-    {below('medium') && (<Bar secondary={(
+      <ConnectButton css={{height: '55px', marginTop: '28px'}} user={user} setUser={setUser} />
+    </StyledSidePanel>
+    {below('medium') && (<StyledBar primary={(
+      <LinkBase onClick={ ()=>{
+        history.push('/')
+      }}>
+        <img src={logo} style={{height:'100%'}} />
+      </LinkBase>
+    )}
+      secondary={(
         <span style={{ fontSize: 24 }}>
         <i className="fas fa-bars" onClick={() => setOpened(true)}/>
         </span>
     )}/>)}
-    {above('medium') && (<Bar
+    {above('medium') && (<StyledBar
       primary={
         (
           <>
@@ -78,9 +102,14 @@ function NavBar({
             <LinkBase onClick={ ()=>{
                history.push('/')
             }} style={{height:'50%'}}>
-              <img src='https://www.cook.finance/wp-content/uploads/2020/12/Cook_logo-main-new.svg' style={{height:'100%'}} />
+              <img src={logo} style={{height:'100%'}} />
             </LinkBase>
-            
+
+          </>
+        )
+      }
+      secondary={(
+        <>
             <LinkButton
               title="Home"
               onClick={() => {
@@ -96,7 +125,14 @@ function NavBar({
               isSelected={page.includes('/distribution')}
             />
             <LinkButton
-              title="Pools"
+              title="LP Mining"
+              onClick={() => {
+                history.push('/pools/');
+              }}
+              isSelected={page.includes('/pools')}
+            />
+            <LinkButton
+              title="Cook Mining"
               onClick={() => {
                 history.push('/pools/');
               }}
@@ -109,12 +145,7 @@ function NavBar({
               }}
               isSelected={page.includes('/admin')}
             />
-          </>
-        )
-      }
-      secondary={(
-        <>
-          <ConnectButton user={user} setUser={setUser} />
+          <ConnectButton css={{marginLeft: '28px'}} user={user} setUser={setUser} />
 
         </>
       )}
@@ -124,6 +155,22 @@ function NavBar({
   );
 }
 
+const StyledBar = styled(Bar)`
+  background: none;
+  border: none;
+`
+
+const StyledSidePanel = styled(SidePanel)`
+  header {
+    margin: '20px 0px';
+  }
+  background: white;
+  svg {
+    color: white;
+  }
+`
+
+
 
 type linkButtonProps = {
   title:string,
@@ -131,11 +178,28 @@ type linkButtonProps = {
   isSelected?:boolean
 }
 
+const StyledDiv = styled.div`
+  font-family: Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: 0.03em;
+`
 function LinkButton({ title, onClick, isSelected = false }:linkButtonProps) {
   return (
     <div style={{ paddingLeft: 40 }}>
       <LinkBase onClick={onClick}>
-        <div style={{ padding: '1%', opacity: isSelected ? 1 : 0.5, fontSize: 20, lineHeight:3 }}>{title}</div>
+        <StyledDiv>{title}</StyledDiv>
+      </LinkBase>
+    </div>
+  );
+}
+
+function LinkButtonMobile({ title, onClick, isSelected = false }:linkButtonProps) {
+  return (
+    <div style={{margin: '20px 0px' }}>
+      <LinkBase onClick={onClick}>
+        <StyledDiv>{title}</StyledDiv>
       </LinkBase>
     </div>
   );

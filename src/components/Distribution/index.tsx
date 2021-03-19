@@ -2,31 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import BigNumber from 'bignumber.js';
-import {getDistributionVestingAmount,
-        getDistributionVestedAmount,
-        getDistributionAvalibleAmount,
-        getDistributionStartTimestamp,
-        getTodayNumber,
-        getTokenAllowance,
-        getTokenBalance,
-        getStakeLockupDuration,
-        getRewardPerBlock,
-        getTotalStaked,
-        getPoolBalanceOfStaked} from '../../utils/infura';
-import {COOK, UNI, WETH} from "../../constants/tokens";
-import {CookDistribution, POOLS} from "../../constants/contracts";
+import {
+  getDistributionVestingAmount,
+  getDistributionVestedAmount,
+  getDistributionAvalibleAmount,
+  getDistributionStartTimestamp,
+  getTodayNumber,
+  getTokenAllowance,
+  getTokenBalance,
+  getStakeLockupDuration,
+  getRewardPerBlock,
+  getTotalStaked,
+  getPoolBalanceOfStaked
+} from '../../utils/infura';
+import { COOK, UNI, WETH } from "../../constants/tokens";
+import { CookDistribution, POOLS } from "../../constants/contracts";
 import { toTokenUnitsBN } from '../../utils/number';
 import WithdrawPageHeader from "./Header";
 import Withdraw from "./Withdraw";
+import LinearText from "../common/LinearText";
 import DistributionZap from "./DistributionZap";
+import ZapCook from "./ZapCook";
 import { Row, Col } from 'react-grid-system';
+import colors from '../../constants/colors';
+import {
+  useViewport
+} from '@aragon/ui';
 
-function Distribution({ user }: {user: string}) {
+function Distribution({ user }: { user: string }) {
   const { override } = useParams();
   if (override) {
     user = override;
   }
-
+  const { below } = useViewport()
   const [userWETHBalance, setUserWETHBalance] = useState(new BigNumber(0));
   const [userWETHAllowance, setUserWETHAllowance] = useState(new BigNumber(0));
 
@@ -61,16 +69,17 @@ function Distribution({ user }: {user: string}) {
     let isCancelled = false;
 
     async function updateUserInfo() {
-      const [vestingBalance,
-             vestedBalance,
-             avalibleBalance,
-             startTimeStamp,
-             tDay,
-             pairBalanceCOOKStr,
-             pairBalanceWETHStr,
-             wethBalance,
-             wethAllowance
-           ] = await Promise.all([
+      const [
+        vestingBalance,
+        vestedBalance,
+        avalibleBalance,
+        startTimeStamp,
+        tDay,
+        pairBalanceCOOKStr,
+        pairBalanceWETHStr,
+        wethBalance,
+        wethAllowance
+      ] = await Promise.all([
         getDistributionVestingAmount(CookDistribution, user),
         getDistributionVestedAmount(CookDistribution, user),
         getDistributionAvalibleAmount(CookDistribution, user),
@@ -81,7 +90,7 @@ function Distribution({ user }: {user: string}) {
         getTokenBalance(WETH.addr, user),
         getTokenAllowance(WETH.addr, user, CookDistribution)
       ]);
-      console.log('wethAllowance',wethAllowance);
+      console.log('wethAllowance', wethAllowance);
       const userVestingBalance = toTokenUnitsBN(vestingBalance, COOK.decimals);
       const userVestedBalance = toTokenUnitsBN(vestedBalance, COOK.decimals);
       const userAvalibleBalance = toTokenUnitsBN(avalibleBalance, COOK.decimals);
@@ -93,13 +102,13 @@ function Distribution({ user }: {user: string}) {
       const userWETHBalance = toTokenUnitsBN(wethBalance, WETH.decimals);
 
 
-      const poolList = await Promise.all(POOLS.map( async (pool)=>{
-        const [lockedup,reward,staked,totalStaked] =
-        await Promise.all([
+      const poolList = await Promise.all(POOLS.map(async (pool) => {
+        const [lockedup, reward, staked, totalStaked] =
+          await Promise.all([
             getStakeLockupDuration(pool.address),
             getRewardPerBlock(pool.address),
             getTotalStaked(pool.address),
-            getPoolBalanceOfStaked(pool.address,user)
+            getPoolBalanceOfStaked(pool.address, user)
           ])
 
         const totalStakedBalance = toTokenUnitsBN(totalStaked, UNI.decimals);
@@ -107,11 +116,13 @@ function Distribution({ user }: {user: string}) {
         const poolRewardPerBlock = toTokenUnitsBN(reward, COOK.decimals);
 
 
-        return({pool:pool.address,lockedUp:lockedup,reward:poolRewardPerBlock,staked:userTotalStakedBalance,totalStaked:totalStakedBalance,
-                name: pool.name,
-                address: pool.address,
-                lockedUpPeriod: lockedup,
-                rewardPerBlock: poolRewardPerBlock})
+        return ({
+          pool: pool.address, lockedUp: lockedup, reward: poolRewardPerBlock, staked: userTotalStakedBalance, totalStaked: totalStakedBalance,
+          name: pool.name,
+          address: pool.address,
+          lockedUpPeriod: lockedup,
+          rewardPerBlock: poolRewardPerBlock
+        })
       }))
 
       if (!isCancelled) {
@@ -140,44 +151,58 @@ function Distribution({ user }: {user: string}) {
   }, [user]);
 
   return (
-    <>
-      <div style={{textAlign:"center"}}>
-      <div style={{fontWeight:'bold', fontSize:40}}>Cook Protocol</div>
-      <div style={{marginTop:30, marginBottom:50,fontSize:20}}>{"Mobri........."}</div>
-      <div style={{fontWeight:'bold', fontSize:35}}>Total Token 10,000,000 COOK</div>
-      </div>
-      <WithdrawPageHeader
-        accountVestingBalance={userVestingBalance}
-        accountAvalibleBalance={userAvalibleBalance}
-        accountVestedBalance={userVestedBalance}
-        todayNumber={today}
-        startDayNumber={startDay}
-      />
-      <Row>
-        <Col xs={6} style={{textAlign:"right"}}>
-        <Withdraw
-          user={user}
-          vestingAmount={userVestingBalance}
-          availableAmount={userAvalibleBalance}
-          records={[]}
-        /></Col>
-        <Col xs={6} >
-          <DistributionZap
-            user={user}
-            pools={managedPools}
-            cookAvailable={userAvalibleBalance}
-            wethBalance={userWETHBalance}
-            wethAllowance={userWETHAllowance}
-            pairBalanceWETH={pairBalanceWETH}
-            pairBalanceCOOK={pairBalanceCOOK}
+    <div style={{ padding: '2%' }}>
+      <div className="title">Distribution</div>
+      <LinearText text={"Manage Cook balance for presale parties"} />
+      <div style={{ marginTop: 30, display: 'flex', alignItems: 'center' }}>
+
+        <div style={{
+          padding: '40px 30px',
+          backgroundColor: below("medium") ? "transparent" : colors.secondary,
+          width: "100%", margin: "10pt auto", textAlign: "center", borderRadius: 20
+        }}>
+          <WithdrawPageHeader
+            accountVestingBalance={userVestingBalance}
+            accountAvalibleBalance={userAvalibleBalance}
+            accountVestedBalance={userVestedBalance}
+            todayNumber={today}
+            startDayNumber={startDay}
           />
-        </Col>
-      </Row>
-
-
-
-
-    </>
+          <Row style={{ marginTop: 100 }}>
+            <Col xs={12} md={4}>
+              <Withdraw
+                user={user}
+                vestingAmount={userVestingBalance}
+                availableAmount={userAvalibleBalance}
+                records={[]}
+              />
+            </Col>
+            <Col xs={12} md={4} >
+              <DistributionZap
+                user={user}
+                pools={managedPools}
+                cookAvailable={userAvalibleBalance}
+                wethBalance={userWETHBalance}
+                wethAllowance={userWETHAllowance}
+                pairBalanceWETH={pairBalanceWETH}
+                pairBalanceCOOK={pairBalanceCOOK}
+              />
+            </Col>
+            <Col xs={12} md={4} >
+              <ZapCook
+                user={user}
+                pools={managedPools}
+                cookAvailable={userAvalibleBalance}
+                wethBalance={userWETHBalance}
+                wethAllowance={userWETHAllowance}
+                pairBalanceWETH={pairBalanceWETH}
+                pairBalanceCOOK={pairBalanceCOOK}
+              />
+            </Col>
+          </Row>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -4,9 +4,9 @@ import BigNumber from 'bignumber.js';
 import {
   BalanceBlock
 } from '../common/index';
-import {claim} from '../../utils/web3';
-import {isPos, toBaseUnitBN} from '../../utils/number';
-import {COOK} from "../../constants/tokens";
+import { claim } from '../../utils/web3';
+import { isPos, toBaseUnitBN } from '../../utils/number';
+import { COOK } from "../../constants/tokens";
 import BigNumberInput from "../common/BigNumberInput";
 import ActionButton from "../common/ActionButton";
 import colors from '../../constants/colors';
@@ -20,33 +20,33 @@ type ClaimProps = {
 };
 
 function Claim({
-  user,poolAddress, claimable, pools
+  user, poolAddress, claimable, pools
 }: ClaimProps) {
   const [claimAmount, setClaimAmount] = useState(new BigNumber(0));
   const [opened, setOpened] = useState(false)
 
   return (
     <div>
-    <ActionButton
-      label={"CLAIM"}
-      color={colors.secondaryButton}
-      onClick={() => {
-        setOpened(true)
-      }}
-      disabled={poolAddress === '' || user === ''}
-    />
-    <Modal visible={opened} onClose={()=>setOpened(false)}>
-    <Container style={{flexBasis: '100%', paddingTop: '5%'}}>
-      <ListTable pools={pools} selectedPool={poolAddress}/>
-        <Row >
-          <Col sm={12} lg={12}>
-          <BalanceBlock asset="Claimable" balance={claimable} suffix={"COOK"} type={"row"}/>
-          </Col>
-        {/* Claim COOK rewards within Pool */}
-          <Col sm={12} lg={12}>
+      <ActionButton
+        label={"Claim"}
+        onClick={() => {
+          setOpened(true)
+        }}
+        disabled={poolAddress === '' || user === ''}
+      />
+      <Modal visible={opened} onClose={() => setOpened(false)}>
+        <Container>
+          <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>Claim</h1>
+          <ListTable pools={pools} selectedPool={poolAddress} />
+          <Row >
+            <Col sm={12} lg={12}>
+              <BalanceBlock asset="Claimable" balance={claimable} suffix={"Cook"} type={"row"} />
+            </Col>
+            {/* Claim COOK rewards within Pool */}
+            <Col sm={12} lg={12}>
               <>
                 <BigNumberInput
-                  adornment="COOK"
+                  adornment="Cook"
                   value={claimAmount}
                   setter={setClaimAmount}
                   max={() => {
@@ -56,26 +56,34 @@ function Claim({
 
               </>
             </Col>
-            <Col sm={12} lg={12} style={{textAlign:"center"}}>
-                  <ActionButton
-                    label={"CLAIM"}
-                    color={colors.secondaryButton}
-                    onClick={() => {
-                      claim(
-                        poolAddress,
-                        toBaseUnitBN(claimAmount, COOK.decimals),
-                        (hash) => {
-                          setClaimAmount(new BigNumber(0))
-                          setOpened(false)
-                        }
-                      );
-                    }}
-                    disabled={poolAddress === '' || user === '' || !isPos(claimAmount) || claimAmount.isGreaterThan(claimable)}
-                  />
-              </Col>
-        </Row>
+            <Col sm={6}>
+              <ActionButton
+                label="Cancel"
+                onClick={() => {
+                  setOpened(false)
+                }}
+                disabled={false}
+              />
+            </Col>
+            <Col sm={6}>
+              <ActionButton
+                label={"CLAIM"}
+                onClick={() => {
+                  claim(
+                    poolAddress,
+                    toBaseUnitBN(claimAmount, COOK.decimals),
+                    (hash) => {
+                      setClaimAmount(new BigNumber(0))
+                      setOpened(false)
+                    }
+                  );
+                }}
+                disabled={poolAddress === '' || user === '' || !isPos(claimAmount) || claimAmount.isGreaterThan(claimable)}
+              />
+            </Col>
+          </Row>
         </Container>
-    </Modal>
+      </Modal>
     </div>
   );
 }

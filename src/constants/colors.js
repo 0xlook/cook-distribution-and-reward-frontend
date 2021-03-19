@@ -1,11 +1,12 @@
 export default {
   _name: 'dark',
   _appearance: 'dark',
-
+  linear: 'linear-gradient(to right, #E611FF, #03ABF9)',
+  linearOpacity: 'linear-gradient(to right, rgba(230, 17, 255, .3), rgba(3, 171, 249, .3))',
   primary: "rgb(10,10,42)",
   secondary: "rgb(29,33,59)",
   button: "rgb(88,220,96)",
-  secondaryButton:"rgb(253,235,63)",
+  secondaryButton: "rgb(253,235,63)",
 
   background: '#0A0A2A',
   border: '#2c3a58',
@@ -13,7 +14,7 @@ export default {
   content: '#FFFFFF',
   contentSecondary: '#7c99d6',
 
-  surface: '#1D213B',
+  surface: '#15163A',
   surfaceContent: '#FFFFFF',
   surfaceContentSecondary: '#7c99d6',
   surfaceIcon: '#6683c3',

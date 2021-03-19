@@ -3,6 +3,8 @@ import BigNumber from 'bignumber.js';
 import { Container, Row, Col } from 'react-grid-system';
 import { BalanceBlock, Card } from '../common/index';
 
+
+
 type WithdrawPageHeaderProps = {
   accountVestingBalance: BigNumber,
   accountAvalibleBalance: BigNumber,
@@ -11,25 +13,38 @@ type WithdrawPageHeaderProps = {
   startDayNumber: BigNumber
 };
 
+const renderField = (title: string, value: any) => {
+  return (
+    <div style={{ textAlign: "left" }}>
+      <div style={{ fontWeight: "bold" }}>{title}</div>
+      <div>{value}</div>
+    </div>
+  )
+
+}
 
 
 const WithdrawPageHeader = ({
   accountVestingBalance, accountAvalibleBalance, accountVestedBalance, todayNumber, startDayNumber
-}: WithdrawPageHeaderProps) => (
-  <div>
-  <div style={{ padding: '2%', display: 'flex', alignItems: 'center' }}>
-    <Container>
-      <Row>
-       <Col xs={12} md={6}><Card label={"Total Allocated Token"} value={<BalanceBlock asset="" balance={accountVestingBalance} suffix={" COOK"}/>}/></Col>
-       <Col xs={12} md={6} ><Card label={"Vesting Token"} value={<BalanceBlock asset="" balance={accountVestingBalance.minus(accountVestedBalance)} suffix={" COOK"}/>}/></Col>
-       <Col xs={12} md={6} ><Card label={"Claimed Token"} value={<BalanceBlock asset="" balance={accountVestedBalance.minus(accountAvalibleBalance)} suffix={" COOK"}/>}/></Col>
-       <Col xs={12} md={6} ><Card label={"Available Token"} value={<BalanceBlock asset="" balance={accountAvalibleBalance} suffix={" COOK"}/>}/></Col>
-     </Row>
+}: WithdrawPageHeaderProps) => {
+  console.log(accountAvalibleBalance.toFixed())
+  return (
+    <div>
 
-    </Container>
-  </div>
-  </div>
-);
+      <Row>
+        <Col xs={12} md={12} xl={4}>{renderField("Total Token", <BalanceBlock asset="" balance={10000000} suffix={" Cook"} />)}</Col>
+        {/* <Col xs={12} md={4} xl={2}>{renderField("Total Allocated Token", <BalanceBlock asset="" balance={accountVestingBalance} suffix={" Cook"} />)}</Col>
+      <Col xs={12} md={4} xl={2}>{renderField("Vesting Token", <BalanceBlock asset="" balance={accountVestingBalance.minus(accountVestedBalance)} suffix={" Cook"} />)}</Col> */}
+        <Col xs={12} md={6} xl={4}>{renderField("Claimed Token", <BalanceBlock asset="" balance={accountVestedBalance.minus(accountAvalibleBalance)} suffix={" Cook"} />)}</Col>
+        <Col xs={12} md={6} xl={4}>{renderField("Available Token", <BalanceBlock asset="" balance={accountAvalibleBalance} suffix={" Cook"} />)}</Col>
+      </Row>
+    </div>
+  )
+
+
+
+
+};
 
 
 export default WithdrawPageHeader;

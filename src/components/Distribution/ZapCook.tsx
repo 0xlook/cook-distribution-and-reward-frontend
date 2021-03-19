@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal, DropDown
 } from '@aragon/ui';
@@ -6,9 +6,10 @@ import BigNumber from 'bignumber.js';
 import {
   BalanceBlock, PriceSection
 } from '../common/index';
-import { approve, zap } from '../../utils/web3';
+import { distributionZap, approve } from '../../utils/web3';
 import { toBaseUnitBN, toTokenUnitsBN } from '../../utils/number';
 import { COOK, WETH } from "../../constants/tokens";
+import { CookDistribution } from "../../constants/contracts";
 import BigNumberInput from "../common/BigNumberInput";
 import colors from '../../constants/colors';
 import ActionButton from "../common/ActionButton";
@@ -24,17 +25,25 @@ type ZapProps = {
   wethAllowance: BigNumber,
   pairBalanceWETH: BigNumber,
   pairBalanceCOOK: BigNumber,
-  selected: string,
+  selected?: string
 };
 
-function Zap({
-  user, pools, cookAvailable, wethBalance, wethAllowance, pairBalanceWETH, pairBalanceCOOK, selected,
+function DistributionZap({
+  user, pools, cookAvailable, wethBalance, wethAllowance, pairBalanceWETH, pairBalanceCOOK, selected
 }: ZapProps) {
-
   const [zapAmount, setZapAmount] = useState(new BigNumber(0));
   const [wethAmount, setWethAmount] = useState(new BigNumber(0));
   const [opened, setOpened] = useState(false)
+  const [selectedPool, setSelectedPool] = useState(selected || '')
   const [balanceType, setBalanceType] = useState(0)
+
+  useEffect(() => {
+
+    if (selected) {
+      setSelectedPool(selected)
+    }
+
+  }, [selectedPool, selected])
 
   const close = () => {
     setOpened(false);
@@ -62,27 +71,24 @@ function Zap({
   const renderPoolZap = () => {
     return (
       <div>
-        <ActionButton label={"Zap"}
-          size={14}
-          width={"120px"}
-          onClick={() => {
-            setOpened(true)
-          }} disabled={!user} />
+        <ActionButton label={"Zap Cook"} color={colors.linear} onClick={() => {
+          setOpened(true)
+        }} disabled={!user} />
         <Modal visible={opened} onClose={() => close()}>
-          <div>
-            <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>Zap</h1>
-            <ListTable pools={pools} selectedPool={selected} />
-
-            <Row>
-              <Col xs={12}><BalanceBlock asset="Available COOK" balance={cookAvailable} suffix={"COOK"} type={"row"} /></Col>
+          <div style={{ paddingTop: '5%', padding: 20 }}>
+            <h1 style={{ textAlign: "center", fontSize: 45, fontWeight: 700 }}>Zap Cook</h1>
+            <ListTable pools={pools} selectedPool={selectedPool} setSelectedPool={setSelectedPool} />
+            <Row style={{ padding: 10 }}>
+              <Col xs={12}><BalanceBlock asset="Available Cook" balance={cookAvailable} suffix={"Cook"} type={"row"} /></Col>
               <Col xs={12}>
                 <BalanceBlock asset="WETH Balance" balance={wethBalance} type={"row"} suffix={
-                  <span style={{ fontSize: 14 }}> WETH</span>
-                } />
+                  <span style={{ fontSize: 14 }}> WETH</span>} />
               </Col>
+            </Row>
+            <Row>
               <Col xs={12}>
                 <BigNumberInput
-                  adornment="COOK"
+                  adornment="Cook"
                   value={zapAmount}
                   max={() => {
                     onChangeAmountCOOK(cookAvailable);
@@ -92,45 +98,45 @@ function Zap({
                 <PriceSection label="Requires " amt={wethAmount} symbol=" WETH" />
 
               </Col>
-              <Col sm={6}>
+              <Col xs={6} style={{ textAlign: "center" }}>
                 <ActionButton
                   label="Cancel"
                   onClick={() => {
-                    setOpened(false)
+                    close()
                   }}
                   disabled={false}
                 />
               </Col>
               {wethAllowance.comparedTo(wethAmount) > 0 ?
-                <Col xs={6} >
+                <Col xs={6} style={{ textAlign: "center" }}>
                   <ActionButton
-                    label={"Zap"}
+                    label={"Zap"} color={colors.button}
                     onClick={() => {
-                      if (selected) {
-                        zap(
-                          selected,
+                      if (selectedPool) {
+                        distributionZap(
+                          CookDistribution,
+                          selectedPool,
                           toBaseUnitBN(zapAmount, COOK.decimals),
                           (hash) => {
-                            setWethAmount(new BigNumber(0));
-                            setZapAmount(new BigNumber(0));
                             close()
                           }
                         );
                       }
+
                     }}
-                    disabled={selected === '' || user === ''}
+                    disabled={selectedPool === '' || user === ''}
                   />
                 </Col>
                 :
-                <Col xs={6} >
+                <Col xs={6} style={{ textAlign: "center" }}>
                   <ActionButton
                     label="Approve"
                     onClick={() => {
-                      if (selected) {
-                        approve(WETH.addr, selected);
+                      if (selectedPool) {
+                        approve(WETH.addr, CookDistribution);
                       }
                     }}
-                    disabled={selected === '' || user === ''}
+                    disabled={selectedPool === '' || user === ''}
                   />
                 </Col>
               }
@@ -146,4 +152,4 @@ function Zap({
   );
 }
 
-export default Zap;
+export default DistributionZap;

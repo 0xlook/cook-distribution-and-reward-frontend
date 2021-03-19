@@ -1,8 +1,12 @@
 import React from 'react';
 
 import BigNumber from 'bignumber.js';
-import colors from '../../constants/colors';
+import {
+  useViewport
+} from '@aragon/ui';
+import LinearText from "../common/LinearText";
 import { Row, Col } from 'react-grid-system';
+
 type BlanceBlockProps = {
   asset: string,
   balance: BigNumber | string | number
@@ -10,46 +14,53 @@ type BlanceBlockProps = {
   type?: string
 }
 
-function BalanceBlock({ asset, balance, suffix="", type="" }: BlanceBlockProps) {
+function BalanceBlock({ asset, balance, suffix = "", type = "" }: BlanceBlockProps) {
   let integer = '0';
   let digits = '0';
+  let bigNumber = new BigNumber(balance)
+  const { below } = useViewport()
   if (new BigNumber(balance).gt(new BigNumber(0))) {
-    const str = new BigNumber(balance).toString();
-    const split = str.split('.');
-    integer = split[0];
-    digits = split.length > 1 ? str.split('.')[1] : '0';
-    digits = digits.length > 2 ? digits.substr(0, 2) : digits
+    if (bigNumber.gte(1000000)) {
+      let str = (bigNumber.div(1000000)).toLocaleString()
+      const split = str.split('.');
+      integer = split[0]
+      digits = split.length > 1 ? str.split('.')[1] : '0';
+      digits = digits.length > 2 ? digits.substr(0, 2) : digits
+      digits += 'M'
+
+    } else {
+      let str = balance.toLocaleString()
+      const split = str.split('.');
+      integer = split[0];
+      digits = split.length > 1 ? str.split('.')[1] : '0';
+      digits = digits.length > 2 ? digits.substr(0, 2) : digits
+    }
+
   }
-  if(type === "row"){
-    return(
+  const fontSize = below('medium') ? "30px" : "50px"
+
+  if (type === "block") {
+    return (
       <>
-      <Row>
-        <Col md={12} style={{padding:5}}>{asset}</Col>
-        <Col md={12} style={{ padding:5,fontSize: 30, color:colors.button}}>
-          <span style={{ }}>{integer}</span>
-          .
-          <span style={{}}>
-            {digits}
-          </span>
-          {suffix === "" ? '' : <span style={{ fontSize: 18 }}> {suffix}</span> }
-        </Col>
+        <Row>
+          <Col md={12} style={{ padding: 5, fontWeight: 700 }}>{asset}</Col>
+          <Col md={12} style={{ padding: 5, fontWeight: 700 }}>
+            <LinearText text={`${integer}.${digits}`} size={fontSize} />
+            {suffix === "" ? '' : <span style={{ fontSize: 14 }}> {suffix}</span>}
+          </Col>
         </Row>
       </>
     )
   }
-  if(type === "block"){
-    return(
+  if (type === "row") {
+    return (
       <>
-      <Row style={{padding:15}}>
-        <Col xs={12} md={6} style={{padding:0, fontSize: 24, textAlign:"left"}}>{asset}</Col>
-        <Col xs={12} md={6} style={{ padding:0,fontSize: 30, color:colors.button, textAlign:"right"}}>
-          <span style={{ }}>{integer}</span>
-          .
-          <span style={{}}>
-            {digits}
-          </span>
-          {suffix === "" ? '' : <span style={{ fontSize: 30 }}> {suffix}</span> }
-        </Col>
+        <Row style={{ padding: 15, height: '100px' }} align="center">
+          <Col xs={12} md={6} style={{ padding: 0, fontSize: 16, textAlign: "left", fontWeight: 700 }}>{asset}</Col>
+          <Col xs={12} md={6} style={{ padding: 0, textAlign: "right", fontWeight: 700 }}>
+            <LinearText text={`${integer}.${digits}`} size={fontSize} />
+            {suffix === "" ? '' : <span style={{ fontSize: 14 }}> {suffix}</span>}
+          </Col>
         </Row>
       </>
     )
@@ -57,15 +68,9 @@ function BalanceBlock({ asset, balance, suffix="", type="" }: BlanceBlockProps) 
   return (
     <>
       <div style={{ fontSize: 14, padding: 3 }}>{asset}</div>
-      <div style={{ padding: 3 }}>
-        <span style={{ fontSize: 30 }}>{integer}</span>
-        .
-        <span style={{ fontSize: 30 }}>
-          {' '}
-          {digits}
-          {' '}
-        </span>
-        {suffix === "" ? '' : <span style={{ fontSize: 30 }}> {suffix}</span> }
+      <div style={{ padding: 3, fontWeight: 700 }}>
+        <LinearText text={`${integer}.${digits}`} size={fontSize} />
+        {suffix === "" ? '' : <span style={{ fontSize: 14 }}> {suffix}</span>}
       </div>
     </>
   );
