@@ -35,7 +35,6 @@ function PoolList({ user }: { user: string }) {
   const [poolList, setPoolList] = useState([] as any);
   const [selectedPool, setSelectedPool] = useState('');
   const [totalStaked, setTotalStaked] = useState(new BigNumber(0));
-  const [opened, setOpened] = useState(false);
   const { below } = useViewport()
   const [pairBalanceCOOK, setPairBalanceCOOK] = useState(new BigNumber(0));
   const [pairBalanceWETH, setPairBalanceWETH] = useState(new BigNumber(0));
@@ -210,54 +209,52 @@ function PoolList({ user }: { user: string }) {
       <div className="title">LP mining</div>
       <LinearText text={"Stake Uni token, get cook token"} />
 
-      <div style={below("medium") ? {
-        padding: 0, margin: "30pt auto"
-      } : {
-          padding: '40px 30px',
-          backgroundColor: colors.secondary, width: "100%",
-          margin: "30pt auto", textAlign: "center", borderRadius: 20
-        }}>
+      <div style={{
+        padding: '20px 30px',
+        backgroundColor: colors.secondary, width: "100%",
+        margin: "30pt auto", textAlign: "center", borderRadius: 20
+      }}>
+        <ListTable pools={poolList} selectedPool={selectedPool} setSelectedPool={(selected) => {
+          setSelectedPool(selected)
+        }
+        } detailMode={true} action={
+          <Row style={{ textAlign: "center", width: "100%" }}>
+            <Col xs={12} xl={4} style={{ padding: '0 5px' }}>
+              <Stake
+                pools={selectedPoolList}
+                user={user}
+                poolAddress={selectedPool}
+                balance={userUNIBalance}
+                allowance={userUNIAllowance}
+                staked={userTotalStaked}
+              />
+            </Col><Col xs={12} xl={4} style={{ padding: '0 5px' }}>
+              <Unstake
+                user={user}
+                pools={selectedPoolList}
+                poolAddress={selectedPool}
+                unstakable={userTotalUnstakable}
+                locked={userTotalLocked}
+              />
+            </Col>
+            <Col xs={12} xl={4} style={{ padding: '0 5px' }}>
+              <Zap
+                user={user}
+                pools={selectedPoolList}
+                cookAvailable={userTotalVested}
+                selected={selectedPool}
+                wethBalance={userWETHBalance}
+                wethAllowance={userWETHAllowance}
+                pairBalanceWETH={pairBalanceWETH}
+                pairBalanceCOOK={pairBalanceCOOK}
+              />
+            </Col>
+          </Row>
+        } />
         <Pool user={user} poolAddress={selectedPool} pools={poolList} />
 
       </div>
-      <ListTable pools={poolList} selectedPool={selectedPool} setSelectedPool={(selected) => {
-        setSelectedPool(selected)
-        setOpened(true)
-      }
-      } detailMode={true} action={
-        <Row style={{ textAlign: "left", width: "100%" }}>
-          <Col xs={12} xl={4} style={{ padding: 0 }}>
-            <Stake
-              pools={selectedPoolList}
-              user={user}
-              poolAddress={selectedPool}
-              balance={userUNIBalance}
-              allowance={userUNIAllowance}
-              staked={userTotalStaked}
-            />
-          </Col><Col xs={12} xl={4} style={{ padding: 0 }}>
-            <Unstake
-              user={user}
-              pools={selectedPoolList}
-              poolAddress={selectedPool}
-              unstakable={userTotalUnstakable}
-              locked={userTotalLocked}
-            />
-          </Col>
-          <Col xs={12} xl={4} style={{ padding: 0 }}>
-            <Zap
-              user={user}
-              pools={selectedPoolList}
-              cookAvailable={userTotalVested}
-              selected={selectedPool}
-              wethBalance={userWETHBalance}
-              wethAllowance={userWETHAllowance}
-              pairBalanceWETH={pairBalanceWETH}
-              pairBalanceCOOK={pairBalanceCOOK}
-            />
-          </Col>
-        </Row>
-      } />
+
     </div >
   );
 }

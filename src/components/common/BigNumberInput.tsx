@@ -18,11 +18,11 @@ type BigNumberInputProps = {
 function BigNumberInput({ value, setter, adornment, disabled = false, max }: BigNumberInputProps) {
   return (
     <Container style={{ marginBottom: 15 }}>
-      <Row align="center" style={{height: '75px' }}>
+      <Row align="center" style={{ height: '75px' }}>
         <Col xs={11} style={{ paddingLeft: 0 }}>
           <TextInput
             type="number"
-            style={{ background: `${colors.linearOpacity}`, height: 56, fontSize: 24, fontWeight: 'bold'}}
+            style={{ background: `${colors.linearOpacity}`, height: 56, fontSize: 24, fontWeight: 'bold' }}
             adornmentPosition="end"
             adornmentSettings={{ padding: 5, width: 70 }}
             adornment={max && <MaxButton onClick={max} />}
@@ -42,7 +42,7 @@ function BigNumberInput({ value, setter, adornment, disabled = false, max }: Big
             }}
             disabled={disabled}
           /></Col>
-        <Col xs={1} style={{ fontSize: 20, color: "white", padding: 0 }}><Text >{adornment}</Text></Col>
+        <Col xs={1} style={{ fontSize: 16, color: "white", padding: 0 }}><Text >{adornment}</Text></Col>
       </Row>
     </Container>
   );

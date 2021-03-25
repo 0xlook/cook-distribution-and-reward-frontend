@@ -2,13 +2,13 @@ import Web3 from 'web3';
 
 const poolAbi = require('../constants/abi/Pool.json');
 const mockPoolAbi = require('../constants/abi/MockPool.json');
-const distributionAbi = require('../constants/abi/TokenDistribution.json');
+const distributionAbi = require('../constants/abi/CookDistribution.json');
 const dollarAbi = require('../constants/abi/Dollar.json');
 const priceComsumerAbi = require('../constants/abi/PriceConsumer.json');
 
 // eslint-disable-next-line no-undef
 // console.log(window.ethereum);
-let web3 = new Web3(window.ethereum?window.ethereum:null);
+let web3 = new Web3(window.ethereum ? window.ethereum : null);
 
 /**
  *
@@ -155,7 +155,7 @@ export const getDistributionVestingAmount = async (cookDistribution, account) =>
  */
 export const getDistributionAvalibleAmount = async (cookDistribution, account) => {
   const distributionContract = new web3.eth.Contract(distributionAbi, cookDistribution);
-  return distributionContract.methods.getUserAvailableAmount(account,0).call();
+  return distributionContract.methods.getUserAvailableAmount(account, 0).call();
 };
 
 /**
@@ -166,7 +166,7 @@ export const getDistributionAvalibleAmount = async (cookDistribution, account) =
  */
 export const getDistributionVestedAmount = async (cookDistribution, account) => {
   const distributionContract = new web3.eth.Contract(distributionAbi, cookDistribution);
-  return distributionContract.methods.getUserVestedAmount(account,0).call();
+  return distributionContract.methods.getUserVestedAmount(account, 0).call();
 };
 
 

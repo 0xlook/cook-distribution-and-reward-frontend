@@ -31,21 +31,20 @@ function Stake({
       <ActionButton
         label={"Deposit"}
         size={14}
-        width={"120px"}
         onClick={() => {
           setOpened(true)
         }}
         disabled={poolAddress === '' || user === ''}
       />
       <Modal visible={opened} onClose={() => setOpened(false)}>
-        <Container >
+        <div style={{ padding: 20 }}>
           <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>Deposit</h1>
           <ListTable pools={pools} selectedPool={poolAddress} />
           <Row >
-            <Col sm={12} xl={12}>
+            <Col xs={12}>
               <BalanceBlock asset="Balance" balance={balance} suffix={"UNI-V2"} type={"row"} />
             </Col>
-            <Col sm={12} xl={12}>
+            <Col xs={12}>
 
               <>
                 <BigNumberInput
@@ -59,9 +58,9 @@ function Stake({
 
               </>
             </Col>
-            <Col sm={6}>
+            <Col xs={6}>
               <ActionButton
-
+                type="cancel"
                 label="Cancel"
                 onClick={() => {
                   setOpened(false)
@@ -70,10 +69,10 @@ function Stake({
               />
             </Col>
             {allowance.comparedTo(stakeAmount) > 0 ?
-              <Col md={6} >
+              <Col xs={6} >
                 <ActionButton
-                  label={"DEPOSIT"}
-                  color={colors.button}
+                  label={"Deposit"}
+                  type="filled"
                   onClick={() => {
                     stake(
                       poolAddress,
@@ -88,9 +87,10 @@ function Stake({
                 />
               </Col>
               :
-              <Col sm={6}>
+              <Col xs={6}>
                 <ActionButton
-                  label={"APPROVE"}
+                  label={"Approve"}
+                  type="filled"
                   onClick={() => {
                     approve(UNI.addr, poolAddress);
                   }}
@@ -99,8 +99,7 @@ function Stake({
               </Col>
             }
           </Row>
-        </Container>
-
+        </div>
       </Modal>
     </div>
   );

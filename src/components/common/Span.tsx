@@ -14,6 +14,7 @@ const StyledSpan = styled.span`
 `;
 
 function Span({ label, color, size }: { label: string, color?: string, size?: number }) {
+
   return (
     <StyledSpan
       color={color || colors.linear} border={label.length > 10 ? 40 : 20} size={size || 14}

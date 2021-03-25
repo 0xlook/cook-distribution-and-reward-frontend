@@ -101,6 +101,7 @@ function DistributionZap({
               <Col xs={6} style={{ textAlign: "center" }}>
                 <ActionButton
                   label="Cancel"
+                  type="cancel"
                   onClick={() => {
                     close()
                   }}
@@ -110,7 +111,7 @@ function DistributionZap({
               {wethAllowance.comparedTo(wethAmount) > 0 ?
                 <Col xs={6} style={{ textAlign: "center" }}>
                   <ActionButton
-                    label={"Zap"} color={colors.button}
+                    label={"Zap"} type="filled"
                     onClick={() => {
                       if (selectedPool) {
                         distributionZap(
@@ -131,6 +132,7 @@ function DistributionZap({
                 <Col xs={6} style={{ textAlign: "center" }}>
                   <ActionButton
                     label="Approve"
+                    type="filled"
                     onClick={() => {
                       if (selectedPool) {
                         approve(WETH.addr, CookDistribution);

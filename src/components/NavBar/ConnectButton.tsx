@@ -1,19 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled, { CSSProp } from 'styled-components';
 import {
-  Button, IdentityBadge, IconConnect, IconPower, LinkBase,
+  Button, IdentityBadge, IconDown, IconConnect, IconPower, LinkBase,
 } from '@aragon/ui';
 
 import { connect } from '../../utils/web3';
+import SignOutButtonWrapper from '../common/SignOutButtonWrapper';
 
 type connectButtonProps = {
   user: string,
   setUser: Function,
-  css?: CSSProp
+  css?: CSSProp,
+  mobile?: Boolean
 }
 
-function ConnectButton({ user, setUser, css }: connectButtonProps) {
+function ConnectButton({ user, setUser, css, mobile }: connectButtonProps) {
   const [isConnected, setIsConnected] = useState(user ? true: false);
+  const [visible, setVisible] = useState(false)
+
   const connectWeb3 = async () => {
     const address = await connect();
     if (address === false) return;
@@ -24,28 +28,138 @@ function ConnectButton({ user, setUser, css }: connectButtonProps) {
   const disconnectWeb3 = async () => {
     setIsConnected(false);
     setUser('');
+    setVisible(false);
+  };
+
+  const showDropDown = async () => {
+    setVisible(!visible)    
   };
 
   return isConnected ? (
-    <StyledButton style={css}>
-      <div style={{ paddingTop: 5, paddingRight: 5 }}>
-        <LinkBase onClick={disconnectWeb3} size="small">
-          {' '}
-          <IconPower />
-          {' '}
-        </LinkBase>
+    mobile ? (
+      <>
+          <StyledMobileDiv>
+            <IdentityBadge compact entity={user}  />
+          </StyledMobileDiv>   
+          <StyledSignOutMobileButton onClick={disconnectWeb3}>Sign Out</StyledSignOutMobileButton>
+      </>
+    ) : (
+      <div>
+        <StyledDiv style={{marginLeft: '32px'}}>
+          <IdentityBadge style={{marginTop: '8px'}} compact entity={user}  />
+          <LinkBase onClick={showDropDown} size="small">
+            <IconDown />
+          </LinkBase>
+        </StyledDiv>
+        
+        <SignOutButtonWrapper visible={visible} setVisible={setVisible}>
+          <StyledSignOutButton style={{marginTop: '3px', display: 'inherit'}} onClick={disconnectWeb3} size="small">
+            Sign Out
+          </StyledSignOutButton>
+        </SignOutButtonWrapper>
       </div>
-      <IdentityBadge compact entity={user}  />
-
-    </StyledButton>
+    )
   ) : (
-    <StyledButton style={css} label="Connect Wallet" onClick={connectWeb3} />
+    mobile ? (
+      <StyledButton style={{width: '100%', height: '55px', marginTop: '28px'}} label="Connect Wallet" onClick={connectWeb3} />
+    ) : (
+      <StyledButton style={{marginLeft: '32px'}} label="Connect Wallet" onClick={connectWeb3} />
+    )
+    
   );
 }
 
-const StyledButton = styled(Button)`
-  background: linear-gradient(90deg, #E611FF -6.85%, #03ABF9 109.03%);
+const StyledSignOutMobileButton = styled(Button)`
+    width: 100%;
+    height: 55px;
+    margin-left: 0px;
+    margin-top: 20px;
+    z-index:0;
+    background: transparent;
+    border: 1px solid transparent;
+    
+    :before {
+      content:"";
+      position:absolute;
+      z-index:-1;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      padding: 1px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #E611FF -6.85%, #03ABF9 109.03%);
+      -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+    }
 `
+
+const StyledSignOutButton = styled(Button)`
+  position: absolute;
+  width: 174px;
+  height: 40px;
+  margin-left: 32px;
+  @media only screen and (max-width: 767px) {
+    margin-left: 0px;
+  }
+`
+
+const StyledButton = styled(Button)`
+  padding: 0 5px;
+  border: 0;
+  width: 174px;
+  font-size: 15px;
+  background: linear-gradient(90deg, #E611FF -6.85%, #03ABF9 109.03%);
+  :hover {
+    opacity: 0.4;
+  }
+  span {
+    font-size: 15px;
+  }
+`
+
+const StyledDiv = styled.div`
+  height: 40px;
+  width: 174px;
+  display: flex;
+  border: 0;
+  border-radius: 4px;  
+  font-size: 15px;
+  background: linear-gradient(90deg, #E611FF -6.85%, #03ABF9 109.03%);
+  :hover {
+    opacity: 0.4;
+  }
+  span {
+    font-size: 15px;
+  }
+`
+
+const StyledMobileDiv = styled.div`
+  width: 100%;
+  height: 55px;
+  margin-top: 28px;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  display: flex;
+  border: 0;
+  border-radius: 4px;  
+  font-size: 15px;
+  background: linear-gradient(90deg, #E611FF -6.85%, #03ABF9 109.03%);
+  :hover {
+    opacity: 0.4;
+  }
+  span {
+    font-size: 15px;
+  }
+`
+
+
 
 
 export default ConnectButton;

@@ -49,16 +49,17 @@ function Withdraw({
               />
             </Col>
             <Col xs={6} style={{ textAlign: "center", marginTop: 40 }}>
-              <ActionButton label={"Cancel"} onClick={() => {
+              <ActionButton label={"Cancel"} type="cancel" onClick={() => {
                 setOpened(false)
               }} disabled={false} />
             </Col>
             <Col xs={6} style={{ textAlign: "center", marginTop: 40 }}>
-              <ActionButton label={"Claim"} onClick={() => {
+              <ActionButton label={"Claim"} type="filled" onClick={() => {
                 withdraw(
                   CookDistribution,
                   toBaseUnitBN(withdrawAmount, COOK.decimals),
                 );
+                setOpened(false)
               }} disabled={false} />
             </Col>
           </Row>

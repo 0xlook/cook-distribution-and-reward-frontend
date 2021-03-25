@@ -16,7 +16,7 @@ import {
   getPoolBalanceOfStaked
 } from '../../utils/infura';
 import { COOK, UNI, WETH } from "../../constants/tokens";
-import { CookDistribution, POOLS } from "../../constants/contracts";
+import { CookDistribution, POOLS, COOK_POOLS } from "../../constants/contracts";
 import { toTokenUnitsBN } from '../../utils/number';
 import WithdrawPageHeader from "./Header";
 import Withdraw from "./Withdraw";
@@ -49,7 +49,7 @@ function Distribution({ user }: { user: string }) {
   const [startDay, setStartDay] = useState(new BigNumber(0));
   const [today, setToday] = useState(new BigNumber(0));
   const [managedPools, setManagedPools] = useState([] as any);
-
+  const [cookPools, setCookPools] = useState([] as any);
 
   //Update User balances
   useEffect(() => {
@@ -64,6 +64,7 @@ function Distribution({ user }: { user: string }) {
       setStartDay(new BigNumber(0));
       setToday(new BigNumber(0));
       setManagedPools([]);
+      setCookPools([]);
       return;
     }
     let isCancelled = false;
@@ -125,6 +126,28 @@ function Distribution({ user }: { user: string }) {
         })
       }))
 
+      const cookPoolList = await Promise.all(COOK_POOLS.map(async (pool) => {
+        const [lockedup, reward, staked, totalStaked] =
+          await Promise.all([
+            getStakeLockupDuration(pool.address),
+            getRewardPerBlock(pool.address),
+            getTotalStaked(pool.address),
+            getPoolBalanceOfStaked(pool.address, user)
+          ])
+
+        const totalStakedBalance = toTokenUnitsBN(totalStaked, COOK.decimals);
+        const userTotalStakedBalance = toTokenUnitsBN(staked, COOK.decimals);
+        const poolRewardPerBlock = toTokenUnitsBN(reward, COOK.decimals);
+
+        return ({
+          pool: pool.address, lockedUp: lockedup, reward: poolRewardPerBlock, staked: userTotalStakedBalance, totalStaked: totalStakedBalance,
+          name: pool.name,
+          address: pool.address,
+          lockedUpPeriod: lockedup,
+          rewardPerBlock: poolRewardPerBlock
+        })
+      }))
+
       if (!isCancelled) {
         setUserVestingBalance(new BigNumber(userVestingBalance));
         setUserVestedBalance(new BigNumber(userVestedBalance));
@@ -136,12 +159,13 @@ function Distribution({ user }: { user: string }) {
         setPairBalanceWETH(new BigNumber(pairWETHBalance));
         setUserWETHBalance(new BigNumber(userWETHBalance));
         setManagedPools(poolList)
-        console.log(wethAllowance);
+        setCookPools(cookPoolList);
+        // console.log(wethAllowance);
         setUserWETHAllowance(new BigNumber(wethAllowance));
       }
     }
     updateUserInfo();
-    const id = setInterval(updateUserInfo, 1000);
+    const id = setInterval(updateUserInfo, 15000);
 
     // eslint-disable-next-line consistent-return
     return () => {
@@ -158,7 +182,7 @@ function Distribution({ user }: { user: string }) {
 
         <div style={{
           padding: '40px 30px',
-          backgroundColor: below("medium") ? "transparent" : colors.secondary,
+          backgroundColor: colors.secondary,
           width: "100%", margin: "10pt auto", textAlign: "center", borderRadius: 20
         }}>
           <WithdrawPageHeader
@@ -168,40 +192,38 @@ function Distribution({ user }: { user: string }) {
             todayNumber={today}
             startDayNumber={startDay}
           />
-          <Row style={{ marginTop: 100 }}>
-            <Col xs={12} md={4}>
-              <Withdraw
-                user={user}
-                vestingAmount={userVestingBalance}
-                availableAmount={userAvalibleBalance}
-                records={[]}
-              />
-            </Col>
-            <Col xs={12} md={4} >
-              <DistributionZap
-                user={user}
-                pools={managedPools}
-                cookAvailable={userAvalibleBalance}
-                wethBalance={userWETHBalance}
-                wethAllowance={userWETHAllowance}
-                pairBalanceWETH={pairBalanceWETH}
-                pairBalanceCOOK={pairBalanceCOOK}
-              />
-            </Col>
-            <Col xs={12} md={4} >
-              <ZapCook
-                user={user}
-                pools={managedPools}
-                cookAvailable={userAvalibleBalance}
-                wethBalance={userWETHBalance}
-                wethAllowance={userWETHAllowance}
-                pairBalanceWETH={pairBalanceWETH}
-                pairBalanceCOOK={pairBalanceCOOK}
-              />
-            </Col>
-          </Row>
+
         </div>
+
       </div>
+      <Row style={{ marginTop: 10 }}>
+        <Col xs={12} md={4}>
+          <Withdraw
+            user={user}
+            vestingAmount={userVestingBalance}
+            availableAmount={userAvalibleBalance}
+            records={[]}
+          />
+        </Col>
+        <Col xs={12} md={4} >
+          <DistributionZap
+            user={user}
+            pools={managedPools}
+            cookAvailable={userAvalibleBalance}
+            wethBalance={userWETHBalance}
+            wethAllowance={userWETHAllowance}
+            pairBalanceWETH={pairBalanceWETH}
+            pairBalanceCOOK={pairBalanceCOOK}
+          />
+        </Col>
+        <Col xs={12} md={4} >
+          <ZapCook
+            user={user}
+            pools={cookPools}
+            cookAvailable={userAvalibleBalance}
+          />
+        </Col>
+      </Row>
     </div>
   );
 }

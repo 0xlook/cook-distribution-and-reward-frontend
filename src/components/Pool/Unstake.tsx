@@ -29,24 +29,23 @@ function Unstake({
       <ActionButton
         label={"Withdraw"}
         size={14}
-        width={"120px"}
         onClick={() => {
           setOpened(true)
         }}
         disabled={poolAddress === '' || user === ''}
       />
       <Modal visible={opened} onClose={() => setOpened(false)}>
-        <Container >
+        <div style={{ padding: 20 }}>
           <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>Withdraw</h1>
           <ListTable pools={pools} selectedPool={poolAddress} />
           <Row>
-            <Col sm={12}>
+            <Col xs={12}>
               <BalanceBlock asset="Locked" balance={locked} suffix={"UNI-V2"} type={"row"} />
             </Col>
-            <Col sm={12}>
+            <Col xs={12}>
               <BalanceBlock asset="Available" balance={unstakable} suffix={"UNI-V2"} type={"row"} />
             </Col>
-            <Col sm={12}>
+            <Col xs={12}>
               <BigNumberInput
                 adornment="UNI-V2"
                 value={unstakeAmount}
@@ -56,18 +55,20 @@ function Unstake({
                 }}
               />
             </Col>
-            <Col sm={6}>
+            <Col xs={6}>
               <ActionButton
                 label="Cancel"
+                type="cancel"
                 onClick={() => {
                   setOpened(false)
                 }}
                 disabled={false}
               />
             </Col>
-            <Col sm={6}>
+            <Col xs={6}>
               <ActionButton
-                label={"WITHDRAW"}
+                label={"Withdraw"}
+                type="filled"
                 onClick={() => {
                   unstake(
                     poolAddress,
@@ -82,7 +83,7 @@ function Unstake({
               />
             </Col>
           </Row>
-        </Container>
+        </div>
       </Modal>
     </div>
   );

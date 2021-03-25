@@ -1,19 +1,21 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
-  Header, Box, LinkBase, Tag, Text
+  Box, LinkBase, Tag, Text
 } from '@aragon/ui';
 import { Container, Row, Col } from 'react-grid-system';
 import distributionPNG from '../../assets/distribution.png'
 import lpMiningPNG from '../../assets/lp_mining.png'
 import cookMiningPNG from '../../assets/cook_mining.png'
+import distributionHover from '../../assets/distribution_hover.svg'
+import lpMiningHover from '../../assets/lp_mining_hover.svg'
+import cookMiningHover from '../../assets/cook_mining_hover.svg'
 import styled from 'styled-components'
 
 const StyledText = styled(Text)`
   background: -webkit-linear-gradient(0, #E71CFF -3.76%, #00AEFF 111.78%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-family: Futura;
   font-size: 20px;
   font-weight: 700;
   line-height: 27px;
@@ -42,10 +44,8 @@ const DescText = styled(Text)`
   letter-spacing: 0.03em;
 `
 const TitleText = styled(Text)`
-  font-family: Futura;
-  font-size: 50px;
+  font-size: 60px;
   font-weight: 700;
-  line-height: 66px;
   letter-spacing: 0.05em;
 
   @media only screen and (max-width: 767px) {
@@ -55,23 +55,10 @@ const TitleText = styled(Text)`
 `
 
 const StyledTitle = styled(Text)`
-  font-family: Futura;
   font-size: 20px;
   font-weight: 700;
   line-height: 27px;
   letter-spacing: 0.03em;
-}`  
-
-const StyledBox = styled(Box)`
-  background: 
-    linear-gradient(#0A0A2A,#0A0A2A) padding-box,
-    linear-gradient(90deg, #E611FF -6.85%, #03ABF9 109.03%) border-box;
-    border: 1px solid transparent;
-    border-radius:12px;
-  :hover {
-    transform: scale(1.1);
-  }
-
 }`
 
 const StyledDiv = styled.div`
@@ -81,8 +68,8 @@ const StyledDiv = styled.div`
 
   .desc {
     margin-top: 14px;
-    margin-bottom: 100px;
-    width: 50%;
+    margin-bottom: 80px;
+    max-width: 521px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -96,6 +83,7 @@ const StyledDiv = styled.div`
       text-align: left;
       margin: 20px 0px;
     }
+    
   }
 }`
 
@@ -104,12 +92,12 @@ function HomePage() {
 
   return (
     <>
-      <div style={{ padding: '1%', display: 'flex', alignItems: 'center', width:'100%' }}>
+      <div style={{ padding: '1%', display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
         <StyledDiv>
           <div>
             <StyledText>Accessibilty, Transparency, Security</StyledText>
           </div>
-          <div style={{ marginTop: '9px'}}>
+          <div style={{ marginTop: '9px' }}>
             <TitleText>COOK PROTOCOL</TitleText>
           </div>
           <div className="desc">
@@ -118,12 +106,13 @@ function HomePage() {
         </StyledDiv>
       </div>
 
-      <Container style={{padding: 0}}>
-        <Row style={{marginRight:0}}>
+      <Container style={{ padding: 0 }}>
+        <Row style={{ marginRight: 0 }}>
           <MainButton
             title="Distribution"
             description="Manage Cook balance for presale parties"
             icon={distributionPNG}
+            hover={distributionHover}
             onClick={() => {
               history.push('/distribution/');
             }}
@@ -132,6 +121,7 @@ function HomePage() {
             title="LP Mining"
             description="Stake Uni token, get cook token"
             icon={lpMiningPNG}
+            hover={lpMiningHover}
             onClick={() => {
               history.push('/pools/');
             }}
@@ -140,11 +130,12 @@ function HomePage() {
             title="Cook Mining"
             description="Stake cook token, get cook token"
             icon={cookMiningPNG}
+            hover={cookMiningHover}
             onClick={() => {
-              history.push('/pools/');
+              history.push('/cookpools/');
             }}
           />
-          </Row>
+        </Row>
       </Container>
 
     </>
@@ -155,30 +146,70 @@ type MainButtonPropx = {
   title: string,
   description: string,
   icon: any,
+  hover: any,
   onClick: Function,
-  tag?:string
+  tag?: string
 }
 
-
-
 function MainButton({
-  title, description, icon, onClick, tag,
-}:MainButtonPropx) {
+  title, description, icon, hover, onClick, tag,
+}: MainButtonPropx) {
+
+  const StyledBox = styled(Box)`
+    z-index:0;
+    background: transparent;
+    border: 1px solid transparent;
+    
+    :before {
+      content:"";
+      position:absolute;
+      z-index:-1;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      padding: 1px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #E611FF -6.85%, #03ABF9 109.03%);
+      -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+    }
+
+    .icon {
+      margin-top: 15px;
+      padding: 10px;
+      height: 200px;
+      background-image: url(${icon});
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    :hover {
+      transform: scale(1.1);
+    }
+    :hover .icon {      
+      background-image: url(${hover});
+      background-repeat: no-repeat;
+    }
+  }`
+
   return (
     <Col xs={12} md={4}>
-      <LinkBase onClick={onClick} 
+      <LinkBase onClick={onClick}
         style={{
-          width:"100%", margin:10 
+          width: "100%", margin: 10
         }}>
-        <StyledBox>
+        <StyledBox className="box">
           <div style={{ padding: 5, fontSize: 18 }}>
             <StyledTitle>{title}</StyledTitle>
             {tag ? <Tag>{tag}</Tag> : <></>}
           </div>
-          <div style={{ paddingTop: 5, whiteSpace: 'normal'}}>
+          <div style={{ paddingTop: 5, whiteSpace: 'normal' }}>
             <StyledDescText>{description}</StyledDescText>
           </div>
-          <img alt="icon" style={{ marginTop: 15, padding: 10, height: 150 }} src={icon} />
+          <div className="icon" />
         </StyledBox>
       </LinkBase>
     </Col>

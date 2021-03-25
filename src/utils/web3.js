@@ -4,8 +4,9 @@ import BigNumber from 'bignumber.js';
 
 import { notify } from './txNotifier.ts';
 const poolAbi = require('../constants/abi/Pool.json');
+const cookPoolAbi = require('../constants/abi/CookPool.json');
 const mockPoolAbi = require('../constants/abi/MockPool.json');
-const distributionAbi = require('../constants/abi/TokenDistribution.json');
+const distributionAbi = require('../constants/abi/CookDistribution.json');
 const dollarAbi = require('../constants/abi/Dollar.json');
 const oracleAbi = require('../constants/abi/Oracle.json');
 const priceComsumerAbi = require('../constants/abi/PriceConsumer.json');
@@ -16,7 +17,7 @@ const UINT256_MAX = '0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffff
  * ERC20 Utilities
  */
 
-export const approve = async (tokenAddr, spender, callback, amt = UINT256_MAX, ) => {
+export const approve = async (tokenAddr, spender, callback, amt = UINT256_MAX,) => {
   const account = await checkConnectedAndGetAddress();
   const oToken = new window.web3.eth.Contract(dollarAbi, tokenAddr);
   await oToken.methods
@@ -117,7 +118,20 @@ export const zap = async (pool, amount, callback) => {
   const account = await checkConnectedAndGetAddress();
   const poolContract = new window.web3.eth.Contract(poolAbi, pool);
   await poolContract.methods
-    .zap(new BigNumber(amount).toFixed())
+    .zapLP(new BigNumber(amount).toFixed())
+    .send({
+      from: account,
+    })
+    .on('transactionHash', (hash) => {
+      notify.hash(hash);
+      callback(hash);
+    });
+};
+export const zapCook = async (pool, amount, callback) => {
+  const account = await checkConnectedAndGetAddress();
+  const poolContract = new window.web3.eth.Contract(cookPoolAbi, pool);
+  await poolContract.methods
+    .zapCook(new BigNumber(amount).toFixed())
     .send({
       from: account,
     })
@@ -161,7 +175,7 @@ export const getWithdrawRecords = async (cookDistribution) => {
   const account = await checkConnectedAndGetAddress();
   const distributionContract = new window.web3.eth.Contract(distributionAbi, cookDistribution);
   const events = await distributionContract.getPastEvents('TokensWithdrawal', {
-    filter: { userAddress:account },
+    filter: { userAddress: account },
     fromBlock: 0,
   });
   return events;
@@ -171,7 +185,22 @@ export const distributionZap = async (cookDistribution, poolAddress, amount, cal
   const account = await checkConnectedAndGetAddress();
   const distributionContract = new window.web3.eth.Contract(distributionAbi, cookDistribution);
   await distributionContract.methods
-    .zap(new BigNumber(amount).toFixed(),poolAddress)
+    .zapLP(new BigNumber(amount).toFixed(), poolAddress)
+    .send({
+      from: account,
+    })
+    .on('transactionHash', (hash) => {
+      notify.hash(hash);
+      callback(hash);
+    });
+};
+
+
+export const cookDistributionZap = async (cookDistribution, poolAddress, amount, callback) => {
+  const account = await checkConnectedAndGetAddress();
+  const distributionContract = new window.web3.eth.Contract(distributionAbi, cookDistribution);
+  await distributionContract.methods
+    .zapCook(new BigNumber(amount).toFixed(), poolAddress)
     .send({
       from: account,
     })

@@ -64,17 +64,16 @@ function Zap({
       <div>
         <ActionButton label={"Zap"}
           size={14}
-          width={"120px"}
           onClick={() => {
             setOpened(true)
           }} disabled={!user} />
         <Modal visible={opened} onClose={() => close()}>
-          <div>
+          <div style={{ padding: 20 }}>
             <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>Zap</h1>
             <ListTable pools={pools} selectedPool={selected} />
 
             <Row>
-              <Col xs={12}><BalanceBlock asset="Available COOK" balance={cookAvailable} suffix={"COOK"} type={"row"} /></Col>
+              <Col xs={12}><BalanceBlock asset="Available Cook" balance={cookAvailable} suffix={"Cook"} type={"row"} /></Col>
               <Col xs={12}>
                 <BalanceBlock asset="WETH Balance" balance={wethBalance} type={"row"} suffix={
                   <span style={{ fontSize: 14 }}> WETH</span>
@@ -82,7 +81,7 @@ function Zap({
               </Col>
               <Col xs={12}>
                 <BigNumberInput
-                  adornment="COOK"
+                  adornment="Cook"
                   value={zapAmount}
                   max={() => {
                     onChangeAmountCOOK(cookAvailable);
@@ -92,9 +91,10 @@ function Zap({
                 <PriceSection label="Requires " amt={wethAmount} symbol=" WETH" />
 
               </Col>
-              <Col sm={6}>
+              <Col xs={6}>
                 <ActionButton
                   label="Cancel"
+                  type="cancel"
                   onClick={() => {
                     setOpened(false)
                   }}
@@ -105,6 +105,7 @@ function Zap({
                 <Col xs={6} >
                   <ActionButton
                     label={"Zap"}
+                    type="filled"
                     onClick={() => {
                       if (selected) {
                         zap(
@@ -125,6 +126,7 @@ function Zap({
                 <Col xs={6} >
                   <ActionButton
                     label="Approve"
+                    type="filled"
                     onClick={() => {
                       if (selected) {
                         approve(WETH.addr, selected);

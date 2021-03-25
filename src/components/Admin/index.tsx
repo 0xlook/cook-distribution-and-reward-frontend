@@ -1,13 +1,13 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import {POOLS, CookDistribution, Oracle, PriceConsumer} from "../../constants/contracts";
+import { POOLS, COOK_POOLS, CookDistribution, Oracle, PriceConsumer } from "../../constants/contracts";
 import IconHeader from "../common/IconHeader";
 import SetParam from "./SetParam";
 import SetDay from "./SetDay";
 import SetPrice from "./SetPrice";
 
-function Admin({ user }: {user: string}) {
+function Admin({ user }: { user: string }) {
   const { override } = useParams();
   if (override) {
     user = override;
@@ -15,7 +15,7 @@ function Admin({ user }: {user: string}) {
 
   return (
     <>
-      <IconHeader icon={<i className="fas fa-parachute-box"/>} text="Admin Functions"/>
+      <IconHeader icon={<i className="fas fa-parachute-box" />} text="Admin Functions" />
       <SetDay
         user={user}
         cookDistribution={CookDistribution}
@@ -28,14 +28,24 @@ function Admin({ user }: {user: string}) {
       />
       {
         POOLS.map(pool => {
-        return(
-          <SetParam key={pool.address}
-            user={user}
-            poolAddress={pool.address}
-          />
-        )
-      })
-    }
+          return (
+            <SetParam key={pool.address}
+              user={user}
+              poolAddress={pool.address}
+            />
+          )
+        })
+      }
+      {
+        COOK_POOLS.map(pool => {
+          return (
+            <SetParam key={pool.address}
+              user={user}
+              poolAddress={pool.address}
+            />
+          )
+        })
+      }
     </>
   );
 }

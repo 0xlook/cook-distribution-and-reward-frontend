@@ -10,7 +10,7 @@ import {
   getPoolBalanceOfVesting,
   getPoolBalanceOfClaimable,
   getPoolBalanceOfClaimed,
-  getTokenBalance
+  getPoolBalanceOfStaked
 } from '../../utils/infura';
 import { COOK, UNI, WETH } from "../../constants/tokens";
 import { toTokenUnitsBN } from '../../utils/number';
@@ -38,7 +38,7 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
     poolAddress = address;
   }
 
-
+  const [userTotalStaked, setUserTotalStaked] = useState(new BigNumber(0));
   const [userTotalRewarded, setUserTotalRewarded] = useState(new BigNumber(0));
   const [userTotalInVesting, setUserInTotalVesting] = useState(new BigNumber(0));
   const [userTotalVested, setUserTotalVested] = useState(new BigNumber(0));
@@ -47,6 +47,7 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
   //Update User balances
   useEffect(() => {
     if (poolAddress === '') {
+      setUserTotalStaked(new BigNumber(0));
       setUserTotalRewarded(new BigNumber(0));
       setUserInTotalVesting(new BigNumber(0));
       setUserTotalVested(new BigNumber(0));
@@ -55,45 +56,47 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
 
     let isCancelled = false;
 
-    async function updatePoolInfo() {
-      const [
-        pairBalanceCOOKStr,
-        pairBalanceWETHStr,
-      ] = await Promise.all([
-        getTokenBalance(COOK.addr, UNI.addr),
-        getTokenBalance(WETH.addr, UNI.addr),
-      ]);
+    // async function updatePoolInfo() {
+    //   const [
+    //     pairBalanceCOOKStr,
+    //     pairBalanceWETHStr,
+    //   ] = await Promise.all([
+    //     getTokenBalance(COOK.addr, UNI.addr),
+    //     getTokenBalance(WETH.addr, UNI.addr),
+    //   ]);
 
-    }
+    // }
 
-    updatePoolInfo();
-    const poolInfoId = setInterval(updatePoolInfo, 15000);
+    // updatePoolInfo();
+    // const poolInfoId = setInterval(updatePoolInfo, 15000);
 
     if (user === '') {
+      setUserTotalStaked(new BigNumber(0));
       setUserTotalRewarded(new BigNumber(0));
       setUserInTotalVesting(new BigNumber(0));
       setUserTotalVested(new BigNumber(0));
       return () => {
         isCancelled = true;
-        clearInterval(poolInfoId);
+        // clearInterval(poolInfoId);
       };
     }
 
     async function updateUserInfo() {
       const [
-
+        userTotalStakedStr,
         userTotalRewardedStr,
         userTotalVestingStr,
         userTotalVestedStr,
         userTotalClaimedStr,
 
       ] = await Promise.all([
+        getPoolBalanceOfStaked(poolAddress, user),
         getPoolBalanceOfRewarded(poolAddress, user),
         getPoolBalanceOfVesting(poolAddress, user),
         getPoolBalanceOfClaimable(poolAddress, user),
         getPoolBalanceOfClaimed(poolAddress, user),
       ]);
-
+      const userTotalStakedBalance = toTokenUnitsBN(userTotalStakedStr, COOK.decimals);
       const userTotalRewardedBalance = toTokenUnitsBN(userTotalRewardedStr, COOK.decimals);
       const userTotalVestingBalance = toTokenUnitsBN(userTotalVestingStr, COOK.decimals);
       const userTotalVestedBalance = toTokenUnitsBN(userTotalVestedStr, COOK.decimals);
@@ -105,16 +108,17 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
         setUserTotalRewarded(new BigNumber(userTotalRewardedBalance));
         setUserInTotalVesting(new BigNumber(userTotalInVestingBalance));
         setUserTotalVested(new BigNumber(userTotalVestedBalance));
+        setUserTotalStaked(new BigNumber(userTotalStakedBalance));
       }
     }
 
     updateUserInfo();
-    const userInfoId = setInterval(updateUserInfo, 15000);
+    const userInfoId = setInterval(updateUserInfo, 1500);
 
     // eslint-disable-next-line consistent-return
     return () => {
       isCancelled = true;
-      clearInterval(poolInfoId);
+      // clearInterval(poolInfoId);
       clearInterval(userInfoId);
     };
   }, [user, poolAddress]);
@@ -123,11 +127,25 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
 
   return (
     <Container>
-      <Row style={{ textAlign: "left" }}>
-        <Col xs={12} lg={6} style={{ marginBottom: 15, padding: 0 }}>
-          <Span label={poolAddress === "" ? "No Pool Selected" : poolList[0].name} size={below(800) ? 16 : 22} />
+
+
+      <Row style={{ textAlign: "left", marginTop: 30 }}>
+        <Col xs={12} lg={12} >
+          <BalanceBlock asset="Total Staked" balance={userTotalStaked} suffix={"UNI-V2"} type={"block"} size={below('medium') ? "30px" : "45px"} />
         </Col>
-        <Col xs={6} lg={3} style={{ margin: 'auto', padding: 5 }}>
+        <Col xs={12} md={4} lg={3} >
+          <BalanceBlock asset="To be Vested Tokens" balance={userTotalRewarded} suffix={"Cook"} type={"block"} size="30px" />
+        </Col>
+        <Col xs={12} md={4} lg={3} >
+          <BalanceBlock asset="Vesting Tokens" balance={userTotalInVesting} suffix={"Cook"} type={"block"} size="30px" />
+        </Col>
+        <Col xs={12} md={4} lg={2} >
+          <BalanceBlock asset="Vested Tokens" balance={userTotalVested} suffix={"Cook"} type={"block"} size="30px" />
+        </Col>
+
+
+
+        <Col xs={6} lg={2} style={{ margin: 'auto', padding: 5 }}>
           <Harvest
             user={user}
             pools={poolList}
@@ -136,7 +154,7 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
             userTotalInVesting={userTotalInVesting}
           />
         </Col>
-        <Col xs={6} lg={3} style={{ margin: 'auto', padding: 5 }}>
+        <Col xs={6} lg={2} style={{ margin: 'auto', padding: 5 }}>
           <Claim
             user={user}
             pools={poolList}
@@ -144,23 +162,6 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
             claimable={userTotalVested}
           />
         </Col>
-      </Row>
-
-      <Row style={{ textAlign: "left", marginTop: 30 }}>
-        <Col xs={12} lg={5} >
-          <BalanceBlock asset="Total Staked" balance={userTotalRewarded} suffix={"UNI-V2"} type={"block"} />
-
-        </Col>
-        <Col xs={12} md={4} lg={3} >
-          <BalanceBlock asset="To be Vested Tokens" balance={userTotalRewarded} suffix={"Cook"} type={"block"} />
-        </Col>
-        <Col xs={12} md={4} lg={2} >
-          <BalanceBlock asset="Vesting Tokens" balance={userTotalInVesting} suffix={"Cook"} type={"block"} />
-        </Col>
-        <Col xs={12} md={4} lg={2} >
-          <BalanceBlock asset="Vested Tokens" balance={userTotalVested} suffix={"Cook"} type={"block"} />
-        </Col>
-
       </Row>
     </Container>
   );

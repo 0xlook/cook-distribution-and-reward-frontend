@@ -7,10 +7,13 @@ import { storePreference, getPreference } from './utils/storage';
 import NavBar from './components/NavBar';
 import HomePage from './components/HomePage';
 import PoolList from "./components/PoolList";
+import CookPoolList from "./components/CookPoolList";
 import Distribution from "./components/Distribution";
 import Admin from "./components/Admin";
 import colors from './constants/colors';
-import { Container } from 'react-grid-system';
+import { Container, setConfiguration } from 'react-grid-system';
+setConfiguration({ containerWidths: [540, 740, 960, 1180, 1540], defaultScreenClass: 'xl', maxScreenClass: 'xl' });
+
 function App() {
   const storedTheme = getPreference('theme', 'light');
 
@@ -31,6 +34,7 @@ function App() {
           <Switch>
             <Route path="/distribution/"><Distribution user={user} /></Route>
             <Route path="/pools/"><PoolList user={user} /></Route>
+            <Route path="/cookpools/"><CookPoolList user={user} /></Route>
             <Route path="/admin/"><Admin user={user} /></Route>
             <Route path="/"><HomePage /></Route>
           </Switch>

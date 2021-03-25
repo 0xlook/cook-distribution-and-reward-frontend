@@ -3,13 +3,28 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "dollar",
+        "name": "cook",
         "type": "address"
       },
       {
         "internalType": "address",
         "name": "univ2",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "cook_reward_per_block",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalPoolCapLimit",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "stakeLimitPerAddress",
+        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -51,6 +66,25 @@
       }
     ],
     "name": "Harvest",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
     "type": "event"
   },
   {
@@ -103,24 +137,16 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "cookAmount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "lessWeth",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
         "name": "newUniv2",
         "type": "uint256"
       }
     ],
-    "name": "Zap",
+    "name": "ZapLP",
     "type": "event"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "fallback"
   },
   {
     "inputs": [
@@ -258,6 +284,57 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "blacklistAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "checkMiningPaused",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amountToStake",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "checkPerAddrStakeLimit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amountToStake",
+        "type": "uint256"
+      }
+    ],
+    "name": "checkPoolStakeCapLimit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "cookAmount",
         "type": "uint256"
@@ -270,7 +347,7 @@
   },
   {
     "inputs": [],
-    "name": "dollar",
+    "name": "cook",
     "outputs": [
       {
         "internalType": "contract IERC20",
@@ -279,6 +356,32 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "emergencyWithdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "ensureAddrNotBlacklisted",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -297,6 +400,19 @@
   {
     "inputs": [],
     "name": "getStakeLockupDuration",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getVestingDuration",
     "outputs": [
       {
         "internalType": "uint256",
@@ -334,6 +450,98 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pauseMinigReward",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "removeAddressFromBlacklist",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "rewardPerBlock",
+        "type": "uint256"
+      }
+    ],
+    "name": "resumeMiningReward",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "rewardPerBlock",
+        "type": "uint256"
+      }
+    ],
+    "name": "setRewardPerBlock",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "stakeLimitPerAddress",
+        "type": "uint256"
+      }
+    ],
+    "name": "setStakeLimitPerAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "totalPoolCapLimit",
+        "type": "uint256"
+      }
+    ],
+    "name": "setTotalPoolCapLimit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -344,6 +552,19 @@
     "name": "stake",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "stakeLimitPerAddress",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -412,6 +633,19 @@
   },
   {
     "inputs": [],
+    "name": "totalPoolCapLimit",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "totalRewarded",
     "outputs": [
       {
@@ -450,6 +684,19 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "univ2",
     "outputs": [
@@ -483,9 +730,22 @@
         "type": "uint256"
       }
     ],
-    "name": "zap",
+    "name": "zapLP",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "cookAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "zapLPWithEth",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {

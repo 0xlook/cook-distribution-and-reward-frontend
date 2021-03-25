@@ -4,10 +4,11 @@ export default {
   linear: 'linear-gradient(to right, #E611FF, #03ABF9)',
   linearOpacity: 'linear-gradient(to right, rgba(230, 17, 255, .3), rgba(3, 171, 249, .3))',
   primary: "rgb(10,10,42)",
-  secondary: "rgb(29,33,59)",
+  secondary: "#15163A",
+  card: "rgb(32,34,76)",
   button: "rgb(88,220,96)",
   secondaryButton: "rgb(253,235,63)",
-
+  title: "#464889",
   background: '#0A0A2A',
   border: '#2c3a58',
   overlay: '#28334c',
@@ -93,7 +94,7 @@ export default {
 
   floating: '#1c2539',
   floatingContent: '#FFFFFF',
-
+  grey: "grey",
   green: '#9BC75A',
   yellow: '#F7D858',
   red: '#F08658',
