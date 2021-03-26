@@ -179,12 +179,12 @@ function Distribution({ user }: { user: string }) {
     <div style={{ padding: '2%' }}>
       <div className="title">{t("Distribution")}</div>
       <LinearText text={"Manage Cook balance for presale parties"} />
-      <div style={{ marginTop: 30, display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
 
         <div style={{
           padding: '40px 30px',
           backgroundColor: colors.secondary,
-          width: "100%", margin: "10pt auto", textAlign: "center", borderRadius: 20
+          width: "100%", margin: "30pt auto", textAlign: "center", borderRadius: 20
         }}>
           <WithdrawPageHeader
             accountVestingBalance={userVestingBalance}
@@ -197,7 +197,7 @@ function Distribution({ user }: { user: string }) {
         </div>
 
       </div>
-      <Row style={{ marginTop: 10 }}>
+      <Row>
         <Col xs={12} md={4}>
           <Withdraw
             user={user}

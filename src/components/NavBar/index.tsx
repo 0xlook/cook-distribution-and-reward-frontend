@@ -38,7 +38,7 @@ function NavBar({
         <LinkBase onClick={() => {
           history.push('/')
         }}>
-          <img src={logo} style={{ height: '100%' }} />
+          <img src={logo} style={{ width: '86px', height: '28px' }} />
         </LinkBase>
       } onClose={() => { setOpened(false) }} opened={opened}>
         <LinkButtonMobile
@@ -88,7 +88,7 @@ function NavBar({
         <LinkBase onClick={() => {
           history.push('/')
         }}>
-          <img src={logo} style={{ height: '100%' }} />
+          <img src={logo} style={{ width: '86px', height: '28px' }} />
         </LinkBase>
       )}
         secondary={(
@@ -104,7 +104,7 @@ function NavBar({
               <LinkBase onClick={() => {
                 history.push('/')
               }} style={{ height: '50%' }}>
-                <img src={logo} style={{ height: '100%' }} />
+                <img src={logo} style={{ width: '86px', height: '28px' }} />
               </LinkBase>
 
             </>
@@ -147,7 +147,9 @@ function NavBar({
               }}
               isSelected={page.includes('/admin')}
             />
-            <LanguageSelector />
+            <div style={{ paddingLeft: 32 }}>
+              <LanguageSelector />
+            </div>
             <ConnectButton user={user} setUser={setUser} />
 
           </>
@@ -162,8 +164,8 @@ const StyledBar = styled(Bar)`
   background: none;
   border: none;
   margin-top: 5px;
-  margin-left: 14px;
-  margin-right: 14px;
+  margin-left: 0px;
+  margin-right: 0px;
 `
 
 const StyledSidePanel = styled(SidePanel)`
@@ -186,7 +188,7 @@ type linkButtonProps = {
 
 const StyledDiv = styled.div`
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 18px;
   letter-spacing: 0.03em;
 

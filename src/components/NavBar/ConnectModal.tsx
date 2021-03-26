@@ -34,11 +34,11 @@ function ConnectModal({
   }, [wallet, onConnect, onClose]);
 
   return (
-    <Modal style={{zIndex:1}} visible={visible} onClose={onClose}>
+    <StyledModal visible={visible} onClose={onClose}>
       <StyledHeader primary="Connect" />
 
-      <div style={{width: '100%', margin: 'auto', padding: '1%'}}>
-        <Button
+      <StyledDiv>
+        <StyledButton
           wide
           style={{height: '55px', justifyContent: 'space-between'}}
           children={
@@ -49,9 +49,9 @@ function ConnectModal({
           }
           onClick={connectMetamask}
         />
-      </div>
-      <div style={{width: '100%', margin: 'auto', padding: '1%'}}>
-        <Button
+      </StyledDiv>
+      <StyledDiv>
+        <StyledButton
           wide
           style={{height: '55px', justifyContent: 'space-between'}}
           children={
@@ -62,9 +62,9 @@ function ConnectModal({
           }
           onClick={connectWalletConnect}
         />
-      </div>
-      <div style={{width: '100%', margin: 'auto', padding: '1%'}}>
-        <Button
+      </StyledDiv>
+      <StyledDiv>
+        <StyledButton
           wide
           style={{height: '55px', justifyContent: 'space-between'}}
           children={
@@ -75,15 +75,32 @@ function ConnectModal({
           }
           onClick={connectCoinbase}
         />
-      </div>
-    </Modal>
+      </StyledDiv>
+    </StyledModal>
   );
 }
+
+const StyledModal = styled(Modal)`
+    z-index: 1;
+    div[role="alertdialog"] {
+        border-radius: 8px !important;
+    }
+`
 
 const StyledHeader = styled(Header)`
     h1 {
         margin-left: auto;
         margin-right: auto;
     }
+`
+
+const StyledDiv = styled.div`
+    width: 100%;
+    margin: auto;
+    padding: 1%;
+`
+
+const StyledButton = styled(Button)`
+    border-radius: 8px;
 `
 export default ConnectModal;

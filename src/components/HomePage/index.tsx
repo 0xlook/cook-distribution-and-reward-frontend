@@ -16,7 +16,7 @@ const StyledText = styled(Text)`
   background: -webkit-linear-gradient(0, #E71CFF -3.76%, #00AEFF 111.78%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 27px;
   letter-spacing: 0.03em;
@@ -31,7 +31,7 @@ const StyledDescText = styled(Text)`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 25px;
   letter-spacing: 0.03em;
 `
@@ -39,12 +39,12 @@ const StyledDescText = styled(Text)`
 const DescText = styled(Text)`
   color: #71A4DD;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 24px;
   letter-spacing: 0.03em;
 `
 const TitleText = styled(Text)`
-  font-size: 60px;
+  font-size: 56px;
   font-weight: 700;
   letter-spacing: 0.05em;
 
@@ -55,7 +55,7 @@ const TitleText = styled(Text)`
 `
 
 const StyledTitle = styled(Text)`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 27px;
   letter-spacing: 0.03em;
@@ -107,7 +107,7 @@ function HomePage() {
       </div>
 
       <Container style={{ padding: 0 }}>
-        <Row style={{ marginRight: 0 }}>
+        <Row style={{ marginRight: 15 }}>
           <MainButton
             title="Distribution"
             description="Manage Cook balance for presale parties"
@@ -199,7 +199,7 @@ function MainButton({
     <Col xs={12} md={4}>
       <LinkBase onClick={onClick}
         style={{
-          width: "100%", margin: 10
+          width: "100%", margin: 15
         }}>
         <StyledBox className="box">
           <div style={{ padding: 5, fontSize: 18 }}>

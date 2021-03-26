@@ -5,6 +5,7 @@ import colors from '../../constants/colors';
 import { useTranslation } from "react-i18next";
 const StyledLinearText = styled.span`
   font-size: 16px;
+  font-weight: 500;
   background: ${colors.linear};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

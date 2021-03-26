@@ -1,7 +1,7 @@
 export default {
   _name: 'dark',
   _appearance: 'dark',
-  linear: 'linear-gradient(to right, #E611FF, #03ABF9)',
+  linear: 'linear-gradient(90deg, #E611FF -6.85%, #03ABF9 109.03%)',
   linearOpacity: 'linear-gradient(to right, rgba(230, 17, 255, .3), rgba(3, 171, 249, .3))',
   primary: "rgb(10,10,42)",
   secondary: "#15163A",

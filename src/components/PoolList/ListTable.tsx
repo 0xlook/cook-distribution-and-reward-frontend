@@ -29,7 +29,7 @@ function ListTable({ pools, selectedPool, setSelectedPool, detailMode, action }:
     return (
       <div>
         <div style={{ fontSize: size, color: "white" }}>{value}</div>
-        <div style={{ fontSize: 10, color: colors.title }}>{title}</div>
+        <div style={{ fontSize: 12, color: colors.title }}>{title}</div>
       </div>
     )
   }
@@ -44,43 +44,49 @@ function ListTable({ pools, selectedPool, setSelectedPool, detailMode, action }:
       {pools && pools.map((pool, index) => {
         const isSelected = selectedPool === pool.address
         return (
-          <StyledRow
-            selected={isSelected}
-            key={pool.address}
-            onClick={() => {
-              setSelectedPool && setSelectedPool(pool.address)
-            }}
-          >
-            <Col style={{}}>
-              <Row align="center">
-                <Col xs={rowDisplay[0]} md={rowDisplay[1]}>
-                  <Row style={{ padding: 0 }} align="center">
-                    <Span label={"open"} size={10} color={colors.linear} />
-                    <span style={{ paddingLeft: 6, color: colors.title, fontSize: 12 }}>APY <LinearText text={"180%"} size={"16px"} /></span>
-                  </Row>
-                  <Row style={{ marginTop: 10 }}>
-                    <Col xs={12} md={4.5}>
-                      {renderCell('LP TOKEN', pool.name, 20)}
-                    </Col>
-                    <Col xs={4} md={2.5}>{renderCell('LOCK-UP PERIOD', `${pool.lockedUpPeriod}days`)}</Col>
-                    <Col xs={4} md={2.5}>{renderCell('POOL SIZE', '100k')}</Col>
-                    <Col xs={4} md={2.5}>{renderCell('YOUR STAKE', 0)}</Col>
-                  </Row>
-                </Col>
-                <Col xs={rowDisplay[2]} md={rowDisplay[3]} style={{ padding: 0 }}>
+          <div style={{ position: 'relative' }}>
+            <StyledRow
+              selected={isSelected}
+              style={{ margin: "11px 0" }}
+              key={pool.address}
+              onClick={() => {
+                setSelectedPool && setSelectedPool(pool.address)
+              }}
+            >
+              <Col style={{}}>
+                <Row align="center">
+                  <Col xs={rowDisplay[0]} md={rowDisplay[1]}>
+                    <Row style={{ padding: 0 }} align="center">
+                      <Span label={"open"} size={10} color={colors.linear} />
+                      <span style={{ paddingLeft: 30, color: colors.title, fontSize: 12 }}>APY <LinearText text={"180%"} size={"16px"} /></span>
+                    </Row>
+                    <Row style={{ marginTop: 10, textAlign: 'left' }} >
+                      <Col xs={12} md={4.5}>
+                        <div>
+                          <div style={{ fontSize: 20, fontWeight: 500, color: 'white' }}>{pool.name}</div>
+                          <div style={{ fontSize: 12, color: colors.title }}>LP TOKEN</div>
+                        </div>
+                      </Col>
+                      <Col xs={4} md={2.5}>{renderCell('LOCK-UP PERIOD', `${pool.lockedUpPeriod}days`)}</Col>
+                      <Col xs={4} md={2.5}>{renderCell('POOL SIZE', '100k')}</Col>
+                      <Col xs={4} md={2.5}>{renderCell('YOUR STAKE', 0)}</Col>
+                    </Row>
+                  </Col>
+                  <Col xs={rowDisplay[2]} md={rowDisplay[3]} style={{ padding: 0 }}>
 
-                  {isSelected ? (action && below(breakpoint) ?
-                    <div style={{ height: 35, position: 'relative' }}
-                      onClick={() => setOpenPopover(true)}>
-                      <img style={{ position: 'absolute', top: '50%' }}
-                        src={require('../../assets/more.svg')} />
-                    </div> : action) : <div />}
+                    {isSelected ? (action && below(breakpoint) ?
+                      <div style={{ height: 35, position: 'relative' }}
+                        onClick={() => setOpenPopover(true)}>
+                        <img style={{ position: 'absolute', top: '50%' }}
+                          src={require('../../assets/more.svg')} />
+                      </div> : action) : <div />}
 
-                </Col>
-              </Row>
-            </Col>
+                  </Col>
+                </Row>
+              </Col>
 
-          </StyledRow>
+            </StyledRow>
+          </div>
         )
       })}</>
   )
@@ -89,17 +95,35 @@ function ListTable({ pools, selectedPool, setSelectedPool, detailMode, action }:
 }
 
 const StyledRow = styled(Row)`
-  background-color: ${colors.card};
+  z-index:0;
+  padding:23px 30px;
+  border-radius: 10px;
+  width:100%;
+  background: ${colors.card};
   ${props => `
     cursor: ${props.selected ? 'auto' : 'pointer'};
-    border: ${props.selected ? `2px solid ` : "0px"};
   `}
-  border-image-source: ${colors.linear};
-  border-image-slice: 1;
-  border-radius: 12px;
-  text-align: left;
-  margin: 15px 0;
-  padding: 10px;
+  :before {
+    content:"";
+    position:absolute;
+    ${props => `
+    z-index:${props.selected ? '1' : '-1'};
+  `}
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    padding: 1.5px;
+    border-radius: 10px;
+    background: ${colors.linear};
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+  }
+
+
 
 `;
 

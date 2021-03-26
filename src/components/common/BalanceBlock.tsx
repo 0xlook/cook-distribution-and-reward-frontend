@@ -81,10 +81,10 @@ function BalanceBlock({ asset, balance, suffix = "", type = "", size }: BlanceBl
   }
   return (
     <>
-      <div style={{ fontSize: 14, fontWeight: 500, color: colors.title }}>{asset}</div>
-      <div style={{ fontWeight: 700 }}>
+      <div style={{ fontSize: 14, fontWeight: 400, color: colors.title }}>{asset}</div>
+      <div style={{ fontWeight: 600 }}>
         <LinearText text={`${integer}.${digits}`} size={fontSize} />
-        {suffix === "" ? '' : <span style={{ fontSize: 14 }}> {suffix}</span>}
+        {suffix === "" ? '' : <span style={{ fontSize: 12, fontWeight: 400 }}> {suffix}</span>}
       </div>
     </>
   );

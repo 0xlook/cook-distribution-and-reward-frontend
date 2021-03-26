@@ -28,15 +28,33 @@ const FilledButton = styled(ButtonBase)`
 
 `;
 const StyledButton = styled(ButtonBase)`
-  margin: 5px;
-  border: 2px solid;
-  border-image-slice: 1;
+  z-index:0;
+  background: transparent;
+  :before {
+    content:"";
+    position:absolute;
+    z-index:-1;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    padding: 1.5px;
+    border-radius: 5px;
+    ${props => `
+    background: ${props.color};
+    `}
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+  }
   ${props => `
-    border-image-source: ${props.color};
     width: ${props.width};
     padding: ${props.padding};
     &:hover {
         background: ${props.color};
+        border-radius: 6px;
     }
   `}
 `;

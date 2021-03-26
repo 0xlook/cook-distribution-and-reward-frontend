@@ -20,6 +20,7 @@ function LanguageSelector() {
 
   return (
     <DropDown
+      style={{ border: "0px", background: "transparent" }}
       items={_.map(languages, 'label')}
       selected={lng}
       onChange={setLanguage}

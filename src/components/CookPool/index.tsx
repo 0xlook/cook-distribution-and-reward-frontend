@@ -129,16 +129,16 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
     <Container>
       <Row style={{ textAlign: "left", marginTop: 30 }}>
         <Col xs={12} lg={12} >
-          <BalanceBlock asset="Total Staked" balance={userTotalStaked} suffix={"Cook"} type={"block"} size={below('medium') ? "30px" : "45px"} />
+          <BalanceBlock asset="Total Staked" balance={userTotalStaked} suffix={"Cook"} type={"block"} size={below('medium') ? "22px" : "32px"} />
         </Col>
         <Col xs={12} md={4} lg={3} >
-          <BalanceBlock asset="To be Vested Tokens" balance={userTotalRewarded} suffix={"Cook"} type={"block"} size="30px" />
+          <BalanceBlock asset="To be Vested Tokens" balance={userTotalRewarded} suffix={"Cook"} type={"block"} size="22px" />
         </Col>
         <Col xs={12} md={4} lg={3} >
-          <BalanceBlock asset="Vesting Tokens" balance={userTotalInVesting} suffix={"Cook"} type={"block"} size="30px" />
+          <BalanceBlock asset="Vesting Tokens" balance={userTotalInVesting} suffix={"Cook"} type={"block"} size="22px" />
         </Col>
         <Col xs={12} md={4} lg={2} >
-          <BalanceBlock asset="Vested Tokens" balance={userTotalVested} suffix={"Cook"} type={"block"} size="30px" />
+          <BalanceBlock asset="Vested Tokens" balance={userTotalVested} suffix={"Cook"} type={"block"} size="22px" />
         </Col>
 
         <Col xs={6} lg={2} style={{ margin: 'auto', padding: 5 }}>

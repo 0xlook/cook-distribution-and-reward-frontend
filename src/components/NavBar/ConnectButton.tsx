@@ -44,49 +44,49 @@ function ConnectButton({ user, setUser, css, mobile }: connectButtonProps) {
   };
 
   const showDropDown = async () => {
-    setVisible(!visible)    
+    setVisible(!visible)
   };
 
   const isConnected = status === 'connected'
-  
+
   return isConnected ? (
     mobile ? (
       <>
-          <StyledMobileDiv>
-            <IdentityBadge compact entity={user}  />
-          </StyledMobileDiv>   
-          <StyledSignOutMobileButton onClick={disconnectWeb3}>Sign Out</StyledSignOutMobileButton>
+        <StyledMobileDiv>
+          <IdentityBadge compact entity={user} />
+        </StyledMobileDiv>
+        <StyledSignOutMobileButton onClick={disconnectWeb3}>Sign Out</StyledSignOutMobileButton>
       </>
     ) : (
-      <div>
-        <StyledDiv style={{marginLeft: '32px'}}>
-          <IdentityBadge style={{marginTop: '8px'}} compact entity={user}  />
-          <LinkBase onClick={showDropDown} size="small">
-            <IconDown />
-          </LinkBase>
-        </StyledDiv>
-        
-        <SignOutButtonWrapper visible={visible} setVisible={setVisible}>
-          <StyledSignOutButton style={{marginTop: '3px', display: 'inherit'}} onClick={disconnectWeb3} size="small">
-            Sign Out
+        <div>
+          <StyledDiv style={{ marginLeft: '32px' }}>
+            <IdentityBadge style={{ marginTop: '8px' }} compact entity={user} />
+            <LinkBase onClick={showDropDown} size="small">
+              <IconDown />
+            </LinkBase>
+          </StyledDiv>
+
+          <SignOutButtonWrapper visible={visible} setVisible={setVisible}>
+            <StyledSignOutButton style={{ marginTop: '3px', display: 'inherit' }} onClick={disconnectWeb3} size="small">
+              Sign Out
           </StyledSignOutButton>
-        </SignOutButtonWrapper>
-      </div>
-    )
+          </SignOutButtonWrapper>
+        </div>
+      )
   ) : (
-    mobile ? (      
-      <>
-        <ConnectModal visible={isModalOpen} onClose={toggleModal} onConnect={connectWeb3}/>
-        <StyledButton style={{width: '100%', height: '55px', marginTop: '28px'}} label="Connect Wallet" onClick={toggleModal} />
-      </>
-    ) : (
-      <>
-        <ConnectModal visible={isModalOpen} onClose={toggleModal} onConnect={connectWeb3}/>
-        <StyledButton style={{marginLeft: '32px'}} label="Connect Wallet" onClick={toggleModal} />
-      </>
-    )
-    
-  );
+      mobile ? (
+        <>
+          <ConnectModal visible={isModalOpen} onClose={toggleModal} onConnect={connectWeb3} />
+          <StyledButton style={{ width: '100%', height: '55px', marginTop: '28px' }} label="Connect Wallet" onClick={toggleModal} />
+        </>
+      ) : (
+          <>
+            <ConnectModal visible={isModalOpen} onClose={toggleModal} onConnect={connectWeb3} />
+            <StyledButton style={{ marginLeft: '32px' }} label="Connect Wallet" onClick={toggleModal} />
+          </>
+        )
+
+    );
 }
 
 const StyledSignOutMobileButton = styled(Button)`
