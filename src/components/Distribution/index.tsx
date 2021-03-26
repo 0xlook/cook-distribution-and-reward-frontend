@@ -176,7 +176,7 @@ function Distribution({ user }: { user: string }) {
   }, [user]);
 
   return (
-    <div style={{ padding: '2%' }}>
+    <div style={{ marginTop: '120px', padding: '1%' }}>
       <div className="title">{t("Distribution")}</div>
       <LinearText text={"Manage Cook balance for presale parties"} />
       <div style={{ display: 'flex', alignItems: 'center' }}>

@@ -44,11 +44,11 @@ function ListTable({ pools, selectedPool, setSelectedPool, detailMode, action }:
       {pools && pools.map((pool, index) => {
         const isSelected = selectedPool === pool.address
         return (
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative' }} key={pool.address}>
             <StyledRow
               selected={isSelected}
               style={{ margin: "11px 0" }}
-              key={pool.address}
+
               onClick={() => {
                 setSelectedPool && setSelectedPool(pool.address)
               }}
@@ -75,9 +75,14 @@ function ListTable({ pools, selectedPool, setSelectedPool, detailMode, action }:
                   <Col xs={rowDisplay[2]} md={rowDisplay[3]} style={{ padding: 0 }}>
 
                     {isSelected ? (action && below(breakpoint) ?
-                      <div style={{ height: 35, position: 'relative' }}
-                        onClick={() => setOpenPopover(true)}>
+                      <div style={{ height: 35, cursor: 'pointer' }}
+                        onClick={() => {
+                          console.log("GGG")
+                          setOpenPopover(true)
+                        }}
+                      >
                         <img style={{ position: 'absolute', top: '50%' }}
+
                           src={require('../../assets/more.svg')} />
                       </div> : action) : <div />}
 
@@ -107,7 +112,7 @@ const StyledRow = styled(Row)`
     content:"";
     position:absolute;
     ${props => `
-    z-index:${props.selected ? '1' : '-1'};
+    z-index:${props.selected ? '0' : '-1'};
   `}
     top:0;
     left:0;

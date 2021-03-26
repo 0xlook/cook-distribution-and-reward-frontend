@@ -4,9 +4,9 @@ import {
   Box, LinkBase, Tag, Text
 } from '@aragon/ui';
 import { Container, Row, Col } from 'react-grid-system';
-import distributionPNG from '../../assets/distribution.png'
-import lpMiningPNG from '../../assets/lp_mining.png'
-import cookMiningPNG from '../../assets/cook_mining.png'
+import distributionPNG from '../../assets/distribution.svg'
+import lpMiningPNG from '../../assets/lp_mining.svg'
+import cookMiningPNG from '../../assets/cook_mining.svg'
 import distributionHover from '../../assets/distribution_hover.svg'
 import lpMiningHover from '../../assets/lp_mining_hover.svg'
 import cookMiningHover from '../../assets/cook_mining_hover.svg'
@@ -192,6 +192,10 @@ function MainButton({
     :hover .icon {      
       background-image: url(${hover});
       background-repeat: no-repeat;
+    }
+
+    div[class^="Box___StyledDiv2"] {
+      padding: 22px;
     }
   }`
 

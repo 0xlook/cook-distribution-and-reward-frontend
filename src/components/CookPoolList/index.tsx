@@ -183,7 +183,7 @@ function CookPoolList({ user }: { user: string }) {
 
   const selectedPoolList = [_.find(poolList, { 'address': selectedPool })]
   return (
-    <div style={{ padding: '2%' }}>
+    <div style={{ marginTop: '120px', padding: '1%' }}>
       <div className="title">Cook mining</div>
       <LinearText text={"Stake cook token, get cook token"} />
 

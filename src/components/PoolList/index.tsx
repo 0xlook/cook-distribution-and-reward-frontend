@@ -205,7 +205,7 @@ function PoolList({ user }: { user: string }) {
 
   const selectedPoolList = [_.find(poolList, { 'address': selectedPool })]
   return (
-    <div style={{ padding: '2%' }}>
+    <div style={{ marginTop: '120px', padding: '1%' }}>
       <div className="title">LP mining</div>
       <LinearText text={"Stake Uni token, get cook token"} />
 

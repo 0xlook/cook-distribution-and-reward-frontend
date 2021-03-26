@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="160px" height="160px" viewBox="0 0 160 160" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>distribution</title>
+    <defs>
+        <linearGradient x1="-17.1716405%" y1="50.001606%" x2="170.95582%" y2="50.001606%" id="linearGradient-1">
+            <stop stop-color="#EE57FF" offset="0%"></stop>
+            <stop stop-color="#009CE4" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="-40.4768076%" y1="50.001606%" x2="210.941318%" y2="50.001606%" id="linearGradient-2">
+            <stop stop-color="#EE57FF" offset="0%"></stop>
+            <stop stop-color="#009CE4" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="-44.3303571%" y1="50.001606%" x2="211.454032%" y2="50.001606%" id="linearGradient-3">
+            <stop stop-color="#EE57FF" offset="0%"></stop>
+            <stop stop-color="#009CE4" offset="100%"></stop>
+        </linearGradient>
+        <ellipse id="path-4" cx="34.9254766" cy="35.5632582" rx="27.2963605" ry="27.660312"></ellipse>
+        <filter x="-22.0%" y="-21.7%" width="144.0%" height="143.4%" filterUnits="objectBoundingBox" id="filter-5">
+            <feMorphology radius="3" operator="erode" in="SourceAlpha" result="shadowSpreadInner1"></feMorphology>
+            <feGaussianBlur stdDeviation="10" in="shadowSpreadInner1" result="shadowBlurInner1"></feGaussianBlur>
+            <feOffset dx="1" dy="1" in="shadowBlurInner1" result="shadowOffsetInner1"></feOffset>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0.377620786   0 0 0 0 0.0842889889   0 0 0 0 0.672495082  0 0 0 0.5 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+        </filter>
+        <linearGradient x1="83.4491013%" y1="16.1941873%" x2="112.234153%" y2="97.5340299%" id="linearGradient-6">
+            <stop stop-color="#EE57FF" offset="0%"></stop>
+            <stop stop-color="#009CE4" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="-17.1716405%" y1="50.001606%" x2="170.95582%" y2="50.001606%" id="linearGradient-7">
+            <stop stop-color="#EE57FF" offset="0%"></stop>
+            <stop stop-color="#009CE4" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-8" x="0" y="0" width="133" height="89" rx="5"></rect>
+        <linearGradient x1="-183.914656%" y1="50%" x2="218.30652%" y2="50%" id="linearGradient-10">
+            <stop stop-color="#F64F59" offset="0%"></stop>
+            <stop stop-color="#C471ED" offset="53.0799604%"></stop>
+            <stop stop-color="#12C2E9" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="distribution" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-4" transform="translate(10.000000, 11.000000)">
+            <g id="Group-3" transform="translate(36.000000, 0.000000)">
+                <ellipse id="Oval" fill="url(#linearGradient-1)" opacity="0.620490665" transform="translate(38.462618, 37.962120) rotate(78.000000) translate(-38.462618, -37.962120) " cx="38.462618" cy="37.9621196" rx="31.9888447" ry="31.604112"></ellipse>
+                <ellipse id="Oval" fill="url(#linearGradient-2)" cx="34.9254766" cy="35.4315425" rx="31.5857886" ry="32.0069324"></ellipse>
+                <g id="Oval">
+                    <use fill="url(#linearGradient-3)" fill-rule="evenodd" xlink:href="#path-4"></use>
+                    <use fill="black" fill-opacity="1" filter="url(#filter-5)" xlink:href="#path-4"></use>
+                </g>
+                <g id="Group-2" transform="translate(22.447140, 20.811092)" fill="#FFFFFF">
+                    <polygon id="Path" points="6.45185886 14.2231336 4.66346127 9.67264599 17.8911713 13.5184308 3.60915965 6.98587834 0.864339903 1.87179369e-15 1.6851291 0.323824348 24.1848207 9.76373482 10.2300061 23.8412675 7.19294621 16.1107203 14.5394989 17.8713475"></polygon>
+                    <polygon id="Path" points="-5.54149447e-15 26.9478025 25.0699218 25.8198995 18.8411291 29.3445962"></polygon>
+                </g>
+            </g>
+            <rect id="Rectangle" fill="url(#linearGradient-6)" opacity="0.5" x="7" y="42" width="133" height="89" rx="5"></rect>
+            <g id="Rectangle" transform="translate(0.000000, 42.000000)">
+                <g id="Mask">
+                    <mask id="mask-9" fill="white">
+                        <use xlink:href="#path-8"></use>
+                    </mask>
+                    <use fill="url(#linearGradient-7)" xlink:href="#path-8"></use>
+                    <rect id="Rectangle" fill="#FFFFFF" mask="url(#mask-9)" x="-2.04061372" y="9.7282127" width="135.040614" height="9.59675037"></rect>
+                </g>
+            </g>
+            <path d="M116.1226,77 L133,77 L133,77 L133,97.2451994 L116.1226,97.2451994 C110.532042,97.2451994 106,92.7131572 106,87.1225997 C106,81.5320423 110.532042,77 116.1226,77 Z" id="Rectangle" fill="#E7E7E7"></path>
+            <path d="M114.977105,73 L133,73 L133,73 L133,94.9542097 L114.977105,94.9542097 C108.914617,94.9542097 104,90.0395925 104,83.9771049 C104,77.9146173 108.914617,73 114.977105,73 Z" id="Rectangle" fill="#FFFFFF"></path>
+            <g id="Group" transform="translate(112.000000, 81.000000)" fill="url(#linearGradient-10)">
+                <rect id="Rectangle" opacity="0.789872669" x="0.571428571" y="0.979591837" width="10.4285714" height="5.02040816" rx="2.51020408"></rect>
+                <rect id="Rectangle-Copy" x="0" y="0" width="10.4285714" height="5.02040816" rx="2.51020408"></rect>
+            </g>
+        </g>
+    </g>
+</svg>
