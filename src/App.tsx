@@ -12,6 +12,8 @@ import Distribution from "./components/Distribution";
 import Admin from "./components/Admin";
 import colors from './constants/colors';
 import { Container, setConfiguration } from 'react-grid-system';
+import { UseWalletProvider } from 'use-wallet';
+
 setConfiguration({ containerWidths: [540, 740, 960, 1180, 1540], defaultScreenClass: 'xl', maxScreenClass: 'xl' });
 
 function App() {
@@ -27,19 +29,31 @@ function App() {
   };
   return (
     <Router>
-      <Main style={{ background: 'radial-gradient(50% 50% at 50% 50%, #211257 0%, #0A0627 100%)' }} assetsUrl={`${process.env.PUBLIC_URL}/aragon-ui/`} theme={colors} layout={false}>
-        <Container>
-          <NavBar user={user} setUser={setUser} theme={theme} updateTheme={updateTheme} />
+      <UseWalletProvider 
+        chainId={1}
+        connectors={{
+          walletconnect: { rpcUrl: 'https://mainnet.eth.aragon.network/' },
+          walletlink: {
+            url: 'https://mainnet.eth.aragon.network/',
+            appName:'Coinbase Wallet',
+            appLogoUrl: ''
+          }
+        }}
+      >
+        <Main style={{ background: 'radial-gradient(50% 50% at 50% 50%, #211257 0%, #0A0627 100%)' }} assetsUrl={`${process.env.PUBLIC_URL}/aragon-ui/`} theme={colors} layout={false}>
+          <Container>
+            <NavBar user={user} setUser={setUser} theme={theme} updateTheme={updateTheme} />
 
-          <Switch>
-            <Route path="/distribution/"><Distribution user={user} /></Route>
-            <Route path="/pools/"><PoolList user={user} /></Route>
-            <Route path="/cookpools/"><CookPoolList user={user} /></Route>
-            <Route path="/admin/"><Admin user={user} /></Route>
-            <Route path="/"><HomePage /></Route>
-          </Switch>
-        </Container>
-      </Main>
+            <Switch>
+              <Route path="/distribution/"><Distribution user={user} /></Route>
+              <Route path="/pools/"><PoolList user={user} /></Route>
+              <Route path="/cookpools/"><CookPoolList user={user} /></Route>
+              <Route path="/admin/"><Admin user={user} /></Route>
+              <Route path="/"><HomePage /></Route>
+            </Switch>
+          </Container>
+        </Main>
+      </UseWalletProvider>
     </Router>
   );
 }

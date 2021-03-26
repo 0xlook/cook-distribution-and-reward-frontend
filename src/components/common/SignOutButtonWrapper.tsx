@@ -8,20 +8,20 @@ function useOutsideAlerter(ref, setVisible) {
                 setVisible(false)
             }
         }
-        
+
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [ref,setVisible]);
+    }, [ref, setVisible]);
 }
 
 export default function SignOutButtonWrapper(props) {
     const wrapperRef = useRef(null);
-    const {visible, setVisible} = props
+    const { visible, setVisible } = props
 
     useOutsideAlerter(wrapperRef, setVisible);
-    return <StyledDiv style={{display: visible ? 'inherit':'none'}} ref={wrapperRef}>{props.children}</StyledDiv>;
+    return <StyledDiv style={{ display: visible ? 'inherit' : 'none' }} ref={wrapperRef}>{props.children}</StyledDiv>;
 }
 
 const StyledDiv = styled.div`

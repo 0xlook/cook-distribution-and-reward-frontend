@@ -10,7 +10,7 @@ import ActionButton from "../common/ActionButton";
 import colors from '../../constants/colors';
 import { Container, Row, Col } from 'react-grid-system';
 import ListTable from "../PoolList/ListTable";
-
+import InfoIcon from "../common/InfoIcon";
 type HarvestProps = {
   user: string,
   poolAddress: string,
@@ -28,6 +28,7 @@ function Harvest({
     <div>
       <ActionButton
         label={"Harvest"}
+        icon={<InfoIcon text="zap description" />}
         type="filled"
         onClick={() => {
           setOpened(true)

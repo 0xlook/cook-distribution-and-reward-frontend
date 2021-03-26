@@ -2,7 +2,7 @@ import React from 'react';
 
 import styled from 'styled-components';
 import colors from '../../constants/colors';
-
+import { useTranslation } from "react-i18next";
 const StyledLinearText = styled.span`
   font-size: 16px;
   background: ${colors.linear};
@@ -14,9 +14,10 @@ const StyledLinearText = styled.span`
 `;
 
 function LinearText({ text, size }: { size?: string, text: string }) {
+  const { t } = useTranslation()
   return (
     <StyledLinearText size={size} >
-      {text}
+      {t(text)}
     </StyledLinearText>
   );
 }

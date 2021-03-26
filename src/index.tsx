@@ -7,6 +7,7 @@ import * as serviceWorker from './serviceWorker';
 
 import Moment from 'moment'
 import momentLocalizer from 'react-widgets-moment';
+import './i18n';
 
 Moment.locale('en')
 momentLocalizer()

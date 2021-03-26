@@ -4,6 +4,7 @@ import {
 } from '@aragon/ui';
 import styled from 'styled-components';
 import colors from '../../constants/colors';
+import { useTranslation } from "react-i18next";
 const CancelButton = styled(ButtonBase)`
   margin: 5px;
   ${props => `
@@ -40,9 +41,10 @@ const StyledButton = styled(ButtonBase)`
   `}
 `;
 
-function ActionButton({ onClick, color, label, disabled, size, width, type }:
-  { label: string, color?: string, onClick: Function, disabled: boolean, size?: number, width?: string, type?: string }) {
+function ActionButton({ onClick, color, label, disabled, size, width, type, icon }:
+  { label: string, color?: string, onClick: Function, disabled: boolean, size?: number, width?: string, type?: string, icon?: any }) {
   const { below } = useViewport()
+  const { t } = useTranslation()
   if (type == 'cancel') {
     return (
       <CancelButton
@@ -52,7 +54,8 @@ function ActionButton({ onClick, color, label, disabled, size, width, type }:
         padding={below("medium") ? "8px" : "14px"}
         disabled={disabled}
       >
-        <span style={{ fontSize: size || '1rem', fontWeight: 500 }}> {label} </span>
+        <span style={{ fontSize: size || '1rem', fontWeight: 500 }}> {t(label)} </span>
+        {icon}
       </CancelButton>
     );
   }
@@ -65,7 +68,8 @@ function ActionButton({ onClick, color, label, disabled, size, width, type }:
         padding={below("medium") ? "8px" : "14px"}
         disabled={disabled}
       >
-        <span style={{ fontSize: size || '1rem', color: "white", fontWeight: 500 }}> {label} </span>
+        <span style={{ fontSize: size || '1rem', color: "white", fontWeight: 500 }}> {t(label)} </span>
+        <span>{icon}</span>
       </FilledButton>
     );
   }
@@ -77,7 +81,8 @@ function ActionButton({ onClick, color, label, disabled, size, width, type }:
       padding={below("medium") ? "8px" : "10px"}
       disabled={disabled}
     >
-      <span style={{ fontSize: size || '1rem', color: "white", fontWeight: 500 }}> {label} </span>
+      <span style={{ fontSize: size || '1rem', color: "white", fontWeight: 500 }}> {t(label)} </span>
+      {icon}
     </StyledButton>
   );
 }

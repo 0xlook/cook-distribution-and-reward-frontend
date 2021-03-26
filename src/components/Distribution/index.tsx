@@ -25,6 +25,7 @@ import DistributionZap from "./DistributionZap";
 import ZapCook from "./ZapCook";
 import { Row, Col } from 'react-grid-system';
 import colors from '../../constants/colors';
+import { useTranslation } from "react-i18next";
 import {
   useViewport
 } from '@aragon/ui';
@@ -50,7 +51,7 @@ function Distribution({ user }: { user: string }) {
   const [today, setToday] = useState(new BigNumber(0));
   const [managedPools, setManagedPools] = useState([] as any);
   const [cookPools, setCookPools] = useState([] as any);
-
+  const { t } = useTranslation();
   //Update User balances
   useEffect(() => {
     if (user === '') {
@@ -176,7 +177,7 @@ function Distribution({ user }: { user: string }) {
 
   return (
     <div style={{ padding: '2%' }}>
-      <div className="title">Distribution</div>
+      <div className="title">{t("Distribution")}</div>
       <LinearText text={"Manage Cook balance for presale parties"} />
       <div style={{ marginTop: 30, display: 'flex', alignItems: 'center' }}>
 

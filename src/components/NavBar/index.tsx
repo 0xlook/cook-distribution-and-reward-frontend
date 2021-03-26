@@ -6,7 +6,7 @@ import ConnectButton from './ConnectButton';
 import styled from 'styled-components';
 import logo from '../../assets/logo.png'
 import colors from '../../constants/colors';
-
+import LanguageSelector from '../../components/common/LanguageSelector'
 type NavbarProps = {
   theme: string,
   updateTheme: Function,
@@ -81,6 +81,7 @@ function NavBar({
           }}
           isSelected={page.includes('/admin')}
         />
+        <LanguageSelector />
         <ConnectButton mobile={true} user={user} setUser={setUser} />
       </StyledSidePanel>
       {below('medium') && (<StyledBar primary={(
@@ -146,6 +147,7 @@ function NavBar({
               }}
               isSelected={page.includes('/admin')}
             />
+            <LanguageSelector />
             <ConnectButton user={user} setUser={setUser} />
 
           </>

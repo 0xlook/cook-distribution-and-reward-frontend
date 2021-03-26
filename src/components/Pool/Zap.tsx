@@ -15,6 +15,7 @@ import ActionButton from "../common/ActionButton";
 import HelpText from "../common/HelpText";
 import { Row, Col } from 'react-grid-system';
 import ListTable from "../PoolList/ListTable";
+import InfoIcon from "../common/InfoIcon";
 
 type ZapProps = {
   user: string,
@@ -63,6 +64,7 @@ function Zap({
     return (
       <div>
         <ActionButton label={"Zap"}
+          icon={<InfoIcon text="zap description" />}
           size={14}
           onClick={() => {
             setOpened(true)

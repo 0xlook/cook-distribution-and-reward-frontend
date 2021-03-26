@@ -16,6 +16,7 @@ import ActionButton from "../common/ActionButton";
 import HelpText from "../common/HelpText";
 import { Row, Col } from 'react-grid-system';
 import ListTable from "../PoolList/ListTable";
+import InfoIcon from "../common/InfoIcon";
 
 type ZapProps = {
   user: string,
@@ -71,9 +72,11 @@ function DistributionZap({
   const renderPoolZap = () => {
     return (
       <div>
-        <ActionButton label={"Zap LP"} color={colors.linear} onClick={() => {
-          setOpened(true)
-        }} disabled={!user} />
+        <ActionButton label={"Zap LP"}
+          icon={<InfoIcon text="zap description" />}
+          color={colors.linear} onClick={() => {
+            setOpened(true)
+          }} disabled={!user} />
         <Modal visible={opened} onClose={() => close()}>
           <div style={{ paddingTop: '5%', padding: 20 }}>
             <h1 style={{ textAlign: "center", fontSize: 45, fontWeight: 700 }}>Zap LP</h1>

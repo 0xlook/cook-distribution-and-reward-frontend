@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Modal } from '@aragon/ui';
+import {
+  Modal
+} from '@aragon/ui';
 import BigNumber from 'bignumber.js';
 import { BalanceBlock } from '../common/index';
 import { harvest } from '../../utils/web3';
@@ -7,6 +9,7 @@ import { isPos, toBaseUnitBN } from '../../utils/number';
 import { COOK } from "../../constants/tokens";
 import BigNumberInput from "../common/BigNumberInput";
 import ActionButton from "../common/ActionButton";
+import InfoIcon from "../common/InfoIcon";
 import colors from '../../constants/colors';
 import { Container, Row, Col } from 'react-grid-system';
 import ListTable from "../PoolList/ListTable";
@@ -26,14 +29,19 @@ function Harvest({
   const [opened, setOpened] = useState(false)
   return (
     <div>
-      <ActionButton
-        label={"Harvest"}
-        type="filled"
-        onClick={() => {
-          setOpened(true)
-        }}
-        disabled={poolAddress === '' || user === ''}
-      />
+      <span>
+        <ActionButton
+          label={"Harvest"}
+          icon={<InfoIcon text="Harvest Description" />}
+          type="filled"
+          onClick={() => {
+            setOpened(true)
+          }}
+          disabled={poolAddress === '' || user === ''}
+        />
+
+      </span>
+
       <Modal visible={opened} onClose={() => setOpened(false)} >
         <div style={{ padding: 20 }}>
           <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>Harvest</h1>
