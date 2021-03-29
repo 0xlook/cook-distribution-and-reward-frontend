@@ -3,6 +3,7 @@ import styled, { CSSProp } from 'styled-components';
 import {
   Button, IdentityBadge, IconDown, LinkBase,
 } from '@aragon/ui';
+import Web3 from 'web3';
 
 // import { connect } from '../../utils/web3';
 import SignOutButtonWrapper from '../common/SignOutButtonWrapper';
@@ -42,6 +43,8 @@ function ConnectButton({ user, setUser, css, mobile }: connectButtonProps) {
     // wallet.connect()
     setUser(wallet.account);
     storePreference('account', wallet.account);
+    // @ts-expect-error
+    window.web3 = new Web3(wallet.ethereum);
     // setIsConnected(true);
   };
 
