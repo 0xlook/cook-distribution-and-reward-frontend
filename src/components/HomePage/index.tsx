@@ -10,7 +10,11 @@ import cookMiningPNG from '../../assets/cook_mining.svg'
 import distributionHover from '../../assets/distribution_hover.svg'
 import lpMiningHover from '../../assets/lp_mining_hover.svg'
 import cookMiningHover from '../../assets/cook_mining_hover.svg'
+import twitter from '../../assets/twitter.svg'
+import github from '../../assets/github.svg'
+import telegram from '../../assets/telegram.svg'
 import styled from 'styled-components'
+import { useTranslation } from "react-i18next"
 
 const StyledText = styled(Text)`
   background: -webkit-linear-gradient(0, #E71CFF -3.76%, #00AEFF 111.78%);
@@ -62,13 +66,13 @@ const StyledTitle = styled(Text)`
 }`
 
 const StyledDiv = styled.div`
-  margin-top: 10vh;
+  margin-top: 5vh;
   margin-left: 2%;
   text-align: center;
 
   .desc {
     margin-top: 14px;
-    margin-bottom: 80px;
+    margin-bottom: 40px;
     max-width: 521px;
     margin-left: auto;
     margin-right: auto;
@@ -87,8 +91,18 @@ const StyledDiv = styled.div`
   }
 }`
 
+const StyledLink = styled.a`
+  color: #12AAB5;
+  padding: 16px;
+  text-decoration: none;
+  &:hover {
+    color: #805e49;
+  }
+`
+
 function HomePage() {
   const history = useHistory();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -101,7 +115,18 @@ function HomePage() {
             <TitleText>COOK PROTOCOL</TitleText>
           </div>
           <div className="desc">
-            <DescText>Cook Protocol is a completely decentralized Ethereum-based asset management platform built for investors and professional asset managers to unlock an entirely new universe of DeFi innovations.</DescText>
+            <DescText>{t("Cook Protocol is a completely decentralized cross-chain asset management platform built for investors and professional asset managers to unlock an entirely new universe of DeFi innovations")}.</DescText>
+          </div>
+          <div style={{ marginBottom: '40px' }}>
+            <StyledLink target="_blank" href="https://twitter.com/cook_finance">
+              <img src={twitter} />
+            </StyledLink>
+            <StyledLink target="_blank" href="https://github.com/CookFinance">
+              <img src={github} />
+            </StyledLink>
+            <StyledLink target="_blank" href="https://t.me/cook_english">
+              <img src={telegram} />
+            </StyledLink>
           </div>
         </StyledDiv>
       </div>
@@ -109,8 +134,8 @@ function HomePage() {
       <Container style={{ padding: 0 }}>
         <Row style={{ marginRight: 15 }}>
           <MainButton
-            title="Distribution"
-            description="Manage Cook balance for presale parties"
+            title={t("Distribution")}
+            description={t("Manage Cook balance for early investors")}
             icon={distributionPNG}
             hover={distributionHover}
             onClick={() => {
@@ -118,8 +143,8 @@ function HomePage() {
             }}
           />
           <MainButton
-            title="LP Mining"
-            description="Stake Uni token, get cook token"
+            title={t("Liquidity Mining")}
+            description={t("Stake Cook-WETH, get cook token")}
             icon={lpMiningPNG}
             hover={lpMiningHover}
             onClick={() => {
@@ -127,8 +152,8 @@ function HomePage() {
             }}
           />
           <MainButton
-            title="Cook Mining"
-            description="Stake cook token, get cook token"
+            title={t("Cook Mining")}
+            description={t("Stake Cook token, get Cook token")}
             icon={cookMiningPNG}
             hover={cookMiningHover}
             onClick={() => {
@@ -181,7 +206,7 @@ function MainButton({
     .icon {
       margin-top: 15px;
       padding: 10px;
-      height: 200px;
+      height: 222px;
       background-image: url(${icon});
       background-repeat: no-repeat;
       background-position: center;
@@ -195,9 +220,10 @@ function MainButton({
     }
 
     div[class^="Box___StyledDiv2"] {
-      padding: 22px;
+      padding: 22px 22px 0 22px;      
     }
   }`
+
 
   return (
     <Col xs={12} md={4}>

@@ -21,7 +21,15 @@ export const getTokenAllowance = async (token, account, spender) => {
   const tokenContract = new web3.eth.Contract(dollarAbi, token);
   return tokenContract.methods.allowance(account, spender).call();
 };
-
+/**
+ *
+ * @param {string} account address
+ * @return {Promise<string>}
+ */
+export const getETHBalance = async (account) => {
+  if (account === '') return '0';
+  return web3.eth.getBalance(account);
+};
 /**
  *
  * @param {string} token address
@@ -64,6 +72,14 @@ export const getRewardPerBlock = async (pool) => {
   return poolContract.methods.getRewardPerBlock().call();
 };
 
+export const getPoolIsFullStatus = async (pool) => {
+  if (!window.ethereum) {
+    return false;
+  }
+  return true
+  // const poolContract = new web3.eth.Contract(poolAbi, pool);
+  // return poolContract.methods.isFull().call();
+};
 /**
  *
  * @param {string} pool address

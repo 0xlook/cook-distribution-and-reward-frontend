@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Modal, DropDown
-} from '@aragon/ui';
+import Modal from 'react-modal';
 import BigNumber from 'bignumber.js';
 import {
   BalanceBlock, PriceSection
@@ -17,10 +15,11 @@ import HelpText from "../common/HelpText";
 import { Row, Col } from 'react-grid-system';
 import ListTable from "../PoolList/ListTable";
 import InfoIcon from "../common/InfoIcon";
+import { useTranslation } from "react-i18next"
 
 type ZapProps = {
   user: string,
-  pools: Array<{ name: string, address: string, rewardPerBlock: BigNumber, lockedUpPeriod: BigNumber }>,
+  pools: Array<{ name: string, address: string, rewardPerBlock: BigNumber, lockedUpPeriod: BigNumber, isFull: boolean }>,
   cookAvailable: BigNumber,
   selected?: string
 };
@@ -31,6 +30,7 @@ function DistributionZap({
   const [zapAmount, setZapAmount] = useState(new BigNumber(0));
   const [opened, setOpened] = useState(false)
   const [selectedPool, setSelectedPool] = useState(selected || '')
+  const { t } = useTranslation()
 
   useEffect(() => {
 
@@ -55,14 +55,16 @@ function DistributionZap({
   const renderPoolZap = () => {
     return (
       <div>
-        <ActionButton label={"Zap Cook"}
-          icon={<InfoIcon text="zap description" />}
+        <ActionButton label={t("Zap Cook Mining")}
+          icon={<InfoIcon text="Transfer your claimable cook token to cook mining pool and start staking to gain more cook." />}
           color={colors.linear} onClick={() => {
             setOpened(true)
           }} disabled={!user} />
-        <Modal visible={opened} onClose={() => close()}>
-          <div style={{ padding: 20 }}>
-            <h1 style={{ textAlign: "center", fontSize: 45, fontWeight: 700 }}>Zap Cook</h1>
+        <Modal isOpen={opened} onRequestClose={() => close()}
+          className="Modal"
+          overlayClassName="Overlay">
+          <div style={{ padding: "21px", paddingTop: "15px" }}>
+            <h1 style={{ textAlign: "center", fontSize: 30, fontWeight: 700, marginBottom: 20 }}>{t("Zap Cook Mining")}</h1>
             <ListTable pools={pools} selectedPool={selectedPool} setSelectedPool={setSelectedPool} />
             <Row style={{ padding: 10 }}>
               <Col xs={12}><BalanceBlock asset="Available Cook" balance={cookAvailable} suffix={"Cook"} type={"row"} /></Col>

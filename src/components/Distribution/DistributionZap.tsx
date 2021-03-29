@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, DropDown
+  DropDown
 } from '@aragon/ui';
 import BigNumber from 'bignumber.js';
 import {
   BalanceBlock, PriceSection
 } from '../common/index';
-import { distributionZap, approve } from '../../utils/web3';
+import { distributionZapLP, approve, distributionZapETH } from '../../utils/web3';
 import { toBaseUnitBN, toTokenUnitsBN } from '../../utils/number';
 import { COOK, WETH } from "../../constants/tokens";
 import { CookDistribution } from "../../constants/contracts";
@@ -17,14 +17,16 @@ import HelpText from "../common/HelpText";
 import { Row, Col } from 'react-grid-system';
 import ListTable from "../PoolList/ListTable";
 import InfoIcon from "../common/InfoIcon";
+import Modal from 'react-modal';
+import { useTranslation } from "react-i18next"
 
 type ZapProps = {
   user: string,
-  pools: Array<{ name: string, address: string, rewardPerBlock: BigNumber, lockedUpPeriod: BigNumber }>,
+  pools: Array<{ name: string, address: string, rewardPerBlock: BigNumber, lockedUpPeriod: BigNumber, isFull: boolean }>,
   cookAvailable: BigNumber,
-  wethBalance: BigNumber,
+  wethBalance: Array<BigNumber>,
   wethAllowance: BigNumber,
-  pairBalanceWETH: BigNumber,
+  pairBalanceWETH: Array<BigNumber>,
   pairBalanceCOOK: BigNumber,
   selected?: string
 };
@@ -32,11 +34,14 @@ type ZapProps = {
 function DistributionZap({
   user, pools, cookAvailable, wethBalance, wethAllowance, pairBalanceWETH, pairBalanceCOOK, selected
 }: ZapProps) {
+  const ETHIndex = 1
   const [zapAmount, setZapAmount] = useState(new BigNumber(0));
   const [wethAmount, setWethAmount] = useState(new BigNumber(0));
   const [opened, setOpened] = useState(false)
   const [selectedPool, setSelectedPool] = useState(selected || '')
   const [balanceType, setBalanceType] = useState(0)
+  const zapCurrency = ['WETH', 'ETH']
+  const { t } = useTranslation();
 
   useEffect(() => {
 
@@ -46,13 +51,20 @@ function DistributionZap({
 
   }, [selectedPool, selected])
 
+  useEffect(() => {
+    onChangeAmountCOOK(zapAmount)
+  }, [balanceType])
+
   const close = () => {
     setOpened(false);
     setZapAmount(new BigNumber(0));
     setWethAmount(new BigNumber(0));
   }
 
-  const WETHToCOOKRatio = pairBalanceWETH.isZero() ? new BigNumber(1) : pairBalanceWETH.div(pairBalanceCOOK);
+  const WETHToCOOKRatio = new Array()
+  for (let i = 0; i < pairBalanceWETH.length; i++) {
+    WETHToCOOKRatio.push(pairBalanceWETH[i].isZero() ? new BigNumber(1) : pairBalanceWETH[i].div(pairBalanceCOOK))
+  }
 
   const onChangeAmountCOOK = (amountCOOK) => {
     if (!amountCOOK) {
@@ -62,30 +74,37 @@ function DistributionZap({
 
     const amountCOOKBN = new BigNumber(amountCOOK)
     setZapAmount(amountCOOKBN);
-
     const amountCOOKBU = toBaseUnitBN(amountCOOKBN, COOK.decimals);
     const newAmountWETH = toTokenUnitsBN(
-      amountCOOKBU.multipliedBy(WETHToCOOKRatio).integerValue(BigNumber.ROUND_FLOOR),
+      amountCOOKBU.multipliedBy(WETHToCOOKRatio[balanceType]).integerValue(BigNumber.ROUND_FLOOR),
       COOK.decimals);
     setWethAmount(newAmountWETH);
   };
   const renderPoolZap = () => {
     return (
       <div>
-        <ActionButton label={"Zap LP"}
-          icon={<InfoIcon text="zap description" />}
+        <ActionButton label={t("Zap LP Mining")}
+          icon={<InfoIcon text="Transfer your claimable cook token to Cook-WETH Uniswap pool with WETH/ETH from your wallet, then stake Cook-WETH token to start liquidity mining right away." />}
           color={colors.linear} onClick={() => {
             setOpened(true)
           }} disabled={!user} />
-        <Modal visible={opened} onClose={() => close()}>
-          <div style={{ paddingTop: '5%', padding: 20 }}>
-            <h1 style={{ textAlign: "center", fontSize: 45, fontWeight: 700 }}>Zap LP</h1>
+        <Modal isOpen={opened} onRequestClose={() => close()}
+          className="Modal"
+          overlayClassName="Overlay">
+          <div style={{ padding: "21px", paddingTop: "15px" }}>
+            <h1 style={{ textAlign: "center", fontSize: 30, fontWeight: 700, marginBottom: 20 }}>{t("Zap LP Mining")}</h1>
             <ListTable pools={pools} selectedPool={selectedPool} setSelectedPool={setSelectedPool} />
             <Row style={{ padding: 10 }}>
               <Col xs={12}><BalanceBlock asset="Available Cook" balance={cookAvailable} suffix={"Cook"} type={"row"} /></Col>
               <Col xs={12}>
-                <BalanceBlock asset="WETH Balance" balance={wethBalance} type={"row"} suffix={
-                  <span style={{ fontSize: 14 }}> WETH</span>} />
+                <BalanceBlock asset={
+                  <DropDown
+                    style={{ border: "0px" }}
+                    items={zapCurrency}
+                    selected={balanceType}
+                    onChange={setBalanceType} />}
+                  balance={wethBalance[balanceType]} type={"row"}
+                  suffix={<span style={{ fontSize: 14 }}> {zapCurrency[balanceType]}</span>} />
               </Col>
             </Row>
             <Row>
@@ -98,7 +117,7 @@ function DistributionZap({
                   }}
                   setter={onChangeAmountCOOK}
                 />
-                <PriceSection label="Requires " amt={wethAmount} symbol=" WETH" />
+                <PriceSection label="Requires " amt={wethAmount} symbol={zapCurrency[balanceType]} />
 
               </Col>
               <Col xs={6} style={{ textAlign: "center" }}>
@@ -111,20 +130,32 @@ function DistributionZap({
                   disabled={false}
                 />
               </Col>
-              {wethAllowance.comparedTo(wethAmount) > 0 ?
+              {balanceType == ETHIndex || wethAllowance.comparedTo(wethAmount) > 0 ?
                 <Col xs={6} style={{ textAlign: "center" }}>
                   <ActionButton
                     label={"Zap"} type="filled"
                     onClick={() => {
                       if (selectedPool) {
-                        distributionZap(
-                          CookDistribution,
-                          selectedPool,
-                          toBaseUnitBN(zapAmount, COOK.decimals),
-                          (hash) => {
-                            close()
-                          }
-                        );
+                        if (balanceType == ETHIndex) {
+                          distributionZapETH(
+                            CookDistribution,
+                            selectedPool,
+                            toBaseUnitBN(zapAmount, COOK.decimals),
+                            (hash) => {
+                              close()
+                            }
+                          );
+                        } else {
+                          distributionZapLP(
+                            CookDistribution,
+                            selectedPool,
+                            toBaseUnitBN(zapAmount, COOK.decimals),
+                            (hash) => {
+                              close()
+                            }
+                          );
+                        }
+
                       }
 
                     }}

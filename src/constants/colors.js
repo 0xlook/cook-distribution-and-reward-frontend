@@ -9,6 +9,7 @@ export default {
   button: "rgb(88,220,96)",
   secondaryButton: "rgb(253,235,63)",
   title: "#464889",
+  cancel: "white",
   background: '#0A0A2A',
   border: '#2c3a58',
   overlay: '#28334c',

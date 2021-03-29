@@ -20,18 +20,32 @@ code {
 .popover__wrapper {
   position: relative;
   display: inline-block;
+  
 }
 .popover__content {
   opacity: 0;
   visibility: hidden;
   position: absolute;
-  left: -80px;
+  width: 250px;
+  padding:10px;
+  padding-right: 30px;
+  left: -110px;
   top: 60px;
   transform: translate(0, 10px);
-  background-color:rgb(32,34,76);
+  background:rgb(32,34,76);
   padding: 1.5rem;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-  width: auto;
+  height:auto;
+  white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  white-space: pre-wrap;       /* css-3 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  white-space: -webkit-pre-wrap; /* Newer versions of Chrome/Safari*/
+  word-break: break-word;
+  white-space: normal;
+  border-radius: 10px;
+
 }
 .popover__content:before {
   position: absolute;
@@ -44,6 +58,8 @@ code {
   border-color: transparent transparent rgb(32,34,76) transparent;
   transition-duration: 0.3s;
   transition-property: transform;
+  
+
 }
 .popover__wrapper:hover .popover__content {
   z-index: 10;
@@ -51,7 +67,35 @@ code {
   visibility: visible;
   transform: translate(0, -20px);
   transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+
 }
 .popover__message {
   text-align: center;
+}
+
+.Modal {
+  position: absolute;
+  margin:0px auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding:20px;
+  outline: none;
+  background-color: rgb(21,22,58);
+  border-radius: 4px;
+  box-shadow: 0 10px 28px rgb(0 0 0 / 15%);
+  max-width: 600px;
+  width: 95%;
+  max-height: 85%;
+  overflow: auto;
+  border-radius: 10px;
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(40,51,76,0.9);
 }

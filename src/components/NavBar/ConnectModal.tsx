@@ -57,7 +57,7 @@ function ConnectModal({
           children={
             <>
                 <span>WalletConnect</span>
-                <img src={`./wallets/wallet-connect.svg`} style={{ height: 24, width:24 }} alt="WalletConnect"/>
+                <img src={`./wallets/walletconnect-circle-white.svg`} style={{ height: 24, width:24 }} alt="WalletConnect"/>
             </>
           }
           onClick={connectWalletConnect}
@@ -82,6 +82,7 @@ function ConnectModal({
 
 const StyledModal = styled(Modal)`
     z-index: 1;
+    background: radial-gradient(50% 50% at 50% 50%, #211257 0%, #0A0627 100%);
     div[role="alertdialog"] {
         border-radius: 8px !important;
     }
@@ -102,5 +103,11 @@ const StyledDiv = styled.div`
 
 const StyledButton = styled(Button)`
     border-radius: 8px;
+    height: 55px;
+    justify-content: space-between;
+    background: linear-gradient(90deg, #E611FF -6.85%, #03ABF9 109.03%);
+    :hover {
+      opacity: 0.4;
+    }
 `
 export default ConnectModal;

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Modal
-} from '@aragon/ui';
+import Modal from 'react-modal';
 import BigNumber from 'bignumber.js';
 import { BalanceBlock } from '../common/index';
 import { harvest } from '../../utils/web3';
@@ -42,7 +40,9 @@ function Harvest({
 
       </span>
 
-      <Modal visible={opened} onClose={() => setOpened(false)} >
+      <Modal isOpen={opened} onRequestClose={() => setOpened(false)}
+        className="Modal"
+        overlayClassName="Overlay">
         <div style={{ padding: 20 }}>
           <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>Harvest</h1>
           <ListTable pools={pools} selectedPool={poolAddress} />
@@ -53,7 +53,7 @@ function Harvest({
             <Col xs={12}>
               <BalanceBlock asset="In Vesting" balance={userTotalInVesting} suffix={"Cook"} type={"row"} />
             </Col>
-            {/* Harvest UNI-V2 within Pool */}
+            {/* Harvest Cook-WETH within Pool */}
             <Col xs={12}>
               <BigNumberInput
                 adornment="Cook"

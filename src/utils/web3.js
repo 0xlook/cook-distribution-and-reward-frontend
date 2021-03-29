@@ -113,7 +113,21 @@ export const claim = async (pool, amount, callback) => {
     });
 };
 
-export const zap = async (pool, amount, callback) => {
+export const harvestAndClaim = async (pool, amount, callback) => {
+  const account = await checkConnectedAndGetAddress();
+  const poolContract = new window.web3.eth.Contract(poolAbi, pool);
+  await poolContract.methods
+    .harvestAndClaim(new BigNumber(amount).toFixed())
+    .send({
+      from: account,
+    })
+    .on('transactionHash', (hash) => {
+      notify.hash(hash);
+      callback(hash);
+    });
+};
+
+export const zapLP = async (pool, amount, callback) => {
   const account = await checkConnectedAndGetAddress();
   const poolContract = new window.web3.eth.Contract(poolAbi, pool);
   await poolContract.methods
@@ -126,6 +140,20 @@ export const zap = async (pool, amount, callback) => {
       callback(hash);
     });
 };
+export const zapLPWithEth = async (pool, amount, callback) => {
+  const account = await checkConnectedAndGetAddress();
+  const poolContract = new window.web3.eth.Contract(poolAbi, pool);
+  await poolContract.methods
+    .zapLPWithEth(new BigNumber(amount).toFixed())
+    .send({
+      from: account,
+    })
+    .on('transactionHash', (hash) => {
+      notify.hash(hash);
+      callback(hash);
+    });
+};
+
 export const zapCook = async (pool, amount, callback) => {
   const account = await checkConnectedAndGetAddress();
   const poolContract = new window.web3.eth.Contract(cookPoolAbi, pool);
@@ -180,11 +208,24 @@ export const getWithdrawRecords = async (cookDistribution) => {
   return events;
 };
 
-export const distributionZap = async (cookDistribution, poolAddress, amount, callback) => {
+export const distributionZapLP = async (cookDistribution, poolAddress, amount, callback) => {
   const account = await checkConnectedAndGetAddress();
   const distributionContract = new window.web3.eth.Contract(distributionAbi, cookDistribution);
   await distributionContract.methods
     .zapLP(new BigNumber(amount).toFixed(), poolAddress)
+    .send({
+      from: account,
+    })
+    .on('transactionHash', (hash) => {
+      notify.hash(hash);
+      callback(hash);
+    });
+};
+export const distributionZapETH = async (cookDistribution, poolAddress, amount, callback) => {
+  const account = await checkConnectedAndGetAddress();
+  const distributionContract = new window.web3.eth.Contract(distributionAbi, cookDistribution);
+  await distributionContract.methods
+    .zapLPWithEth(new BigNumber(amount).toFixed(), poolAddress)
     .send({
       from: account,
     })

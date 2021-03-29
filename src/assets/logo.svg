@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="86px" height="28px" viewBox="0 0 86 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>Logo</title>
-    <defs>
-        <linearGradient x1="-0.0137754298%" y1="22.5189953%" x2="132.904282%" y2="88.2907774%" id="linearGradient-1">
-            <stop stop-color="#E611FF" offset="0%"></stop>
-            <stop stop-color="#03ABF9" offset="100%"></stop>
-        </linearGradient>
-        <linearGradient x1="-4.45734338%" y1="49.5706093%" x2="140.270069%" y2="50.5982934%" id="linearGradient-2">
-            <stop stop-color="#E611FF" offset="0%"></stop>
-            <stop stop-color="#03ABF9" offset="100%"></stop>
-        </linearGradient>
-    </defs>
     <g id="Logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Group-9-Copy-13">
-            <polygon id="Fill-4" fill="url(#linearGradient-1)" points="6.51058607 14.3177595 4.74685486 9.73696211 17.7928813 13.6082768 3.70696533 7.032514 1 0 1.80945075 0.326115321 24 9.82869193 10.2368825 24 7.24148512 16.217832 14.487266 17.9901153"></polygon>
-            <polygon id="Fill-6" fill="url(#linearGradient-2)" points="0 25.9598815 24 25 18.0370898 28"></polygon>
+        <g id="Group-9-Copy-13" fill="#FFFFFF">
+            <polygon id="Fill-4" points="6.51058607 14.3177595 4.74685486 9.73696211 17.7928813 13.6082768 3.70696533 7.032514 1 0 1.80945075 0.326115321 24 9.82869193 10.2368825 24 7.24148512 16.217832 14.487266 17.9901153"></polygon>
+            <polygon id="Fill-6" points="0 25.9598815 24 25 18.0370898 28"></polygon>
         </g>
         <text id="Cook" font-family="SFProDisplay-Medium, SF Pro Display" font-size="24" font-weight="400" fill="#FFFFFF">
             <tspan x="30.5019531" y="25">Cook</tspan>

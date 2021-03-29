@@ -7,6 +7,7 @@ import colors from '../../constants/colors';
 import { useTranslation } from "react-i18next";
 const CancelButton = styled(ButtonBase)`
   margin: 5px;
+  border-radius: 4px;
   ${props => `
     border: 1px solid ${props.color};
     width: ${props.width};
@@ -17,12 +18,15 @@ const CancelButton = styled(ButtonBase)`
 `;
 const FilledButton = styled(ButtonBase)`
   margin: 5px;
+  border-radius: 4px;
+  min-height: 44px; 
   ${props => `
     width: ${props.width};
     background: ${props.color};
     padding: ${props.padding};
     &:hover {
         background: ${props.color};
+        box-shadow:4px 4px 12px 4px rgba(20%,20%,40%,0.8);
     }
   `}
 
@@ -39,7 +43,7 @@ const StyledButton = styled(ButtonBase)`
     right:0;
     bottom:0;
     padding: 1.5px;
-    border-radius: 5px;
+    border-radius: 4px;
     ${props => `
     background: ${props.color};
     `}
@@ -54,7 +58,7 @@ const StyledButton = styled(ButtonBase)`
     padding: ${props.padding};
     &:hover {
         background: ${props.color};
-        border-radius: 6px;
+        border-radius: 4px;
     }
   `}
 `;
@@ -68,7 +72,7 @@ function ActionButton({ onClick, color, label, disabled, size, width, type, icon
       <CancelButton
         onClick={onClick}
         width={width || "100%"}
-        color={color || colors.title}
+        color={color || colors.cancel}
         padding={below("medium") ? "8px" : "14px"}
         disabled={disabled}
       >

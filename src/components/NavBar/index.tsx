@@ -4,9 +4,10 @@ import { useHistory } from 'react-router-dom';
 import { Bar, LinkBase, SidePanel, useViewport } from '@aragon/ui';
 import ConnectButton from './ConnectButton';
 import styled from 'styled-components';
-import logo from '../../assets/logo.png'
+import logo from '../../assets/logo.svg'
 import colors from '../../constants/colors';
-import LanguageSelector from '../../components/common/LanguageSelector'
+import LanguageSelector from '../../components/common/LanguageSelector';
+import { useTranslation } from "react-i18next" ;
 type NavbarProps = {
   theme: string,
   updateTheme: Function,
@@ -18,6 +19,7 @@ function NavBar({
   user, setUser,
 }: NavbarProps) {
   const history = useHistory();
+  const { t } = useTranslation()
   const [isHome, updateIsHome] = useState(true);
   const [opened, setOpened] = useState(false)
   const [page, setPage] = useState("");
@@ -38,19 +40,12 @@ function NavBar({
         <LinkBase onClick={() => {
           history.push('/')
         }}>
-          <img src={logo} style={{ width: '86px', height: '28px' }} />
+          <img src={logo} style={{ width: '93px', height: '28px' }} />
         </LinkBase>
       } onClose={() => { setOpened(false) }} opened={opened}>
+
         <LinkButtonMobile
-          title="Home"
-          onClick={() => {
-            setOpened(false)
-            history.push('/');
-          }}
-          isSelected={page === '/'}
-        />
-        <LinkButtonMobile
-          title="Distribution"
+          title={t("Distribution")}
           onClick={() => {
             setOpened(false)
             history.push('/distribution/');
@@ -58,7 +53,7 @@ function NavBar({
           isSelected={page.includes('/distribution')}
         />
         <LinkButtonMobile
-          title="LP Mining"
+          title={t("Liquidity Mining")}
           onClick={() => {
             setOpened(false)
             history.push('/pools/');
@@ -66,7 +61,7 @@ function NavBar({
           isSelected={page.includes('/pools')}
         />
         <LinkButtonMobile
-          title="Cook Mining"
+          title={t("Cook Mining")}
           onClick={() => {
             setOpened(false)
             history.push('/cookpools/');
@@ -88,7 +83,7 @@ function NavBar({
         <LinkBase onClick={() => {
           history.push('/')
         }}>
-          <img src={logo} style={{ width: '86px', height: '28px' }} />
+          <img src={logo} style={{ width: '93px', height: '28px' }} />
         </LinkBase>
       )}
         secondary={(
@@ -104,7 +99,7 @@ function NavBar({
               <LinkBase onClick={() => {
                 history.push('/')
               }} style={{ height: '50%' }}>
-                <img src={logo} style={{ width: '86px', height: '28px' }} />
+                <img src={logo} style={{ width: '93px', height: '28px' }} />
               </LinkBase>
 
             </>
@@ -113,28 +108,21 @@ function NavBar({
         secondary={(
           <>
             <LinkButton
-              title="Home"
-              onClick={() => {
-                history.push('/');
-              }}
-              isSelected={page === '/'}
-            />
-            <LinkButton
-              title="Distribution"
+              title={t("Distribution")}
               onClick={() => {
                 history.push('/distribution/');
               }}
               isSelected={page.includes('/distribution')}
             />
             <LinkButton
-              title="LP Mining"
+              title={t("Liquidity Mining")}
               onClick={() => {
                 history.push('/pools/');
               }}
               isSelected={page.includes('/pools')}
             />
             <LinkButton
-              title="Cook Mining"
+              title={t("Cook Mining")}
               onClick={() => {
                 history.push('/cookpools/');
               }}

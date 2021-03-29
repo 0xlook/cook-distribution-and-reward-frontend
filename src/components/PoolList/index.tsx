@@ -8,7 +8,9 @@ import {
   getPoolBalanceOfUnstakable,
   getPoolBalanceOfClaimable,
   getTokenAllowance,
-  getTokenBalance
+  getTokenBalance,
+  getETHBalance,
+  getPoolIsFullStatus
 } from '../../utils/infura';
 import {
   useViewport
@@ -26,6 +28,8 @@ import Unstake from "../Pool/Unstake";
 import Stake from "../Pool/Stake";
 import Zap from "../Pool/Zap";
 import { Container, Row, Col } from 'react-grid-system';
+import { useTranslation } from "react-i18next"
+
 
 function PoolList({ user }: { user: string }) {
   const { override } = useParams();
@@ -37,34 +41,38 @@ function PoolList({ user }: { user: string }) {
   const [totalStaked, setTotalStaked] = useState(new BigNumber(0));
   const { below } = useViewport()
   const [pairBalanceCOOK, setPairBalanceCOOK] = useState(new BigNumber(0));
-  const [pairBalanceWETH, setPairBalanceWETH] = useState(new BigNumber(0));
+
   const [userTotalStaked, setUserTotalStaked] = useState(new BigNumber(0));
   const [userTotalUnstakable, setUserTotalUnstakable] = useState(new BigNumber(0));
   const [userTotalLocked, setUserTotalLocked] = useState(new BigNumber(0));
 
   const [userTotalVested, setUserTotalVested] = useState(new BigNumber(0));
   const [userUNIAllowance, setUserUNIAllowance] = useState(new BigNumber(0));
+
   const [userUNIBalance, setUserUNIBalance] = useState(new BigNumber(0));
-  const [userWETHBalance, setUserWETHBalance] = useState(new BigNumber(0));
+  const [userWETHBalance, setUserWETHBalance] = useState([new BigNumber(0), new BigNumber(0)]);
   const [userWETHAllowance, setUserWETHAllowance] = useState(new BigNumber(0));
+  const [pairBalanceWETH, setPairBalanceWETH] = useState([new BigNumber(0), new BigNumber(0)]);
 
   useEffect(() => {
     let isCancelled = false;
 
-    // setPoolList([{name:"4 UNI-V2 (WETH/COOK)", address:"0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8",lockedUpPeriod:"90 days",rewardPerBlock:"300"}]);
+    // setPoolList([{name:"4 Cook-WETH (WETH/COOK)", address:"0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8",lockedUpPeriod:"90 days",rewardPerBlock:"300"}]);
     async function updatePoolInfo() {
       const poolList = await Promise.all(POOLS.map(async (pool) => {
-        const [lockedup, reward] =
+        const [lockedup, reward, isFull] =
           await Promise.all([
             getStakeLockupDuration(pool.address),
-            getRewardPerBlock(pool.address)
+            getRewardPerBlock(pool.address),
+            getPoolIsFullStatus(pool.address)
           ])
         const poolRewardPerBlock = toTokenUnitsBN(reward, COOK.decimals);
         return ({
           name: pool.name,
           address: pool.address,
           lockedUpPeriod: lockedup,
-          rewardPerBlock: poolRewardPerBlock
+          rewardPerBlock: poolRewardPerBlock,
+          isFull: isFull
         });
       }));
       const totalStakedBalance = await POOLS.reduce(async (sum, pool) => {
@@ -101,14 +109,14 @@ function PoolList({ user }: { user: string }) {
   useEffect(() => {
     if (selectedPool === '') {
       setPairBalanceCOOK(new BigNumber(0));
-      setPairBalanceWETH(new BigNumber(0));
+      setPairBalanceWETH([new BigNumber(0), new BigNumber(0)]);
       setUserTotalStaked(new BigNumber(0));
       setUserTotalUnstakable(new BigNumber(0));
       setUserTotalLocked(new BigNumber(0));
       setUserTotalVested(new BigNumber(0));
       setUserUNIAllowance(new BigNumber(0));
       setUserUNIBalance(new BigNumber(0));
-      setUserWETHBalance(new BigNumber(0));
+      setUserWETHBalance([new BigNumber(0), new BigNumber(0)]);
       setUserWETHAllowance(new BigNumber(0));
       return;
     }
@@ -119,17 +127,19 @@ function PoolList({ user }: { user: string }) {
       const [
         pairBalanceCOOKStr,
         pairBalanceWETHStr,
+        pairBalanceETHStr
       ] = await Promise.all([
         getTokenBalance(COOK.addr, UNI.addr),
         getTokenBalance(WETH.addr, UNI.addr),
+        getETHBalance(UNI.addr),
       ]);
 
       const pairCOOKBalance = toTokenUnitsBN(pairBalanceCOOKStr, COOK.decimals);
       const pairWETHBalance = toTokenUnitsBN(pairBalanceWETHStr, WETH.decimals);
-
+      const pairETHBalance = toTokenUnitsBN(pairBalanceETHStr, WETH.decimals);
       if (!isCancelled) {
         setPairBalanceCOOK(new BigNumber(pairCOOKBalance));
-        setPairBalanceWETH(new BigNumber(pairWETHBalance));
+        setPairBalanceWETH([new BigNumber(pairWETHBalance), new BigNumber(pairETHBalance)]);
       }
     }
 
@@ -144,7 +154,7 @@ function PoolList({ user }: { user: string }) {
       setUserTotalVested(new BigNumber(0));
       setUserUNIAllowance(new BigNumber(0));
       setUserUNIBalance(new BigNumber(0));
-      setUserWETHBalance(new BigNumber(0));
+      setUserWETHBalance([new BigNumber(0), new BigNumber(0)]);
       setUserWETHAllowance(new BigNumber(0));
       return () => {
         isCancelled = true;
@@ -160,7 +170,8 @@ function PoolList({ user }: { user: string }) {
         uniAllowance,
         uniBalance,
         wethAllowance,
-        wethBalance
+        wethBalance,
+        ethBalance
       ] = await Promise.all([
         getPoolBalanceOfStaked(selectedPool, user),
         getPoolBalanceOfUnstakable(selectedPool, user),
@@ -169,6 +180,7 @@ function PoolList({ user }: { user: string }) {
         getTokenBalance(UNI.addr, user),
         getTokenAllowance(WETH.addr, user, selectedPool),
         getTokenBalance(WETH.addr, user),
+        getETHBalance(user)
       ]);
 
       const userTotalStakedBalance = toTokenUnitsBN(userTotalStakedStr, UNI.decimals);
@@ -177,7 +189,7 @@ function PoolList({ user }: { user: string }) {
       const userTotalVestedBalance = toTokenUnitsBN(userTotalVestedStr, COOK.decimals);
       const userUNIBalance = toTokenUnitsBN(uniBalance, UNI.decimals);
       const userWETHBalance = toTokenUnitsBN(wethBalance, WETH.decimals);
-
+      const userETHBalance = toTokenUnitsBN(ethBalance, WETH.decimals);
 
       if (!isCancelled) {
         setUserTotalStaked(new BigNumber(userTotalStakedBalance));
@@ -187,7 +199,7 @@ function PoolList({ user }: { user: string }) {
         setUserUNIAllowance(new BigNumber(uniAllowance));
         setUserUNIBalance(new BigNumber(userUNIBalance));
         setUserWETHAllowance(new BigNumber(wethAllowance));
-        setUserWETHBalance(new BigNumber(userWETHBalance));
+        setUserWETHBalance([new BigNumber(userWETHBalance), new BigNumber(userETHBalance)]);
       }
     }
 
@@ -204,10 +216,12 @@ function PoolList({ user }: { user: string }) {
 
 
   const selectedPoolList = [_.find(poolList, { 'address': selectedPool })]
+  const { t } = useTranslation();
+
   return (
     <div style={{ marginTop: '120px', padding: '1%' }}>
-      <div className="title">LP mining</div>
-      <LinearText text={"Stake Uni token, get cook token"} />
+      <div className="title">{t("Liquidity Mining")}</div>
+      <LinearText text={"Stake Cook-WETH, get cook token"} />
 
       <div style={{
         padding: '20px 30px',
@@ -217,9 +231,9 @@ function PoolList({ user }: { user: string }) {
         <ListTable pools={poolList} selectedPool={selectedPool} setSelectedPool={(selected) => {
           setSelectedPool(selected)
         }
-        } detailMode={true} action={
+        } action={
           <Row style={{ textAlign: "center", width: "100%" }}>
-            <Col xs={12} xl={4} style={{ padding: '0 5px' }}>
+            <Col xs={12} xl={6} style={{ padding: '0 5px' }}>
               <Stake
                 pools={selectedPoolList}
                 user={user}
@@ -228,7 +242,7 @@ function PoolList({ user }: { user: string }) {
                 allowance={userUNIAllowance}
                 staked={userTotalStaked}
               />
-            </Col><Col xs={12} xl={4} style={{ padding: '0 5px' }}>
+            </Col><Col xs={12} xl={6} style={{ padding: '0 5px' }}>
               <Unstake
                 user={user}
                 pools={selectedPoolList}
@@ -237,21 +251,14 @@ function PoolList({ user }: { user: string }) {
                 locked={userTotalLocked}
               />
             </Col>
-            <Col xs={12} xl={4} style={{ padding: '0 5px' }}>
-              <Zap
-                user={user}
-                pools={selectedPoolList}
-                cookAvailable={userTotalVested}
-                selected={selectedPool}
-                wethBalance={userWETHBalance}
-                wethAllowance={userWETHAllowance}
-                pairBalanceWETH={pairBalanceWETH}
-                pairBalanceCOOK={pairBalanceCOOK}
-              />
-            </Col>
+
           </Row>
         } />
-        <Pool user={user} poolAddress={selectedPool} pools={poolList} />
+        <Pool user={user} poolAddress={selectedPool} pools={poolList}
+          wethBalance={userWETHBalance}
+          wethAllowance={userWETHAllowance}
+          pairBalanceWETH={pairBalanceWETH}
+          pairBalanceCOOK={pairBalanceCOOK} />
 
       </div>
 

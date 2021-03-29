@@ -8,7 +8,8 @@ import {
   getPoolBalanceOfUnstakable,
   getPoolBalanceOfClaimable,
   getTokenAllowance,
-  getTokenBalance
+  getTokenBalance,
+  getPoolIsFullStatus
 } from '../../utils/infura';
 import {
   useViewport
@@ -26,8 +27,10 @@ import Unstake from "../CookPool/Unstake";
 import Stake from "../CookPool/Stake";
 import Zap from "../CookPool/Zap";
 import { Container, Row, Col } from 'react-grid-system';
+import { useTranslation } from "react-i18next" 
 
 function CookPoolList({ user }: { user: string }) {
+  const { t } = useTranslation();
   const { override } = useParams();
   if (override) {
     user = override;
@@ -47,20 +50,22 @@ function CookPoolList({ user }: { user: string }) {
   useEffect(() => {
     let isCancelled = false;
 
-    // setPoolList([{name:"4 UNI-V2 (WETH/COOK)", address:"0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8",lockedUpPeriod:"90 days",rewardPerBlock:"300"}]);
+    // setPoolList([{name:"4 Cook-WETH (WETH/COOK)", address:"0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8",lockedUpPeriod:"90 days",rewardPerBlock:"300"}]);
     async function updatePoolInfo() {
       const poolList = await Promise.all(COOK_POOLS.map(async (pool) => {
-        const [lockedup, reward] =
+        const [lockedup, reward, isFull] =
           await Promise.all([
             getStakeLockupDuration(pool.address),
-            getRewardPerBlock(pool.address)
+            getRewardPerBlock(pool.address),
+            getPoolIsFullStatus(pool.address)
           ])
         const poolRewardPerBlock = toTokenUnitsBN(reward, COOK.decimals);
         return ({
           name: pool.name,
           address: pool.address,
           lockedUpPeriod: lockedup,
-          rewardPerBlock: poolRewardPerBlock
+          rewardPerBlock: poolRewardPerBlock,
+          isFull: isFull
         });
       }));
       const totalStakedBalance = await COOK_POOLS.reduce(async (sum, pool) => {
@@ -185,7 +190,7 @@ function CookPoolList({ user }: { user: string }) {
   return (
     <div style={{ marginTop: '120px', padding: '1%' }}>
       <div className="title">Cook mining</div>
-      <LinearText text={"Stake cook token, get cook token"} />
+      <LinearText text={t("Stake Cook token, get Cook token")} />
 
       <div style={{
         padding: '20px 30px',
@@ -195,9 +200,9 @@ function CookPoolList({ user }: { user: string }) {
         <ListTable pools={poolList} selectedPool={selectedPool} setSelectedPool={(selected) => {
           setSelectedPool(selected)
         }
-        } detailMode={true} action={
+        } action={
           <Row style={{ textAlign: "center", width: "100%" }}>
-            <Col xs={12} xl={4} style={{ padding: '0 5px' }}>
+            <Col xs={12} xl={6} style={{ padding: '0 5px' }}>
               <Stake
                 pools={selectedPoolList}
                 user={user}
@@ -206,7 +211,7 @@ function CookPoolList({ user }: { user: string }) {
                 allowance={userCookAllowance}
                 staked={userTotalStaked}
               />
-            </Col><Col xs={12} xl={4} style={{ padding: '0 5px' }}>
+            </Col><Col xs={12} xl={6} style={{ padding: '0 5px' }}>
               <Unstake
                 user={user}
                 pools={selectedPoolList}
@@ -215,15 +220,7 @@ function CookPoolList({ user }: { user: string }) {
                 locked={userTotalLocked}
               />
             </Col>
-            <Col xs={12} xl={4} style={{ padding: '0 5px' }}>
-              <Zap
-                user={user}
-                pools={selectedPoolList}
-                cookAvailable={userTotalVested}
-                selected={selectedPool}
 
-              />
-            </Col>
           </Row>
         } />
         <Pool user={user} poolAddress={selectedPool} pools={poolList} />

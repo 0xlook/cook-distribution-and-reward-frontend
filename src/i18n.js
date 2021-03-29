@@ -2,7 +2,7 @@ import i18n from 'i18next';
 // import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
-// import translationCN from './locales/cn/translation.json';
+import translationCN from './locales/cn/translation.json';
 // import translationDE from './locales/de/translation.json';
 // import translationEN from './locales/en/translation.json';
 // import translationES from './locales/es/translation.json';
@@ -16,10 +16,10 @@ import { initReactI18next } from 'react-i18next';
 // import translationSE from './locales/se/translation.json';
 // import translationTR from './locales/tr/translation.json';
 // import translationUK from './locales/uk/translation.json';
-import translationZH from './locales/zh/translation.json';
+// import translationZH from './locales/zh/translation.json';
 
 const resources = {
-  // cn: { translation: translationCN },
+  cn: { translation: translationCN },
   // de: { translation: translationDE },
   // en: { translation: translationEN },
   // es: { translation: translationES },
@@ -33,7 +33,7 @@ const resources = {
   // se: { translation: translationSE },
   // tr: { translation: translationTR },
   // uk: { translation: translationUK },
-  zh: { translation: translationZH },
+  // zh: { translation: translationZH },
   // TODO: more translations
 };
 

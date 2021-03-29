@@ -22,13 +22,21 @@ import Span from "../common/Span";
 import {
   BalanceBlock
 } from '../common/index';
-
+import Zap from "./Zap";
+import { useTranslation } from "react-i18next"
 
 type PoolProps = {
-  pool: string, lockedUp: number, reward: BigNumber, staked: BigNumber, totalStaked: BigNumber
+  pool: string, lockedUp: number, reward: BigNumber, staked: BigNumber, totalStaked: BigNumber,
+
 };
 
-function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string, pools: Array<PoolProps> }) {
+function Pool({ user, poolAddress, pools, wethBalance, wethAllowance, pairBalanceWETH, pairBalanceCOOK }: {
+  user: string, poolAddress: string, pools: Array<PoolProps>,
+  wethBalance: Array<BigNumber>,
+  wethAllowance: BigNumber,
+  pairBalanceWETH: Array<BigNumber>,
+  pairBalanceCOOK: BigNumber,
+}) {
   const { override, address } = useParams();
   const { below } = useViewport()
   if (override) {
@@ -42,6 +50,7 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
   const [userTotalRewarded, setUserTotalRewarded] = useState(new BigNumber(0));
   const [userTotalInVesting, setUserInTotalVesting] = useState(new BigNumber(0));
   const [userTotalVested, setUserTotalVested] = useState(new BigNumber(0));
+  const { t } = useTranslation()
 
 
   //Update User balances
@@ -124,27 +133,25 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
   }, [user, poolAddress]);
 
   const poolList = [_.find(pools, { 'address': poolAddress })]
-
+  const titleSize = below('medium') ? "22px" : "32px"
   return (
     <Container>
-
-
       <Row style={{ textAlign: "left", marginTop: 30 }}>
-        <Col xs={12} lg={12} >
-          <BalanceBlock asset="Total Staked" balance={userTotalStaked} suffix={"UNI-V2"} type={"block"} size={below('medium') ? "22px" : "32px"} />
+        <Col xs={12} lg={3} >
+          <BalanceBlock asset={t("Total Staked")} balance={userTotalStaked} suffix={"Cook"} type={"block"} size={titleSize} />
         </Col>
-        <Col xs={12} md={4} lg={3} >
-          <BalanceBlock asset="To be Vested Tokens" balance={userTotalRewarded} suffix={"Cook"} type={"block"} size="22px" />
+        <Col xs={12} lg={3} >
+          <BalanceBlock asset={t("Total Rewarded")} balance={userTotalRewarded} suffix={"Cook"} type={"block"} size={titleSize} />
         </Col>
-        <Col xs={12} md={4} lg={3} >
-          <BalanceBlock asset="Vesting Tokens" balance={userTotalInVesting} suffix={"Cook"} type={"block"} size="22px" />
+        <Col xs={12} lg={6} >
+          <BalanceBlock asset={t("Avaible to Harvest")} balance={userTotalRewarded} suffix={"Cook"} type={"block"} size={titleSize} />
         </Col>
-        <Col xs={12} md={4} lg={2} >
-          <BalanceBlock asset="Vested Tokens" balance={userTotalVested} suffix={"Cook"} type={"block"} size="22px" />
+        <Col xs={12} lg={3}  >
+          <BalanceBlock asset={t("Vesting Tokens")} balance={userTotalInVesting} suffix={"Cook"} type={"block"} size={titleSize} />
         </Col>
-
-
-
+        <Col xs={12} lg={3} >
+          <BalanceBlock asset={t("Available to Claim")} balance={userTotalVested} suffix={"Cook"} type={"block"} size={titleSize} />
+        </Col>
         <Col xs={6} lg={2} style={{ margin: 'auto', padding: 5 }}>
           <Harvest
             user={user}
@@ -154,12 +161,25 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
             userTotalInVesting={userTotalInVesting}
           />
         </Col>
+
         <Col xs={6} lg={2} style={{ margin: 'auto', padding: 5 }}>
           <Claim
             user={user}
             pools={poolList}
             poolAddress={poolAddress}
             claimable={userTotalVested}
+          />
+        </Col>
+        <Col xs={6} lg={2} style={{ margin: 'auto', padding: 5 }}>
+          <Zap
+            user={user}
+            pools={poolList}
+            cookAvailable={userTotalVested}
+            selected={poolAddress}
+            wethBalance={wethBalance}
+            wethAllowance={wethAllowance}
+            pairBalanceWETH={pairBalanceWETH}
+            pairBalanceCOOK={pairBalanceCOOK}
           />
         </Col>
       </Row>

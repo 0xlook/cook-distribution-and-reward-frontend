@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { CSSProp } from 'styled-components';
 import {
   Button, IdentityBadge, IconDown, LinkBase,
 } from '@aragon/ui';
 
-import { connect } from '../../utils/web3';
+// import { connect } from '../../utils/web3';
 import SignOutButtonWrapper from '../common/SignOutButtonWrapper';
 import ConnectModal from './ConnectModal';
 import { useWallet } from 'use-wallet';
+import { storePreference, getPreference } from '../../utils/storage';
+import { useTranslation } from "react-i18next" 
 
 type connectButtonProps = {
   user: string,
@@ -16,29 +18,37 @@ type connectButtonProps = {
   mobile?: Boolean
 }
 
+
 function ConnectButton({ user, setUser, css, mobile }: connectButtonProps) {
   // const [isConnected, setIsConnected] = useState(user ? true: false);
+  const storedAccount = getPreference('account', '');
   const [visible, setVisible] = useState(false)
   const [isModalOpen, setModalOpen] = useState(false);
   const { status, reset } = useWallet();
-  const toggleModal = () => setModalOpen(!isModalOpen);
-
-  // const connectWeb3 = async () => {
+    const closeModal = () => setModalOpen(false);
+  const openModal = () => setModalOpen(true);
+  const { t } = useTranslation()
+    // const connectWeb3 = async () => {
   //   const address = await connect();
   //   if (address === false) return;
   //   setIsConnected(true);
   //   setUser(address);
   // };
+  const wallet = useWallet();
+  // console.log('wallet', wallet)
 
   const connectWeb3 = async (wallet) => {
-    connect(wallet.ethereum);
+    // connect(wallet.ethereum);
+    // wallet.connect()
     setUser(wallet.account);
+    storePreference('account', wallet.account);
     // setIsConnected(true);
   };
 
   const disconnectWeb3 = async () => {
     // setIsConnected(false);
     setUser('');
+    storePreference('account', '');
     reset();
     setVisible(false);
   };
@@ -47,20 +57,30 @@ function ConnectButton({ user, setUser, css, mobile }: connectButtonProps) {
     setVisible(!visible)
   };
 
-  const isConnected = status === 'connected'
+  useEffect(() => {
+    // console.log('wallet', wallet.status)
+    // console.log('storedAccount', storedAccount)
+    if(storedAccount && wallet.status == 'disconnected') {
+      wallet.connect("injected");
+    }
+    if(wallet.error && wallet.error.name == 'ChainUnsupportedError') {
+      alert(wallet.error.message)
+    }
+  }, [storedAccount, wallet]);
 
+  const isConnected = status === 'connected'
   return isConnected ? (
     mobile ? (
       <>
         <StyledMobileDiv>
-          <IdentityBadge compact entity={user} />
+          <IdentityBadge badgeOnly compact label={user}/>
         </StyledMobileDiv>
         <StyledSignOutMobileButton onClick={disconnectWeb3}>Sign Out</StyledSignOutMobileButton>
       </>
     ) : (
         <div>
           <StyledDiv style={{ marginLeft: '32px' }}>
-            <IdentityBadge style={{ marginTop: '8px' }} compact entity={user} />
+            <IdentityBadge style={{ marginLeft: '7px' }} badgeOnly compact label={user} />
             <LinkBase onClick={showDropDown} size="small">
               <IconDown />
             </LinkBase>
@@ -76,13 +96,13 @@ function ConnectButton({ user, setUser, css, mobile }: connectButtonProps) {
   ) : (
       mobile ? (
         <>
-          <ConnectModal visible={isModalOpen} onClose={toggleModal} onConnect={connectWeb3} />
-          <StyledButton style={{ width: '100%', height: '55px', marginTop: '28px' }} label="Connect Wallet" onClick={toggleModal} />
+          <ConnectModal visible={isModalOpen} onClose={closeModal} onConnect={connectWeb3} />
+          <StyledButton style={{ width: '100%', height: '55px', marginTop: '28px' }} label={t("Connect Wallet")} onClick={openModal} />
         </>
       ) : (
           <>
-            <ConnectModal visible={isModalOpen} onClose={toggleModal} onConnect={connectWeb3} />
-            <StyledButton style={{ marginLeft: '32px' }} label="Connect Wallet" onClick={toggleModal} />
+            <ConnectModal visible={isModalOpen} onClose={closeModal} onConnect={connectWeb3} />
+            <StyledButton style={{ marginLeft: '32px' }} label={t("Connect Wallet")} onClick={openModal} />
           </>
         )
 
@@ -134,7 +154,7 @@ const StyledButton = styled(Button)`
   font-size: 15px;
   background: linear-gradient(90deg, #E611FF -6.85%, #03ABF9 109.03%);
   :hover {
-    opacity: 0.4;
+    box-shadow:4px 4px 12px 4px rgba(20%,20%,40%,0.8);
   }
   span {
     font-size: 15px;
@@ -154,6 +174,9 @@ const StyledDiv = styled.div`
   }
   span {
     font-size: 15px;
+  }
+  a {
+    height: 100%
   }
 `
 
@@ -178,8 +201,6 @@ const StyledMobileDiv = styled.div`
     font-size: 15px;
   }
 `
-
-
 
 
 export default ConnectButton;

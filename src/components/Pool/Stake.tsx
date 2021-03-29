@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '@aragon/ui';
+import Modal from 'react-modal';
 import BigNumber from 'bignumber.js';
 import { BalanceBlock } from '../common/index';
 import { approve, stake } from '../../utils/web3';
@@ -36,19 +36,21 @@ function Stake({
         }}
         disabled={poolAddress === '' || user === ''}
       />
-      <Modal visible={opened} onClose={() => setOpened(false)}>
+      <Modal isOpen={opened} onRequestClose={() => setOpened(false)}
+        className="Modal"
+        overlayClassName="Overlay">
         <div style={{ padding: 20 }}>
           <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>Deposit</h1>
           <ListTable pools={pools} selectedPool={poolAddress} />
           <Row >
             <Col xs={12}>
-              <BalanceBlock asset="Balance" balance={balance} suffix={"UNI-V2"} type={"row"} />
+              <BalanceBlock asset="Available" balance={balance} suffix={"Cook-WETH"} type={"row"} />
             </Col>
             <Col xs={12}>
 
               <>
                 <BigNumberInput
-                  adornment="UNI-V2"
+                  adornment="Cook-WETH"
                   value={stakeAmount}
                   setter={setStakeAmount}
                   max={() => {

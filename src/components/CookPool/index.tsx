@@ -19,17 +19,21 @@ import Claim from "./Claim";
 import Harvest from "./Harvest";
 
 import { Container, Row, Col } from 'react-grid-system';
-import Span from "../common/Span";
+import Zap from "./Zap";
 import {
   BalanceBlock
 } from '../common/index';
+import { useTranslation } from "react-i18next"
 
 
 type PoolProps = {
   pool: string, lockedUp: number, reward: BigNumber, staked: BigNumber, totalStaked: BigNumber
 };
 
-function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string, pools: Array<PoolProps> }) {
+function Pool({ user, poolAddress, pools }: {
+  user: string, poolAddress: string, pools: Array<PoolProps>,
+
+}) {
   const { override, address } = useParams();
   const { below } = useViewport()
   if (override) {
@@ -43,6 +47,7 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
   const [userTotalRewarded, setUserTotalRewarded] = useState(new BigNumber(0));
   const [userTotalInVesting, setUserInTotalVesting] = useState(new BigNumber(0));
   const [userTotalVested, setUserTotalVested] = useState(new BigNumber(0));
+  const { t } = useTranslation()
 
 
   //Update User balances
@@ -124,21 +129,24 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
   }, [user, poolAddress]);
 
   const poolList = [_.find(pools, { 'address': poolAddress })]
-
+  const titleSize = below('medium') ? "22px" : "32px"
   return (
     <Container>
       <Row style={{ textAlign: "left", marginTop: 30 }}>
-        <Col xs={12} lg={12} >
-          <BalanceBlock asset="Total Staked" balance={userTotalStaked} suffix={"Cook"} type={"block"} size={below('medium') ? "22px" : "32px"} />
+        <Col xs={12} lg={3} >
+          <BalanceBlock asset={t("Total Staked")} balance={userTotalStaked} suffix={"Cook"} type={"block"} size={titleSize} />
         </Col>
-        <Col xs={12} md={4} lg={3} >
-          <BalanceBlock asset="To be Vested Tokens" balance={userTotalRewarded} suffix={"Cook"} type={"block"} size="22px" />
+        <Col xs={12} lg={3} >
+          <BalanceBlock asset={t("Total Rewarded")} balance={userTotalRewarded} suffix={"Cook"} type={"block"} size={titleSize} />
         </Col>
-        <Col xs={12} md={4} lg={3} >
-          <BalanceBlock asset="Vesting Tokens" balance={userTotalInVesting} suffix={"Cook"} type={"block"} size="22px" />
+        <Col xs={12} lg={6} >
+          <BalanceBlock asset={t("Avaible to Harvest")} balance={userTotalRewarded} suffix={"Cook"} type={"block"} size={titleSize} />
         </Col>
-        <Col xs={12} md={4} lg={2} >
-          <BalanceBlock asset="Vested Tokens" balance={userTotalVested} suffix={"Cook"} type={"block"} size="22px" />
+        <Col xs={12} lg={3}  >
+          <BalanceBlock asset={t("Vesting Tokens")} balance={userTotalInVesting} suffix={"Cook"} type={"block"} size={titleSize} />
+        </Col>
+        <Col xs={12} lg={3} >
+          <BalanceBlock asset={t("Available to Claim")} balance={userTotalVested} suffix={"Cook"} type={"block"} size={titleSize} />
         </Col>
 
         <Col xs={6} lg={2} style={{ margin: 'auto', padding: 5 }}>
@@ -156,6 +164,14 @@ function Pool({ user, poolAddress, pools }: { user: string, poolAddress: string,
             pools={poolList}
             poolAddress={poolAddress}
             claimable={userTotalVested}
+          />
+        </Col>
+        <Col xs={12} lg={2} style={{ margin: 'auto', padding: 5 }}>
+          <Zap
+            user={user}
+            pools={poolList}
+            cookAvailable={userTotalVested}
+            selected={poolAddress}
           />
         </Col>
       </Row>

@@ -10,7 +10,7 @@ import { Row, Col } from 'react-grid-system';
 
 
 type BlanceBlockProps = {
-  asset: string,
+  asset: any,
   balance: BigNumber | string | number
   suffix?: any
   type?: string
@@ -56,7 +56,7 @@ function BalanceBlock({ asset, balance, suffix = "", type = "", size }: BlanceBl
   if (type === "block") {
     return (
       <>
-        <Row>
+        <Row style={{ marginTop: 10 }}>
           <Col md={12} style={{ fontSize: 14, fontWeight: 500, color: colors.title }}>{asset}</Col>
           <Col md={12} style={{ fontWeight: 700 }}>
             <LinearText text={`${integer}.${digits}`} size={fontSize} />
@@ -70,8 +70,8 @@ function BalanceBlock({ asset, balance, suffix = "", type = "", size }: BlanceBl
     return (
       <>
         <Row style={{ padding: 15 }} align="center">
-          <Col xs={12} md={6} style={{ padding: 0, fontSize: 16, fontWeight: 500, textAlign: "left" }}>{asset}</Col>
-          <Col xs={12} md={6} style={{ padding: 0, textAlign: "right", fontWeight: 700 }}>
+          <Col xs={12} md={4} style={{ padding: 0, fontSize: 16, fontWeight: 500, textAlign: "left" }}>{asset}</Col>
+          <Col xs={12} md={8} style={{ padding: 0, textAlign: "right", fontWeight: 700 }}>
             <LinearText text={`${integer}.${digits}`} size={integer.length > 8 ? "30px" : fontSize} />
             {suffix === "" ? '' : <span style={{ fontSize: 14 }}> {suffix}</span>}
           </Col>

@@ -13,7 +13,8 @@ import {
   getStakeLockupDuration,
   getRewardPerBlock,
   getTotalStaked,
-  getPoolBalanceOfStaked
+  getPoolBalanceOfStaked,
+  getETHBalance
 } from '../../utils/infura';
 import { COOK, UNI, WETH } from "../../constants/tokens";
 import { CookDistribution, POOLS, COOK_POOLS } from "../../constants/contracts";
@@ -36,11 +37,11 @@ function Distribution({ user }: { user: string }) {
     user = override;
   }
   const { below } = useViewport()
-  const [userWETHBalance, setUserWETHBalance] = useState(new BigNumber(0));
+  const [userWETHBalance, setUserWETHBalance] = useState([new BigNumber(0), new BigNumber(0)]);
   const [userWETHAllowance, setUserWETHAllowance] = useState(new BigNumber(0));
 
   const [pairBalanceCOOK, setPairBalanceCOOK] = useState(new BigNumber(0));
-  const [pairBalanceWETH, setPairBalanceWETH] = useState(new BigNumber(0));
+  const [pairBalanceWETH, setPairBalanceWETH] = useState([new BigNumber(0), new BigNumber(0)]);
 
 
   const [userVestingBalance, setUserVestingBalance] = useState(new BigNumber(0));
@@ -59,8 +60,8 @@ function Distribution({ user }: { user: string }) {
       setUserVestedBalance(new BigNumber(0));
       setUserAvalibleBalance(new BigNumber(0));
       setPairBalanceCOOK(new BigNumber(0));
-      setPairBalanceWETH(new BigNumber(0));
-      setUserWETHBalance(new BigNumber(0));
+      setPairBalanceWETH([new BigNumber(0), new BigNumber(0)]);
+      setUserWETHBalance([new BigNumber(0), new BigNumber(0)]);
       setUserWETHAllowance(new BigNumber(0));
       setStartDay(new BigNumber(0));
       setToday(new BigNumber(0));
@@ -79,8 +80,10 @@ function Distribution({ user }: { user: string }) {
         tDay,
         pairBalanceCOOKStr,
         pairBalanceWETHStr,
+        pairBalanceETHStr,
         wethBalance,
-        wethAllowance
+        ethBalance,
+        wethAllowance,
       ] = await Promise.all([
         getDistributionVestingAmount(CookDistribution, user),
         getDistributionVestedAmount(CookDistribution, user),
@@ -89,7 +92,9 @@ function Distribution({ user }: { user: string }) {
         getTodayNumber(CookDistribution),
         getTokenBalance(COOK.addr, UNI.addr),
         getTokenBalance(WETH.addr, UNI.addr),
+        getETHBalance(UNI.addr),
         getTokenBalance(WETH.addr, user),
+        getETHBalance(user),
         getTokenAllowance(WETH.addr, user, CookDistribution)
       ]);
       console.log('wethAllowance', wethAllowance);
@@ -101,8 +106,9 @@ function Distribution({ user }: { user: string }) {
 
       const pairCOOKBalance = toTokenUnitsBN(pairBalanceCOOKStr, COOK.decimals);
       const pairWETHBalance = toTokenUnitsBN(pairBalanceWETHStr, WETH.decimals);
+      const pairETHBalance = toTokenUnitsBN(pairBalanceETHStr, WETH.decimals);
       const userWETHBalance = toTokenUnitsBN(wethBalance, WETH.decimals);
-
+      const userETHBalance = toTokenUnitsBN(ethBalance, WETH.decimals);
 
       const poolList = await Promise.all(POOLS.map(async (pool) => {
         const [lockedup, reward, staked, totalStaked] =
@@ -157,8 +163,8 @@ function Distribution({ user }: { user: string }) {
         setToday(new BigNumber(todayNumber));
 
         setPairBalanceCOOK(new BigNumber(pairCOOKBalance));
-        setPairBalanceWETH(new BigNumber(pairWETHBalance));
-        setUserWETHBalance(new BigNumber(userWETHBalance));
+        setPairBalanceWETH([new BigNumber(pairWETHBalance), new BigNumber(pairETHBalance)]);
+        setUserWETHBalance([new BigNumber(userWETHBalance), new BigNumber(userETHBalance)]);
         setManagedPools(poolList)
         setCookPools(cookPoolList);
         // console.log(wethAllowance);
@@ -178,7 +184,7 @@ function Distribution({ user }: { user: string }) {
   return (
     <div style={{ marginTop: '120px', padding: '1%' }}>
       <div className="title">{t("Distribution")}</div>
-      <LinearText text={"Manage Cook balance for presale parties"} />
+      <LinearText text={t("Manage Cook balance for early investors")} />
       <div style={{ display: 'flex', alignItems: 'center' }}>
 
         <div style={{

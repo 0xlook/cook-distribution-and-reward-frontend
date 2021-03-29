@@ -1,10 +1,8 @@
 /* eslint-disable camelcase */
 // eslint-disable-next-line import/prefer-default-export
 export const POOLS = [
-  { 'name': '1 UNI-V2 (WETH/COOK)', 'address': '0x59c7E6B2c565Ff92B762523BD6B778CE66dC0302' },
-  { 'name': '2 UNI-V2 (WETH/COOK)', 'address': '0x1F570bf89d86a2C43B9b8d0867267719FC58173D' },
-  { 'name': '3 UNI-V2 (WETH/COOK)', 'address': '0x086bCD73D03A5e1163A9224Fa09dC5cF70d73094' },
-  { 'name': '4 UNI-V2 (WETH/COOK)', 'address': '0x6b07B7A11cF992B436DE5d3bf28F50eBA606649b' }
+  { 'name': 'Captain Zheng He', 'address': '0x59c7E6B2c565Ff92B762523BD6B778CE66dC0302' },
+  { 'name': 'Captain Columbus', 'address': '0x1F570bf89d86a2C43B9b8d0867267719FC58173D' },
 ];
 export const COOK_POOLS = [
   { 'name': 'COOK POOL', 'address': '0xe9f6772f34427717d499a2c3f349b6ef659a0c00' },

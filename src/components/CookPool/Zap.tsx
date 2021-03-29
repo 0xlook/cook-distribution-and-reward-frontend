@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Modal, DropDown
-} from '@aragon/ui';
+import Modal from 'react-modal';
 import BigNumber from 'bignumber.js';
 import {
   BalanceBlock, PriceSection
@@ -12,13 +10,12 @@ import { COOK } from "../../constants/tokens";
 import BigNumberInput from "../common/BigNumberInput";
 import colors from '../../constants/colors';
 import ActionButton from "../common/ActionButton";
-import HelpText from "../common/HelpText";
 import { Row, Col } from 'react-grid-system';
 import ListTable from "../PoolList/ListTable";
 import InfoIcon from "../common/InfoIcon";
 type ZapProps = {
   user: string,
-  pools: Array<{ name: string, address: string, rewardPerBlock: BigNumber, lockedUpPeriod: BigNumber }>,
+  pools: Array<{ name: string, address: string, rewardPerBlock: BigNumber, lockedUpPeriod: BigNumber, isFull: boolean }>,
   cookAvailable: BigNumber,
   selected: string,
 };
@@ -43,13 +40,14 @@ function Zap({
   const renderPoolZap = () => {
     return (
       <div>
-        <ActionButton label={"Zap"}
-          icon={<InfoIcon text="zap description" />}
-          size={14}
+        <ActionButton label={"Zap"} type="filled"
+          icon={<InfoIcon text="zap description ljfklsdk tjerkltjlksjdkl tkrejklerjkltjerkltjeklsd sjdkljsdfkl" />}
           onClick={() => {
             setOpened(true)
           }} disabled={!user} />
-        <Modal visible={opened} onClose={() => close()}>
+        <Modal isOpen={opened} onRequestClose={() => setOpened(false)}
+          className="Modal"
+          overlayClassName="Overlay">
           <div style={{ padding: 20 }}>
             <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>Zap</h1>
             <ListTable pools={pools} selectedPool={selected} />

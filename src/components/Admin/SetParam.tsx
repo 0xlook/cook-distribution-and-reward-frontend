@@ -22,6 +22,7 @@ import BigNumber from 'bignumber.js';
 import {
   BalanceBlock,
 } from '../common/index';
+import { useTranslation } from "react-i18next"
 
 function SetParam({ user, poolAddress }: {user: string, poolAddress: string}) {
   const { override } = useParams();
@@ -33,6 +34,7 @@ function SetParam({ user, poolAddress }: {user: string, poolAddress: string}) {
   const [rewardPerBlock, setRewardPerBlock] = useState(new BigNumber(0));
   const [blockNumber, setBlockNumber] = useState(0);
   const [blockTimestamp, setBlockTimestamp] = useState(0);
+  const { t } = useTranslation()
 
   //Update User balances
   useEffect(() => {
@@ -143,14 +145,14 @@ function SetParam({ user, poolAddress }: {user: string, poolAddress: string}) {
         </div>
         <div style={{display: 'flex', flexWrap: 'wrap'}}>
           <div style={{flexBasis: '32%'}}>
-            <BalanceBlock asset="Lock-Up Period" balance={stakeLockupDuration} suffix={"Days"}/>
+            <BalanceBlock asset={t("Lock-Up Period")} balance={stakeLockupDuration} suffix={t("Days")}/>
           </div>
           <div style={{flexBasis: '33%', paddingTop: '2%'}}>
             <div style={{display: 'flex'}}>
               <div style={{width: '60%', minWidth: '6em'}}>
                 <>
                   <TextInput
-                    adornment="Days"
+                    adornment={t("Days")}
                     adornmentPosition="end"
                     value={stakeLockupDuration}
                     onChange={event => {

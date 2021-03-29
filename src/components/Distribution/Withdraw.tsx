@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Modal, Text
-} from '@aragon/ui';
+import Modal from 'react-modal';
 import BigNumber from 'bignumber.js';
 import { Container, Row, Col } from 'react-grid-system';
 import {
@@ -32,9 +30,11 @@ function Withdraw({
       <ActionButton label={"Claim"} onClick={() => {
         setOpened(true)
       }} disabled={!user} />
-      <Modal visible={opened} onClose={() => setOpened(false)}  >
-        <div style={{ padding: 20 }}>
-          <h1 style={{ textAlign: "center", fontSize: 45, fontWeight: 700 }}>Claim</h1>
+      <Modal isOpen={opened} onRequestClose={() => setOpened(false)}
+        className="Modal"
+        overlayClassName="Overlay">
+        <div style={{ padding: "21px", paddingTop: "15px" }}>
+          <h1 style={{ textAlign: "center", fontSize: 30, fontWeight: 700, marginBottom: 20 }}>Claim</h1>
 
           <Row>
             <Col xs={12} ><BalanceBlock asset="Total Available" balance={availableAmount} type={"row"} suffix={"Cook"} /></Col>
@@ -48,12 +48,12 @@ function Withdraw({
                 setter={setWithdrawAmount}
               />
             </Col>
-            <Col xs={6} style={{ textAlign: "center", marginTop: 40 }}>
+            <Col xs={6} style={{ textAlign: "center" }}>
               <ActionButton label={"Cancel"} type="cancel" onClick={() => {
                 setOpened(false)
               }} disabled={false} />
             </Col>
-            <Col xs={6} style={{ textAlign: "center", marginTop: 40 }}>
+            <Col xs={6} style={{ textAlign: "center" }}>
               <ActionButton label={"Claim"} type="filled" onClick={() => {
                 withdraw(
                   CookDistribution,

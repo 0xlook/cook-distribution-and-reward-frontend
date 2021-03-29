@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '@aragon/ui';
+import Modal from 'react-modal';
 import BigNumber from 'bignumber.js';
 import { BalanceBlock } from '../common/index';
 import { unstake } from '../../utils/web3';
@@ -34,7 +34,9 @@ function Unstake({
         }}
         disabled={poolAddress === '' || user === ''}
       />
-      <Modal visible={opened} onClose={() => setOpened(false)}>
+      <Modal isOpen={opened} onRequestClose={() => setOpened(false)}
+        className="Modal"
+        overlayClassName="Overlay">
         <div style={{ padding: 20 }}>
           <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>Withdraw</h1>
           <ListTable pools={pools} selectedPool={poolAddress} />
