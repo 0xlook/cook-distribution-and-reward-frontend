@@ -16,6 +16,7 @@ import { Row, Col } from 'react-grid-system';
 import ListTable from "../PoolList/ListTable";
 import InfoIcon from "../common/InfoIcon";
 import { useTranslation } from "react-i18next"
+import InformModal from './InformModal';
 
 type ZapProps = {
   user: string,
@@ -30,6 +31,7 @@ function DistributionZap({
   const [zapAmount, setZapAmount] = useState(new BigNumber(0));
   const [opened, setOpened] = useState(false)
   const [selectedPool, setSelectedPool] = useState(selected || '')
+  const [openInform, setOpenInform] = useState(false);
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -111,15 +113,18 @@ function DistributionZap({
                           close()
                         }
                       );
+                    } else {
+                      setOpenInform(true);
                     }
 
                   }}
-                  disabled={selectedPool === '' || user === ''}
+                  disabled={user === ''}
                 />
               </Col>
             </Row>
           </div>
         </Modal>
+        <InformModal isOpen={openInform} close={() => setOpenInform(false) }/>
       </div>
     )
   }
