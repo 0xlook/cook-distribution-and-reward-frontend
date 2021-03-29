@@ -15,6 +15,7 @@ import ListTable from "../PoolList/ListTable";
 import InfoIcon from "../common/InfoIcon";
 import { useTranslation } from "react-i18next";
 import { useGlobal } from "contexts";
+import InformModal from "./InformModal";
 
 type ZapProps = {
   user: string;
@@ -35,6 +36,7 @@ function DistributionZap({ user, pools, cookAvailable, selected }: ZapProps) {
   const [selectedPool, setSelectedPool] = useState(selected || "");
   const { t } = useTranslation();
   const { setTransactionModalVisible } = useGlobal();
+  const [openInform, setOpenInform] = useState(false);
 
   useEffect(() => {
     if (selected) {
@@ -145,14 +147,17 @@ function DistributionZap({ user, pools, cookAvailable, selected }: ZapProps) {
                           setTransactionModalVisible(false);
                         }
                       );
+                    } else {
+                      setOpenInform(true);
                     }
                   }}
-                  disabled={selectedPool === "" || user === ""}
+                  disabled={user === ""}
                 />
               </Col>
             </Row>
           </div>
         </Modal>
+        <InformModal isOpen={openInform} close={() => setOpenInform(false)} />
       </div>
     );
   };
