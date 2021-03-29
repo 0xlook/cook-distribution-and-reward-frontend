@@ -1,43 +1,51 @@
 /* eslint-disable camelcase */
-import Web3 from 'web3';
-import BigNumber from 'bignumber.js';
+import Web3 from "web3";
+import BigNumber from "bignumber.js";
 
-import { notify } from './txNotifier.ts';
-const poolAbi = require('../constants/abi/Pool.json');
-const cookPoolAbi = require('../constants/abi/CookPool.json');
-const mockPoolAbi = require('../constants/abi/MockPool.json');
-const distributionAbi = require('../constants/abi/CookDistribution.json');
-const dollarAbi = require('../constants/abi/Dollar.json');
-const oracleAbi = require('../constants/abi/Oracle.json');
-const priceComsumerAbi = require('../constants/abi/PriceConsumer.json');
-const UINT256_MAX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-
+import { notify } from "./txNotifier.ts";
+const poolAbi = require("../constants/abi/Pool.json");
+const cookPoolAbi = require("../constants/abi/CookPool.json");
+const mockPoolAbi = require("../constants/abi/MockPool.json");
+const distributionAbi = require("../constants/abi/CookDistribution.json");
+const dollarAbi = require("../constants/abi/Dollar.json");
+const oracleAbi = require("../constants/abi/Oracle.json");
+const priceComsumerAbi = require("../constants/abi/PriceConsumer.json");
+const UINT256_MAX =
+  "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
 /**
  * ERC20 Utilities
  */
 
-export const approve = async (tokenAddr, spender, callback, amt = UINT256_MAX,) => {
+export const approve = async (
+  tokenAddr,
+  spender,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {},
+  amt = UINT256_MAX
+) => {
   const account = await checkConnectedAndGetAddress();
   const oToken = new window.web3.eth.Contract(dollarAbi, tokenAddr);
   await oToken.methods
     .approve(spender, amt)
     .send({ from: account })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
-      if (callback) {
-        callback(hash);
-      }
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
-
 
 /**
  * Connection Utilities
  */
 
 export const updateModalMode = async (theme) => {
-  window.darkMode = theme === 'dark';
+  window.darkMode = theme === "dark";
 };
 
 export const connect = async (ethereum) => {
@@ -62,7 +70,7 @@ export const checkConnectedAndGetAddress = async () => {
     try {
       addresses = await window.ethereum.enable();
       // eslint-disable-next-line no-empty
-    } catch (e) { }
+    } catch (e) {}
   }
 
   return addresses[0];
@@ -71,7 +79,13 @@ export const checkConnectedAndGetAddress = async () => {
 /**
  * Pool
  */
-export const stake = async (pool, amount, callback) => {
+export const stake = async (
+  pool,
+  amount,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
   const poolContract = new window.web3.eth.Contract(poolAbi, pool);
   await poolContract.methods
@@ -79,13 +93,23 @@ export const stake = async (pool, amount, callback) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
-      callback(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
 
-export const unstake = async (pool, amount, callback) => {
+export const unstake = async (
+  pool,
+  amount,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
   const poolContract = new window.web3.eth.Contract(poolAbi, pool);
   await poolContract.methods
@@ -93,13 +117,23 @@ export const unstake = async (pool, amount, callback) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
-      callback(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
 
-export const claim = async (pool, amount, callback) => {
+export const claim = async (
+  pool,
+  amount,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
   const poolContract = new window.web3.eth.Contract(poolAbi, pool);
   await poolContract.methods
@@ -107,13 +141,23 @@ export const claim = async (pool, amount, callback) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
-      callback(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
 
-export const harvestAndClaim = async (pool, amount, callback) => {
+export const harvestAndClaim = async (
+  pool,
+  amount,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
   const poolContract = new window.web3.eth.Contract(poolAbi, pool);
   await poolContract.methods
@@ -121,13 +165,23 @@ export const harvestAndClaim = async (pool, amount, callback) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
-      callback(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
 
-export const zapLP = async (pool, amount, callback) => {
+export const zapLP = async (
+  pool,
+  amount,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
   const poolContract = new window.web3.eth.Contract(poolAbi, pool);
   await poolContract.methods
@@ -135,12 +189,22 @@ export const zapLP = async (pool, amount, callback) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
-      callback(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
-export const zapLPWithEth = async (pool, amount, callback) => {
+export const zapLPWithEth = async (
+  pool,
+  amount,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
   const poolContract = new window.web3.eth.Contract(poolAbi, pool);
   await poolContract.methods
@@ -148,13 +212,23 @@ export const zapLPWithEth = async (pool, amount, callback) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
-      callback(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
 
-export const zapCook = async (pool, amount, callback) => {
+export const zapCook = async (
+  pool,
+  amount,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
   const poolContract = new window.web3.eth.Contract(cookPoolAbi, pool);
   await poolContract.methods
@@ -162,13 +236,23 @@ export const zapCook = async (pool, amount, callback) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
-      callback(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
 
-export const harvest = async (pool, amount, callback) => {
+export const harvest = async (
+  pool,
+  amount,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
   const poolContract = new window.web3.eth.Contract(poolAbi, pool);
   await poolContract.methods
@@ -176,92 +260,166 @@ export const harvest = async (pool, amount, callback) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
-      callback(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
 
 // token distribution
 
-export const withdraw = async (cookDistribution, amount) => {
+export const withdraw = async (
+  cookDistribution,
+  amount,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
-  const distributionContract = new window.web3.eth.Contract(distributionAbi, cookDistribution);
+  const distributionContract = new window.web3.eth.Contract(
+    distributionAbi,
+    cookDistribution
+  );
   await distributionContract.methods
     .withdraw(new BigNumber(amount).toFixed())
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
 
-
 export const getWithdrawRecords = async (cookDistribution) => {
   const account = await checkConnectedAndGetAddress();
-  const distributionContract = new window.web3.eth.Contract(distributionAbi, cookDistribution);
-  const events = await distributionContract.getPastEvents('TokensWithdrawal', {
+  const distributionContract = new window.web3.eth.Contract(
+    distributionAbi,
+    cookDistribution
+  );
+  const events = await distributionContract.getPastEvents("TokensWithdrawal", {
     filter: { userAddress: account },
     fromBlock: 0,
   });
   return events;
 };
 
-export const distributionZapLP = async (cookDistribution, poolAddress, amount, callback) => {
+export const distributionZapLP = async (
+  cookDistribution,
+  poolAddress,
+  amount,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
-  const distributionContract = new window.web3.eth.Contract(distributionAbi, cookDistribution);
+  const distributionContract = new window.web3.eth.Contract(
+    distributionAbi,
+    cookDistribution
+  );
   await distributionContract.methods
     .zapLP(new BigNumber(amount).toFixed(), poolAddress)
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
-      callback(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
-export const distributionZapETH = async (cookDistribution, poolAddress, amount, callback) => {
+export const distributionZapETH = async (
+  cookDistribution,
+  poolAddress,
+  amount,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
-  const distributionContract = new window.web3.eth.Contract(distributionAbi, cookDistribution);
+  const distributionContract = new window.web3.eth.Contract(
+    distributionAbi,
+    cookDistribution
+  );
   await distributionContract.methods
     .zapLPWithEth(new BigNumber(amount).toFixed(), poolAddress)
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
-      callback(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
 
-
-export const cookDistributionZap = async (cookDistribution, poolAddress, amount, callback) => {
+export const cookDistributionZap = async (
+  cookDistribution,
+  poolAddress,
+  amount,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
-  const distributionContract = new window.web3.eth.Contract(distributionAbi, cookDistribution);
+  const distributionContract = new window.web3.eth.Contract(
+    distributionAbi,
+    cookDistribution
+  );
   await distributionContract.methods
     .zapCook(new BigNumber(amount).toFixed(), poolAddress)
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
-      callback(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
 
-
 /** Admin functions (TESTING ONLY) */
-export const setDay = async (cookDistribution, dayNumber) => {
+export const setDay = async (
+  cookDistribution,
+  dayNumber,
+  onTxHash = (_) => {},
+  onConfirmation = () => {},
+  onError = (_) => {}
+) => {
   const account = await checkConnectedAndGetAddress();
-  const distributionContract = new window.web3.eth.Contract(distributionAbi, cookDistribution);
+  const distributionContract = new window.web3.eth.Contract(
+    distributionAbi,
+    cookDistribution
+  );
   await distributionContract.methods
     .setToday(new BigNumber(dayNumber))
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("error", onError)
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
+      onTxHash(hash);
+    })
+    .on("confirmation", () => {
+      onConfirmation();
     });
 };
 
@@ -273,7 +431,7 @@ export const setCookPrice = async (oracle, price) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
     });
 };
@@ -281,26 +439,32 @@ export const setCookPrice = async (oracle, price) => {
 // deployer account only
 export const updatePriceFeed = async (cookDistribution) => {
   const account = await checkConnectedAndGetAddress();
-  const distributionContract = new window.web3.eth.Contract(distributionAbi, cookDistribution);
+  const distributionContract = new window.web3.eth.Contract(
+    distributionAbi,
+    cookDistribution
+  );
   await distributionContract.methods
     .updatePriceFeed()
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
     });
 };
 
 export const setWETHPrice = async (priceComsumer, price) => {
   const account = await checkConnectedAndGetAddress();
-  const priceComsumerContract = new window.web3.eth.Contract(priceComsumerAbi, priceComsumer);
+  const priceComsumerContract = new window.web3.eth.Contract(
+    priceComsumerAbi,
+    priceComsumer
+  );
   await priceComsumerContract.methods
     .set(new BigNumber(price))
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
     });
 };
@@ -313,7 +477,7 @@ export const setPoolStakeLockupDuration = async (pool, lockupDays) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
     });
 };
@@ -326,7 +490,7 @@ export const setPoolRewardPerBlock = async (pool, rewards) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
     });
 };
@@ -339,7 +503,7 @@ export const setPoolBlockNumber = async (pool, blockNumber) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
     });
 };
@@ -352,7 +516,7 @@ export const setPoolBlockTimestamp = async (pool, blockTimestamp) => {
     .send({
       from: account,
     })
-    .on('transactionHash', (hash) => {
+    .on("transactionHash", (hash) => {
       notify.hash(hash);
     });
 };
