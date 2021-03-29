@@ -19,6 +19,7 @@ import ListTable from "../PoolList/ListTable";
 import InfoIcon from "../common/InfoIcon";
 import Modal from 'react-modal';
 import { useTranslation } from "react-i18next"
+import InformModal from './InformModal';
 
 type ZapProps = {
   user: string,
@@ -40,6 +41,7 @@ function DistributionZap({
   const [opened, setOpened] = useState(false)
   const [selectedPool, setSelectedPool] = useState(selected || '')
   const [balanceType, setBalanceType] = useState(0)
+  const [openInform, setOpenInform] = useState(false);
   const zapCurrency = ['WETH', 'ETH']
   const { t } = useTranslation();
 
@@ -156,10 +158,12 @@ function DistributionZap({
                           );
                         }
 
+                      } else {
+                        setOpenInform(true);
                       }
 
                     }}
-                    disabled={selectedPool === '' || user === ''}
+                    disabled={user === ''}
                   />
                 </Col>
                 :
@@ -179,6 +183,7 @@ function DistributionZap({
             </Row>
           </div>
         </Modal>
+        <InformModal isOpen={openInform} close={() => setOpenInform(false) }/>
       </div>
     )
   }
