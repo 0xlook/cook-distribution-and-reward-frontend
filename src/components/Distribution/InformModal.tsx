@@ -17,7 +17,7 @@ const InformModal: React.FC<Props> = ({ isOpen, close }) => {
           className="Modal" overlayClassName="Overlay">
         <Row justify="center">
           <Title>
-            Please select the pool to zap
+            Please select a pool to zap
           </Title>
         </Row>
         <Row justify="center">
