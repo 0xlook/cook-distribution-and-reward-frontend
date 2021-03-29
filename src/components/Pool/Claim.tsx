@@ -1,29 +1,27 @@
-import React, { useState } from 'react';
-import Modal from 'react-modal';
-import BigNumber from 'bignumber.js';
-import {
-  BalanceBlock
-} from '../common/index';
-import { harvestAndClaim, claim } from '../../utils/web3';
-import { isPos, toBaseUnitBN } from '../../utils/number';
+import React, { useState } from "react";
+import Modal from "react-modal";
+import BigNumber from "bignumber.js";
+import { BalanceBlock } from "../common/index";
+import { harvestAndClaim, claim } from "../../utils/web3";
+import { isPos, toBaseUnitBN } from "../../utils/number";
 import { COOK } from "../../constants/tokens";
 import BigNumberInput from "../common/BigNumberInput";
 import ActionButton from "../common/ActionButton";
-import colors from '../../constants/colors';
-import { Container, Row, Col } from 'react-grid-system';
+import colors from "../../constants/colors";
+import { Container, Row, Col } from "react-grid-system";
 import ListTable from "../PoolList/ListTable";
+import { useGlobal } from "contexts";
 type ClaimProps = {
-  user: string,
-  poolAddress: string,
-  claimable: BigNumber,
-  pools?: Array<any>
+  user: string;
+  poolAddress: string;
+  claimable: BigNumber;
+  pools?: Array<any>;
 };
 
-function Claim({
-  user, poolAddress, claimable, pools
-}: ClaimProps) {
+function Claim({ user, poolAddress, claimable, pools }: ClaimProps) {
   const [claimAmount, setClaimAmount] = useState(new BigNumber(0));
-  const [opened, setOpened] = useState(false)
+  const [opened, setOpened] = useState(false);
+  const { setTransactionModalVisible } = useGlobal();
 
   return (
     <div>
@@ -31,19 +29,29 @@ function Claim({
         type="filled"
         label={"Claim"}
         onClick={() => {
-          setOpened(true)
+          setOpened(true);
         }}
-        disabled={poolAddress === '' || user === ''}
+        disabled={poolAddress === "" || user === ""}
       />
-      <Modal isOpen={opened} onRequestClose={() => setOpened(false)}
+      <Modal
+        isOpen={opened}
+        onRequestClose={() => setOpened(false)}
         className="Modal"
-        overlayClassName="Overlay">
+        overlayClassName="Overlay"
+      >
         <div style={{ padding: 20 }}>
-          <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>Claim</h1>
+          <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>
+            Claim
+          </h1>
           <ListTable pools={pools} selectedPool={poolAddress} />
-          <Row >
+          <Row>
             <Col xs={12}>
-              <BalanceBlock asset="Claimable" balance={claimable} suffix={"Cook"} type={"row"} />
+              <BalanceBlock
+                asset="Claimable"
+                balance={claimable}
+                suffix={"Cook"}
+                type={"row"}
+              />
             </Col>
             {/* Claim COOK rewards within Pool */}
             <Col xs={12}>
@@ -56,15 +64,14 @@ function Claim({
                     setClaimAmount(claimable);
                   }}
                 />
-
               </>
             </Col>
-            <Col xs={6} >
+            <Col xs={6}>
               <ActionButton
                 type="cancel"
                 label="Cancel"
                 onClick={() => {
-                  setOpened(false)
+                  setOpened(false);
                 }}
                 disabled={false}
               />
@@ -74,16 +81,34 @@ function Claim({
                 type="filled"
                 label={"Claim"}
                 onClick={() => {
+                  setTransactionModalVisible(
+                    true,
+                    "",
+                    "Follow wallet instructions"
+                  );
                   claim(
                     poolAddress,
                     toBaseUnitBN(claimAmount, COOK.decimals),
-                    (hash) => {
-                      setClaimAmount(new BigNumber(0))
-                      setOpened(false)
+                    (txHash) => {
+                      setTransactionModalVisible(true, txHash);
+                    },
+                    () => {
+                      setTransactionModalVisible(false);
+                      setClaimAmount(new BigNumber(0));
+                      setOpened(false);
+                    },
+                    (error) => {
+                      console.error(error);
+                      setTransactionModalVisible(false);
                     }
                   );
                 }}
-                disabled={poolAddress === '' || user === '' || !isPos(claimAmount) || claimAmount.isGreaterThan(claimable)}
+                disabled={
+                  poolAddress === "" ||
+                  user === "" ||
+                  !isPos(claimAmount) ||
+                  claimAmount.isGreaterThan(claimable)
+                }
               />
             </Col>
           </Row>

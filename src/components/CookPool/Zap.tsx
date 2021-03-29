@@ -1,59 +1,79 @@
-import React, { useState } from 'react';
-import Modal from 'react-modal';
-import BigNumber from 'bignumber.js';
-import {
-  BalanceBlock, PriceSection
-} from '../common/index';
-import { zapCook } from '../../utils/web3';
-import { toBaseUnitBN } from '../../utils/number';
+import React, { useState } from "react";
+import Modal from "react-modal";
+import BigNumber from "bignumber.js";
+import { BalanceBlock, PriceSection } from "../common/index";
+import { zapCook } from "../../utils/web3";
+import { toBaseUnitBN } from "../../utils/number";
 import { COOK } from "../../constants/tokens";
 import BigNumberInput from "../common/BigNumberInput";
-import colors from '../../constants/colors';
+import colors from "../../constants/colors";
 import ActionButton from "../common/ActionButton";
-import { Row, Col } from 'react-grid-system';
+import { Row, Col } from "react-grid-system";
 import ListTable from "../PoolList/ListTable";
 import InfoIcon from "../common/InfoIcon";
+import { useGlobal } from "contexts";
 type ZapProps = {
-  user: string,
-  pools: Array<{ name: string, address: string, rewardPerBlock: BigNumber, lockedUpPeriod: BigNumber, isFull: boolean }>,
-  cookAvailable: BigNumber,
-  selected: string,
+  user: string;
+  pools: Array<{
+    name: string;
+    address: string;
+    rewardPerBlock: BigNumber;
+    lockedUpPeriod: BigNumber;
+    isFull: boolean;
+  }>;
+  cookAvailable: BigNumber;
+  selected: string;
 };
 
-function Zap({
-  user, pools, cookAvailable, selected,
-}: ZapProps) {
-
+function Zap({ user, pools, cookAvailable, selected }: ZapProps) {
   const [zapAmount, setZapAmount] = useState(new BigNumber(0));
-  const [opened, setOpened] = useState(false)
+  const [opened, setOpened] = useState(false);
+  const { setTransactionModalVisible } = useGlobal();
 
   const close = () => {
     setOpened(false);
     setZapAmount(new BigNumber(0));
-  }
+  };
 
   const onChangeAmountCOOK = (amountCOOK) => {
-
-    const amountCOOKBN = new BigNumber(amountCOOK)
+    const amountCOOKBN = new BigNumber(amountCOOK);
     setZapAmount(amountCOOKBN);
   };
   const renderPoolZap = () => {
     return (
       <div>
-        <ActionButton label={"Zap"} type="filled"
-          icon={<InfoIcon text="zap description ljfklsdk tjerkltjlksjdkl tkrejklerjkltjerkltjeklsd sjdkljsdfkl" />}
+        <ActionButton
+          label={"Zap"}
+          type="filled"
+          icon={
+            <InfoIcon text="zap description ljfklsdk tjerkltjlksjdkl tkrejklerjkltjerkltjeklsd sjdkljsdfkl" />
+          }
           onClick={() => {
-            setOpened(true)
-          }} disabled={!user} />
-        <Modal isOpen={opened} onRequestClose={() => setOpened(false)}
+            setOpened(true);
+          }}
+          disabled={!user}
+        />
+        <Modal
+          isOpen={opened}
+          onRequestClose={() => setOpened(false)}
           className="Modal"
-          overlayClassName="Overlay">
+          overlayClassName="Overlay"
+        >
           <div style={{ padding: 20 }}>
-            <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>Zap</h1>
+            <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>
+              Zap
+            </h1>
             <ListTable pools={pools} selectedPool={selected} />
 
             <Row>
-              <Col xs={12}><BalanceBlock asset="Available Cook" balance={cookAvailable} suffix={"Cook"} type={"row"} /></Col>
+              <Col xs={12}>
+                <BalanceBlock
+                  asset="Available Cook"
+                  balance={cookAvailable}
+                  suffix={"Cook"}
+                  type={"row"}
+                />
+              </Col>
               <Col xs={12}>
                 <BigNumberInput
                   adornment="Cook"
@@ -69,41 +89,51 @@ function Zap({
                   label="Cancel"
                   type="cancel"
                   onClick={() => {
-                    setOpened(false)
+                    setOpened(false);
                   }}
                   disabled={false}
                 />
               </Col>
-              <Col xs={6} >
+              <Col xs={6}>
                 <ActionButton
                   label={"Zap"}
                   type="filled"
                   onClick={() => {
                     if (selected) {
+                      setTransactionModalVisible(
+                        true,
+                        "",
+                        "Follow wallet instructions"
+                      );
                       zapCook(
                         selected,
                         toBaseUnitBN(zapAmount, COOK.decimals),
-                        (hash) => {
+                        (txHash) => {
+                          setTransactionModalVisible(true, txHash);
+                        },
+                        () => {
+                          setTransactionModalVisible(false);
                           setZapAmount(new BigNumber(0));
-                          close()
+                          close();
+                        },
+                        (error) => {
+                          console.error(error);
+                          setTransactionModalVisible(false);
                         }
                       );
                     }
                   }}
-                  disabled={selected === '' || user === ''}
+                  disabled={selected === "" || user === ""}
                 />
               </Col>
-
             </Row>
           </div>
         </Modal>
       </div>
-    )
-  }
+    );
+  };
 
-  return (
-    renderPoolZap()
-  );
+  return renderPoolZap();
 }
 
 export default Zap;
