@@ -8,32 +8,20 @@ const DOT_SPACE = 11;
 
 const Wrapper = styled.div`
   margin: 16px 0;
+  text-align: center;
 `;
 
 const ContentWrapper = styled.div`
-  height: 15px;
-  display: flex;
+  height: 23px;
+  display: inline-flex;
+  width: 81px;
   align-items: flex-end;
   justify-content: center;
+  background: linear-gradient(90deg, #e611ff -6.85%, #03abf9 109.03%);
+  clip-path: url(#spin-clip);
   & > * + * {
     margin-left: ${DOT_SPACE}px;
   }
-`;
-
-const ItemWrapper = styled.div`
-  width: ${DOT_SIZE}px;
-  height: ${DOT_SIZE}px;
-  background-color: white;
-  border-radius: 50%;
-  bottom: 0;
-  position: relative;
-  transition: all 0.7s;
-  ${(props) =>
-    props.active
-      ? `
-    opacity: 0.4;
-    bottom: ${DOT_SPACE}px;`
-      : ``}
 `;
 
 interface IProps {
@@ -42,10 +30,11 @@ interface IProps {
 
 interface IState {
   activeIndex: number;
+  value: number;
 }
 
 export const Spinner = (props: IProps) => {
-  const [state, setState] = useState<IState>({ activeIndex: 0 });
+  const [state, setState] = useState<IState>({ activeIndex: 0, value: 0 });
   const { dotCount = 4 } = props;
 
   useEffect(() => {
@@ -53,10 +42,30 @@ export const Spinner = (props: IProps) => {
 
     const asyncUpdate = async () => {
       while (isMounted) {
-        await waitSeconds(0.4);
+        await waitSeconds(0.1);
         if (isMounted)
           setState((prev) => ({
+            ...prev,
+            value: 0.5,
+          }));
+        await waitSeconds(0.1);
+        if (isMounted)
+          setState((prev) => ({
+            ...prev,
+            value: 1,
+          }));
+        await waitSeconds(0.1);
+        if (isMounted)
+          setState((prev) => ({
+            ...prev,
+            value: 0.5,
+          }));
+        await waitSeconds(0.1);
+        if (isMounted)
+          setState((prev) => ({
+            ...prev,
             activeIndex: (prev.activeIndex + 1) % dotCount,
+            value: 0,
           }));
       }
     };
@@ -70,16 +79,25 @@ export const Spinner = (props: IProps) => {
 
   return (
     <Wrapper>
-      <ContentWrapper>
-        {new Array(dotCount).fill(0).map((value, index) => {
-          return (
-            <ItemWrapper
-              active={state.activeIndex === index}
-              key={index}
-            ></ItemWrapper>
-          );
-        })}
-      </ContentWrapper>
+      <ContentWrapper></ContentWrapper>
+      <svg width="0" height="0">
+        <defs>
+          <clipPath id="spin-clip">
+            {new Array(dotCount).fill(0).map((value, index) => (
+              <circle
+                cx={DOT_SPACE * index + DOT_SIZE * index + DOT_SIZE / 2}
+                cy={
+                  index === state.activeIndex
+                    ? DOT_SIZE / 2 + DOT_SPACE * (1 - state.value)
+                    : DOT_SIZE / 2 + DOT_SPACE
+                }
+                key={index}
+                r={DOT_SIZE / 2}
+              />
+            ))}
+          </clipPath>
+        </defs>
+      </svg>
     </Wrapper>
   );
 };

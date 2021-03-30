@@ -1,23 +1,21 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
-import {
-  Box, LinkBase, Tag, Text
-} from '@aragon/ui';
-import { Container, Row, Col } from 'react-grid-system';
-import distributionPNG from '../../assets/distribution.svg'
-import lpMiningPNG from '../../assets/lp_mining.svg'
-import cookMiningPNG from '../../assets/cook_mining.svg'
-import distributionHover from '../../assets/distribution_hover.svg'
-import lpMiningHover from '../../assets/lp_mining_hover.svg'
-import cookMiningHover from '../../assets/cook_mining_hover.svg'
-import twitter from '../../assets/twitter.svg'
-import github from '../../assets/github.svg'
-import telegram from '../../assets/telegram.svg'
-import styled from 'styled-components'
-import { useTranslation } from "react-i18next"
+import React from "react";
+import { useHistory } from "react-router-dom";
+import { Box, LinkBase, Tag, Text } from "@aragon/ui";
+import { Container, Row, Col } from "react-grid-system";
+import distributionPNG from "../../assets/distribution.svg";
+import lpMiningPNG from "../../assets/lp_mining.svg";
+import cookMiningPNG from "../../assets/cook_mining.svg";
+import distributionHover from "../../assets/distribution_hover.svg";
+import lpMiningHover from "../../assets/lp_mining_hover.svg";
+import cookMiningHover from "../../assets/cook_mining_hover.svg";
+import twitter from "../../assets/twitter.svg";
+import github from "../../assets/github.svg";
+import telegram from "../../assets/telegram.svg";
+import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 const StyledText = styled(Text)`
-  background: -webkit-linear-gradient(0, #E71CFF -3.76%, #00AEFF 111.78%);
+  background: -webkit-linear-gradient(0, #e71cff -3.76%, #00aeff 111.78%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 18px;
@@ -26,27 +24,27 @@ const StyledText = styled(Text)`
   letter-spacing: 0.03em;
 
   @media only screen and (max-width: 767px) {
-    font-size: 14px
+    font-size: 14px;
   }
-`
+`;
 
 const StyledDescText = styled(Text)`
-  background: -webkit-linear-gradient(0, #E71CFF -3.76%, #00AEFF 111.78%);
+  background: -webkit-linear-gradient(0, #e71cff -3.76%, #00aeff 111.78%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 14px;
   font-weight: 300;
   line-height: 25px;
   letter-spacing: 0.03em;
-`
+`;
 
 const DescText = styled(Text)`
-  color: #71A4DD;
+  color: #71a4dd;
   font-size: 16px;
   font-weight: 300;
   line-height: 24px;
   letter-spacing: 0.03em;
-`
+`;
 const TitleText = styled(Text)`
   font-size: 56px;
   font-weight: 700;
@@ -56,14 +54,14 @@ const TitleText = styled(Text)`
     font-size: 36px;
     line-height: 50px;
   }
-`
+`;
 
 const StyledTitle = styled(Text)`
   font-size: 18px;
   font-weight: 700;
   line-height: 27px;
   letter-spacing: 0.03em;
-}`
+}`;
 
 const StyledDiv = styled.div`
   margin-top: 5vh;
@@ -89,16 +87,16 @@ const StyledDiv = styled.div`
     }
     
   }
-}`
+}`;
 
 const StyledLink = styled.a`
-  color: #12AAB5;
+  color: #12aab5;
   padding: 16px;
   text-decoration: none;
   &:hover {
     color: #805e49;
   }
-`
+`;
 
 function HomePage() {
   const history = useHistory();
@@ -106,18 +104,31 @@ function HomePage() {
 
   return (
     <>
-      <div style={{ padding: '1%', display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
+      <div
+        style={{
+          padding: "1%",
+          display: "flex",
+          alignItems: "center",
+          width: "100%",
+          justifyContent: "center",
+        }}
+      >
         <StyledDiv>
           <div>
             <StyledText>Accessibilty, Transparency, Security</StyledText>
           </div>
-          <div style={{ marginTop: '9px' }}>
+          <div style={{ marginTop: "9px" }}>
             <TitleText>COOK PROTOCOL</TitleText>
           </div>
           <div className="desc">
-            <DescText>{t("Cook Protocol is a completely decentralized cross-chain asset management platform built for investors and professional asset managers to unlock an entirely new universe of DeFi innovations")}.</DescText>
+            <DescText>
+              {t(
+                "Cook Protocol is a completely decentralized cross-chain asset management platform built for investors and professional asset managers to unlock an entirely new universe of DeFi innovations"
+              )}
+              .
+            </DescText>
           </div>
-          <div style={{ marginBottom: '40px' }}>
+          <div style={{ marginBottom: "40px" }}>
             <StyledLink target="_blank" href="https://twitter.com/cook_finance">
               <img src={twitter} />
             </StyledLink>
@@ -139,7 +150,7 @@ function HomePage() {
             icon={distributionPNG}
             hover={distributionHover}
             onClick={() => {
-              history.push('/distribution/');
+              history.push("/distribution/");
             }}
           />
           <MainButton
@@ -148,7 +159,7 @@ function HomePage() {
             icon={lpMiningPNG}
             hover={lpMiningHover}
             onClick={() => {
-              history.push('/pools/');
+              history.push("/pools/");
             }}
           />
           <MainButton
@@ -157,33 +168,37 @@ function HomePage() {
             icon={cookMiningPNG}
             hover={cookMiningHover}
             onClick={() => {
-              history.push('/cookpools/');
+              history.push("/cookpools/");
             }}
           />
         </Row>
       </Container>
-
     </>
   );
 }
 
 type MainButtonPropx = {
-  title: string,
-  description: string,
-  icon: any,
-  hover: any,
-  onClick: Function,
-  tag?: string
-}
+  title: string;
+  description: string;
+  icon: any;
+  hover: any;
+  onClick: Function;
+  tag?: string;
+};
 
 function MainButton({
-  title, description, icon, hover, onClick, tag,
+  title,
+  description,
+  icon,
+  hover,
+  onClick,
+  tag,
 }: MainButtonPropx) {
-
   const StyledBox = styled(Box)`
     z-index:0;
     background: transparent;
     border: 1px solid transparent;
+    transition: all 0.4s;
     
     :before {
       content:"";
@@ -222,21 +237,23 @@ function MainButton({
     div[class^="Box___StyledDiv2"] {
       padding: 22px 22px 0 22px;      
     }
-  }`
-
+  }`;
 
   return (
     <Col xs={12} md={4}>
-      <LinkBase onClick={onClick}
+      <LinkBase
+        onClick={onClick}
         style={{
-          width: "100%", margin: 15
-        }}>
+          width: "100%",
+          margin: 15,
+        }}
+      >
         <StyledBox className="box">
           <div style={{ padding: 5, fontSize: 18 }}>
             <StyledTitle>{title}</StyledTitle>
             {tag ? <Tag>{tag}</Tag> : <></>}
           </div>
-          <div style={{ paddingTop: 5, whiteSpace: 'normal' }}>
+          <div style={{ paddingTop: 5, whiteSpace: "normal" }}>
             <StyledDescText>{description}</StyledDescText>
           </div>
           <div className="icon" />
