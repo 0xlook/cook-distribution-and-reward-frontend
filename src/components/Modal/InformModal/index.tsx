@@ -2,19 +2,19 @@ import React from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 import { Row, Col } from 'react-grid-system';
-import ActionButton from "../common/ActionButton";
+import ActionButton from "../../common/ActionButton";
 
 interface Props {
-  isOpen: boolean;
-  text: string;
-  close: () => void;
+  visible: boolean;
+  text?: string;
+  onClose: () => void;
 }
 
-const InformModal: React.FC<Props> = ({ isOpen, close, text }) => {
+export const InformModal: React.FC<Props> = ({ visible, onClose, text }) => {
 
   return (
     <>
-      <Modal isOpen={isOpen} onRequestClose={() => close()}
+      <Modal isOpen={visible} onRequestClose={() => onClose()}
         className="Modal" overlayClassName="Overlay">
         <Row justify="center">
           <Title>
@@ -26,7 +26,7 @@ const InformModal: React.FC<Props> = ({ isOpen, close, text }) => {
             <ActionButton
               type="filled"
               label="Ok"
-              onClick={close}
+              onClick={onClose}
               disabled={false}
             />
           </Col>
@@ -44,5 +44,3 @@ const Title = styled.div`
   margin-bottom: 30px;
   text-align: center;
 `
-
-export default InformModal;

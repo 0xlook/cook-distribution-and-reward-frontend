@@ -28,9 +28,13 @@ function Withdraw({
 }: WithdrawProps) {
   const [withdrawAmount, setWithdrawAmount] = useState(new BigNumber(0));
   const [opened, setOpened] = useState(false);
-  const { setTransactionModalVisible } = useGlobal();
+  const { setTransactionModalVisible, setInformModalVisible } = useGlobal();
 
   const onWithdraw = () => {
+    if (withdrawAmount.isZero || withdrawAmount.comparedTo(availableAmount) > 0) {
+      setInformModalVisible(true, "Invalid Number");
+      return
+    }
     setOpened(false);
     setTransactionModalVisible(true, "", "Follow wallet instructions");
     withdraw(

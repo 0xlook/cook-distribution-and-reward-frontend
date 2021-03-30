@@ -30,6 +30,7 @@ type ZapProps = {
   pairBalanceWETH: Array<BigNumber>;
   pairBalanceCOOK: BigNumber;
   selected: string;
+  setSelectedPool: Function;
 };
 
 function Zap({
@@ -41,13 +42,14 @@ function Zap({
   pairBalanceWETH,
   pairBalanceCOOK,
   selected,
+  setSelectedPool
 }: ZapProps) {
   const ETHIndex = 1;
   const [zapAmount, setZapAmount] = useState(new BigNumber(0));
   const [wethAmount, setWethAmount] = useState(new BigNumber(0));
   const [opened, setOpened] = useState(false);
   const [balanceType, setBalanceType] = useState(0);
-  const { setTransactionModalVisible } = useGlobal();
+  const { setTransactionModalVisible, setInformModalVisible } = useGlobal();
   const close = () => {
     setOpened(false);
     setZapAmount(new BigNumber(0));
@@ -92,7 +94,9 @@ function Zap({
           type="filled"
           icon={<InfoIcon text="zap description" />}
           onClick={() => {
-            setOpened(true);
+            if (selected) {
+              setOpened(true);
+            }
           }}
           disabled={!user}
         />
@@ -106,7 +110,7 @@ function Zap({
             <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>
               Zap
             </h1>
-            <ListTable pools={pools} selectedPool={selected} />
+            <ListTable pools={pools} selectedPool={selected} setSelectedPool={setSelectedPool} />
 
             <Row>
               <Col xs={12}>
@@ -152,49 +156,86 @@ function Zap({
               </Col>
 
               {balanceType == ETHIndex ||
-              wethAllowance.comparedTo(wethAmount) > 0 ? (
-                <Col xs={6}>
-                  <ActionButton
-                    label={"Zap"}
-                    type="filled"
-                    onClick={() => {
-                      if (selected) {
-                        setTransactionModalVisible(
-                          true,
-                          "",
-                          "Follow wallet instructions"
-                        );
-                        if (balanceType == ETHIndex) {
-                          zapLPWithEth(
-                            selected,
-                            toBaseUnitBN(zapAmount, COOK.decimals),
-
-                            (txHash) => {
-                              setTransactionModalVisible(true, txHash);
-                            },
-                            () => {
-                              setTransactionModalVisible(false);
-                              setWethAmount(new BigNumber(0));
-                              setZapAmount(new BigNumber(0));
-                              close();
-                            },
-                            (error) => {
-                              console.error(error);
-                              setTransactionModalVisible(false);
-                            }
+                wethAllowance.comparedTo(wethAmount) > 0 ? (
+                  <Col xs={6}>
+                    <ActionButton
+                      label={"Zap"}
+                      type="filled"
+                      onClick={() => {
+                        if (selected) {
+                          if (zapAmount.isZero || zapAmount.comparedTo(cookAvailable) > 0) {
+                            setInformModalVisible(true, "Invalid Number");
+                            return
+                          }
+                          setTransactionModalVisible(
+                            true,
+                            "",
+                            "Follow wallet instructions"
                           );
-                        } else {
-                          zapLP(
+                          if (balanceType == ETHIndex) {
+
+                            zapLPWithEth(
+                              selected,
+                              toBaseUnitBN(zapAmount, COOK.decimals),
+
+                              (txHash) => {
+                                setTransactionModalVisible(true, txHash);
+                              },
+                              () => {
+                                setTransactionModalVisible(false);
+                                setWethAmount(new BigNumber(0));
+                                setZapAmount(new BigNumber(0));
+                                close();
+                              },
+                              (error) => {
+                                console.error(error);
+                                setTransactionModalVisible(false);
+                              }
+                            );
+                          } else {
+                            zapLP(
+                              selected,
+                              toBaseUnitBN(zapAmount, COOK.decimals),
+                              (txHash) => {
+                                setTransactionModalVisible(true, txHash);
+                              },
+                              () => {
+                                setTransactionModalVisible(false);
+                                setWethAmount(new BigNumber(0));
+                                setZapAmount(new BigNumber(0));
+                                close();
+                              },
+                              (error) => {
+                                console.error(error);
+                                setTransactionModalVisible(false);
+                              }
+                            );
+                          }
+                        }
+                      }}
+                      disabled={selected === "" || user === ""}
+                    />
+                  </Col>
+                ) : (
+                  <Col xs={6}>
+                    <ActionButton
+                      label="Approve"
+                      type="filled"
+                      onClick={() => {
+                        if (selected) {
+                          setTransactionModalVisible(
+                            true,
+                            "",
+                            "Follow wallet instructions"
+                          );
+                          approve(
+                            WETH.addr,
                             selected,
-                            toBaseUnitBN(zapAmount, COOK.decimals),
                             (txHash) => {
                               setTransactionModalVisible(true, txHash);
                             },
                             () => {
                               setTransactionModalVisible(false);
-                              setWethAmount(new BigNumber(0));
-                              setZapAmount(new BigNumber(0));
-                              close();
                             },
                             (error) => {
                               console.error(error);
@@ -202,43 +243,11 @@ function Zap({
                             }
                           );
                         }
-                      }
-                    }}
-                    disabled={selected === "" || user === ""}
-                  />
-                </Col>
-              ) : (
-                <Col xs={6}>
-                  <ActionButton
-                    label="Approve"
-                    type="filled"
-                    onClick={() => {
-                      if (selected) {
-                        setTransactionModalVisible(
-                          true,
-                          "",
-                          "Follow wallet instructions"
-                        );
-                        approve(
-                          WETH.addr,
-                          selected,
-                          (txHash) => {
-                            setTransactionModalVisible(true, txHash);
-                          },
-                          () => {
-                            setTransactionModalVisible(false);
-                          },
-                          (error) => {
-                            console.error(error);
-                            setTransactionModalVisible(false);
-                          }
-                        );
-                      }
-                    }}
-                    disabled={selected === "" || user === ""}
-                  />
-                </Col>
-              )}
+                      }}
+                      disabled={selected === "" || user === ""}
+                    />
+                  </Col>
+                )}
             </Row>
           </div>
         </Modal>

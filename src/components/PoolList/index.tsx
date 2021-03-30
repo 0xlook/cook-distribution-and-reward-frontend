@@ -291,6 +291,9 @@ function PoolList({ user }: { user: string }) {
           user={user}
           poolAddress={selectedPool}
           pools={poolList}
+          setSelectedPool={(selected) => {
+            setSelectedPool(selected);
+          }}
           wethBalance={userWETHBalance}
           wethAllowance={userWETHAllowance}
           pairBalanceWETH={pairBalanceWETH}

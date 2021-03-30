@@ -35,8 +35,7 @@ function DistributionZap({ user, pools, cookAvailable, selected }: ZapProps) {
   const [opened, setOpened] = useState(false);
   const [selectedPool, setSelectedPool] = useState(selected || "");
   const { t } = useTranslation();
-  const { setTransactionModalVisible } = useGlobal();
-  const [openInform, setOpenInform] = useState(false);
+  const { setTransactionModalVisible, setInformModalVisible } = useGlobal();
 
   useEffect(() => {
     if (selected) {
@@ -48,6 +47,7 @@ function DistributionZap({ user, pools, cookAvailable, selected }: ZapProps) {
     setOpened(false);
     setZapAmount(new BigNumber(0));
   };
+
 
   const onChangeAmountCOOK = (amountCOOK) => {
     const amountCOOKBN = new BigNumber(amountCOOK);
@@ -126,6 +126,10 @@ function DistributionZap({ user, pools, cookAvailable, selected }: ZapProps) {
                   label={"Zap"}
                   onClick={() => {
                     if (selectedPool) {
+                      if (zapAmount.isZero() || zapAmount.comparedTo(cookAvailable) > 0) {
+                        setInformModalVisible(true, "Invalid Number");
+                        return
+                      }
                       setTransactionModalVisible(
                         true,
                         "",
@@ -148,7 +152,7 @@ function DistributionZap({ user, pools, cookAvailable, selected }: ZapProps) {
                         }
                       );
                     } else {
-                      setOpenInform(true);
+                      setInformModalVisible(true, "Please select a pool to zap");
                     }
                   }}
                   disabled={user === ""}
@@ -157,7 +161,7 @@ function DistributionZap({ user, pools, cookAvailable, selected }: ZapProps) {
             </Row>
           </div>
         </Modal>
-        <InformModal isOpen={openInform} close={() => setOpenInform(false)} />
+
       </div>
     );
   };

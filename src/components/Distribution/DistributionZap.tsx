@@ -55,9 +55,8 @@ function DistributionZap({
   const [opened, setOpened] = useState(false);
   const [selectedPool, setSelectedPool] = useState(selected || "");
   const [balanceType, setBalanceType] = useState(0);
-  const [openInform, setOpenInform] = useState(false);
   const { t } = useTranslation();
-  const { setTransactionModalVisible } = useGlobal();
+  const { setTransactionModalVisible, setInformModalVisible } = useGlobal();
 
   useEffect(() => {
     if (selected) {
@@ -74,6 +73,34 @@ function DistributionZap({
     setZapAmount(new BigNumber(0));
     setWethAmount(new BigNumber(0));
   };
+
+  const SendRequest = (target) => {
+    if (zapAmount.isZero() || zapAmount.comparedTo(cookAvailable) > 0) {
+      setInformModalVisible(true, "Invalid Number")
+      return
+    }
+    setTransactionModalVisible(
+      true,
+      "",
+      "Follow wallet instructions"
+    );
+    target(
+      CookDistribution,
+      selectedPool,
+      toBaseUnitBN(zapAmount, COOK.decimals),
+      (txHash) => {
+        setTransactionModalVisible(true, txHash);
+      },
+      () => {
+        setTransactionModalVisible(false);
+        close();
+      },
+      (error) => {
+        console.error(error);
+        setTransactionModalVisible(false);
+      }
+    );
+  }
 
   const WETHToCOOKRatio = new Array();
   for (let i = 0; i < pairBalanceWETH.length; i++) {
@@ -182,51 +209,46 @@ function DistributionZap({
                 />
               </Col>
               {balanceType == ETHIndex ||
-              wethAllowance.comparedTo(wethAmount) > 0 ? (
-                <Col xs={6} style={{ textAlign: "center" }}>
-                  <ActionButton
-                    label={"Zap"}
-                    type="filled"
-                    onClick={() => {
-                      if (selectedPool) {
-                        if (balanceType == ETHIndex) {
-                          setTransactionModalVisible(
-                            true,
-                            "",
-                            "Follow wallet instructions"
-                          );
-                          distributionZapETH(
-                            CookDistribution,
-                            selectedPool,
-                            toBaseUnitBN(zapAmount, COOK.decimals),
-                            (txHash) => {
-                              setTransactionModalVisible(true, txHash);
-                            },
-                            () => {
-                              setTransactionModalVisible(false);
-                              close();
-                            },
-                            (error) => {
-                              console.error(error);
-                              setTransactionModalVisible(false);
-                            }
-                          );
+                wethAllowance.comparedTo(wethAmount) > 0 ? (
+                  <Col xs={6} style={{ textAlign: "center" }}>
+                    <ActionButton
+                      label={"Zap"}
+                      type="filled"
+                      onClick={() => {
+                        if (selectedPool) {
+                          if (balanceType == ETHIndex) {
+                            SendRequest(distributionZapETH)
+
+                          } else {
+                            SendRequest(distributionZapLP)
+                          }
                         } else {
+                          setInformModalVisible(true, "Please select a pool to zap")
+                        }
+                      }}
+                      disabled={user === ""}
+                    />
+                  </Col>
+                ) : (
+                  <Col xs={6} style={{ textAlign: "center" }}>
+                    <ActionButton
+                      label="Approve"
+                      type="filled"
+                      onClick={() => {
+                        if (selectedPool) {
                           setTransactionModalVisible(
                             true,
                             "",
                             "Follow wallet instructions"
                           );
-                          distributionZapLP(
+                          approve(
+                            WETH.addr,
                             CookDistribution,
-                            selectedPool,
-                            toBaseUnitBN(zapAmount, COOK.decimals),
                             (txHash) => {
                               setTransactionModalVisible(true, txHash);
                             },
                             () => {
                               setTransactionModalVisible(false);
-                              close();
                             },
                             (error) => {
                               console.error(error);
@@ -234,49 +256,15 @@ function DistributionZap({
                             }
                           );
                         }
-                      } else {
-                        setOpenInform(true);
-                      }
-                    }}
-                    disabled={user === ""}
-                  />
-                </Col>
-              ) : (
-                <Col xs={6} style={{ textAlign: "center" }}>
-                  <ActionButton
-                    label="Approve"
-                    type="filled"
-                    onClick={() => {
-                      if (selectedPool) {
-                        setTransactionModalVisible(
-                          true,
-                          "",
-                          "Follow wallet instructions"
-                        );
-                        approve(
-                          WETH.addr,
-                          CookDistribution,
-                          (txHash) => {
-                            setTransactionModalVisible(true, txHash);
-                          },
-                          () => {
-                            setTransactionModalVisible(false);
-                          },
-                          (error) => {
-                            console.error(error);
-                            setTransactionModalVisible(false);
-                          }
-                        );
-                      }
-                    }}
-                    disabled={selectedPool === "" || user === ""}
-                  />
-                </Col>
-              )}
+                      }}
+                      disabled={selectedPool === "" || user === ""}
+                    />
+                  </Col>
+                )}
             </Row>
           </div>
         </Modal>
-        <InformModal isOpen={openInform} close={() => setOpenInform(false)} />
+
       </div>
     );
   };

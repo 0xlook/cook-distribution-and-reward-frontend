@@ -31,7 +31,7 @@ function Stake({
 }: StakeProps) {
   const [stakeAmount, setStakeAmount] = useState(new BigNumber(0));
   const [opened, setOpened] = useState(false);
-  const { setTransactionModalVisible } = useGlobal();
+  const { setTransactionModalVisible, setInformModalVisible } = useGlobal();
   return (
     <div>
       <ActionButton
@@ -90,6 +90,10 @@ function Stake({
                   label={"Deposit"}
                   type="filled"
                   onClick={() => {
+                    if (stakeAmount.isZero || stakeAmount.comparedTo(balance) > 0) {
+                      setInformModalVisible(true, "Invalid Number");
+                      return
+                    }
                     setTransactionModalVisible(
                       true,
                       "",
@@ -121,35 +125,35 @@ function Stake({
                 />
               </Col>
             ) : (
-              <Col xs={6}>
-                <ActionButton
-                  label={"Approve"}
-                  type="filled"
-                  onClick={() => {
-                    setTransactionModalVisible(
-                      true,
-                      "",
-                      "Follow wallet instructions"
-                    );
-                    approve(
-                      UNI.addr,
-                      poolAddress,
-                      (txHash) => {
-                        setTransactionModalVisible(true, txHash);
-                      },
-                      () => {
-                        setTransactionModalVisible(false);
-                      },
-                      (error) => {
-                        console.error(error);
-                        setTransactionModalVisible(false);
-                      }
-                    );
-                  }}
-                  disabled={poolAddress === "" || user === ""}
-                />
-              </Col>
-            )}
+                <Col xs={6}>
+                  <ActionButton
+                    label={"Approve"}
+                    type="filled"
+                    onClick={() => {
+                      setTransactionModalVisible(
+                        true,
+                        "",
+                        "Follow wallet instructions"
+                      );
+                      approve(
+                        UNI.addr,
+                        poolAddress,
+                        (txHash) => {
+                          setTransactionModalVisible(true, txHash);
+                        },
+                        () => {
+                          setTransactionModalVisible(false);
+                        },
+                        (error) => {
+                          console.error(error);
+                          setTransactionModalVisible(false);
+                        }
+                      );
+                    }}
+                    disabled={poolAddress === "" || user === ""}
+                  />
+                </Col>
+              )}
           </Row>
         </div>
       </Modal>

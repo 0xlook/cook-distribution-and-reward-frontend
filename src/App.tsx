@@ -50,16 +50,17 @@ function App() {
           },
         }}
       >
-        <GlobalProvider>
-          <Main
-            style={{
-              background:
-                "radial-gradient(50% 50% at 50% 50%, #211257 0%, #0A0627 100%)",
-            }}
-            assetsUrl={`${process.env.PUBLIC_URL}/aragon-ui/`}
-            theme={colors}
-            layout={false}
-          >
+
+        <Main
+          style={{
+            background:
+              "radial-gradient(50% 50% at 50% 50%, #211257 0%, #0A0627 100%)",
+          }}
+          assetsUrl={`${process.env.PUBLIC_URL}/aragon-ui/`}
+          theme={colors}
+          layout={false}
+        >
+          <GlobalProvider>
             <Container>
               <NavBar
                 user={user}
@@ -86,8 +87,9 @@ function App() {
                 </Route>
               </Switch>
             </Container>
-          </Main>
-        </GlobalProvider>
+          </GlobalProvider>
+        </Main>
+
       </UseWalletProvider>
     </Router>
   );

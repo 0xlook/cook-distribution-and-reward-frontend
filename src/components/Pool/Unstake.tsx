@@ -29,7 +29,7 @@ function Unstake({
 }: UnstakeProps) {
   const [unstakeAmount, setUnstakeAmount] = useState(new BigNumber(0));
   const [opened, setOpened] = useState(false);
-  const { setTransactionModalVisible } = useGlobal();
+  const { setTransactionModalVisible, setInformModalVisible } = useGlobal();
 
   return (
     <div>
@@ -94,6 +94,10 @@ function Unstake({
                 label={"Withdraw"}
                 type="filled"
                 onClick={() => {
+                  if (unstakeAmount.isZero || unstakeAmount.comparedTo(unstakable) > 0) {
+                    setInformModalVisible(true, "Invalid Number");
+                    return
+                  }
                   unstake(
                     poolAddress,
                     toBaseUnitBN(unstakeAmount, UNI.decimals),

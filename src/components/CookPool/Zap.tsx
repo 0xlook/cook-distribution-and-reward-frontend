@@ -23,12 +23,13 @@ type ZapProps = {
   }>;
   cookAvailable: BigNumber;
   selected: string;
+  setSelectedPool: Function
 };
 
-function Zap({ user, pools, cookAvailable, selected }: ZapProps) {
+function Zap({ user, pools, cookAvailable, selected, setSelectedPool }: ZapProps) {
   const [zapAmount, setZapAmount] = useState(new BigNumber(0));
   const [opened, setOpened] = useState(false);
-  const { setTransactionModalVisible } = useGlobal();
+  const { setTransactionModalVisible, setInformModalVisible } = useGlobal();
 
   const close = () => {
     setOpened(false);
@@ -49,7 +50,10 @@ function Zap({ user, pools, cookAvailable, selected }: ZapProps) {
             <InfoIcon text="zap description ljfklsdk tjerkltjlksjdkl tkrejklerjkltjerkltjeklsd sjdkljsdfkl" />
           }
           onClick={() => {
-            setOpened(true);
+            if (selected) {
+              setOpened(true);
+            }
+
           }}
           disabled={!user}
         />
@@ -63,7 +67,7 @@ function Zap({ user, pools, cookAvailable, selected }: ZapProps) {
             <h1 style={{ textAlign: "center", fontSize: 40, fontWeight: 700 }}>
               Zap
             </h1>
-            <ListTable pools={pools} selectedPool={selected} />
+            <ListTable pools={pools} selectedPool={selected} setSelectedPool={setSelectedPool} />
 
             <Row>
               <Col xs={12}>
@@ -100,6 +104,10 @@ function Zap({ user, pools, cookAvailable, selected }: ZapProps) {
                   type="filled"
                   onClick={() => {
                     if (selected) {
+                      if (zapAmount.isZero || zapAmount.comparedTo(cookAvailable) > 0) {
+                        setInformModalVisible(true, "Invalid Number");
+                        return
+                      }
                       setTransactionModalVisible(
                         true,
                         "",

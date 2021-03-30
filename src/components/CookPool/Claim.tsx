@@ -21,7 +21,7 @@ type ClaimProps = {
 function Claim({ user, poolAddress, claimable, pools }: ClaimProps) {
   const [claimAmount, setClaimAmount] = useState(new BigNumber(0));
   const [opened, setOpened] = useState(false);
-  const { setTransactionModalVisible } = useGlobal();
+  const { setTransactionModalVisible, setInformModalVisible } = useGlobal();
 
   return (
     <div>
@@ -29,7 +29,9 @@ function Claim({ user, poolAddress, claimable, pools }: ClaimProps) {
         type="filled"
         label={"Claim"}
         onClick={() => {
-          setOpened(true);
+          if (poolAddress) {
+            setOpened(true);
+          }
         }}
         disabled={poolAddress === "" || user === ""}
       />
@@ -81,6 +83,10 @@ function Claim({ user, poolAddress, claimable, pools }: ClaimProps) {
                 type="filled"
                 label={"Claim"}
                 onClick={() => {
+                  if (claimAmount.isZero || claimAmount.comparedTo(claimable) > 0) {
+                    setInformModalVisible(true, "Invalid Number");
+                    return
+                  }
                   setTransactionModalVisible(
                     true,
                     "",

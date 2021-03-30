@@ -27,7 +27,7 @@ import Unstake from "../CookPool/Unstake";
 import Stake from "../CookPool/Stake";
 import Zap from "../CookPool/Zap";
 import { Container, Row, Col } from 'react-grid-system';
-import { useTranslation } from "react-i18next" 
+import { useTranslation } from "react-i18next"
 
 function CookPoolList({ user }: { user: string }) {
   const { t } = useTranslation();
@@ -223,7 +223,10 @@ function CookPoolList({ user }: { user: string }) {
 
           </Row>
         } />
-        <Pool user={user} poolAddress={selectedPool} pools={poolList} />
+        <Pool user={user} poolAddress={selectedPool} pools={poolList}
+          setSelectedPool={(selected) => {
+            setSelectedPool(selected);
+          }} />
 
       </div>
 

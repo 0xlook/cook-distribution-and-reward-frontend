@@ -30,7 +30,7 @@ function Harvest({
 }: HarvestProps) {
   const [harvestAmount, setHarvestAmount] = useState(new BigNumber(0));
   const [opened, setOpened] = useState(false);
-  const { setTransactionModalVisible } = useGlobal();
+  const { setTransactionModalVisible, setInformModalVisible } = useGlobal();
   return (
     <div>
       <span>
@@ -39,7 +39,9 @@ function Harvest({
           icon={<InfoIcon text="Harvest Description" />}
           type="filled"
           onClick={() => {
-            setOpened(true);
+            if (poolAddress) {
+              setOpened(true);
+            }
           }}
           disabled={poolAddress === "" || user === ""}
         />
@@ -99,6 +101,10 @@ function Harvest({
                 label={"Harvest"}
                 type="filled"
                 onClick={() => {
+                  if (harvestAmount.isZero || harvestAmount.comparedTo(userTotalRewarded) > 0) {
+                    setInformModalVisible(true, "Invalid Number");
+                    return
+                  }
                   setTransactionModalVisible(
                     true,
                     "",

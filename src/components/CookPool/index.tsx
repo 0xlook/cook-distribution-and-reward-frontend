@@ -27,11 +27,16 @@ import { useTranslation } from "react-i18next"
 
 
 type PoolProps = {
-  pool: string, lockedUp: number, reward: BigNumber, staked: BigNumber, totalStaked: BigNumber
+  name: string;
+  address: string;
+  rewardPerBlock: BigNumber;
+  lockedUpPeriod: BigNumber;
+  isFull: boolean;
+
 };
 
-function Pool({ user, poolAddress, pools }: {
-  user: string, poolAddress: string, pools: Array<PoolProps>,
+function Pool({ user, poolAddress, pools, setSelectedPool }: {
+  user: string, poolAddress: string, pools: Array<PoolProps>, setSelectedPool: Function
 
 }) {
   const { override, address } = useParams();
@@ -47,6 +52,8 @@ function Pool({ user, poolAddress, pools }: {
   const [userTotalRewarded, setUserTotalRewarded] = useState(new BigNumber(0));
   const [userTotalInVesting, setUserInTotalVesting] = useState(new BigNumber(0));
   const [userTotalVested, setUserTotalVested] = useState(new BigNumber(0));
+  const [userTotalClaimed, setUserTotalClaimed] = useState(new BigNumber(0));
+
   const { t } = useTranslation()
 
 
@@ -79,6 +86,7 @@ function Pool({ user, poolAddress, pools }: {
       setUserTotalRewarded(new BigNumber(0));
       setUserInTotalVesting(new BigNumber(0));
       setUserTotalVested(new BigNumber(0));
+      setUserTotalClaimed(new BigNumber(0))
       return () => {
         isCancelled = true;
         // clearInterval(poolInfoId);
@@ -113,7 +121,7 @@ function Pool({ user, poolAddress, pools }: {
         setUserInTotalVesting(new BigNumber(userTotalInVestingBalance));
         setUserTotalVested(new BigNumber(userTotalVestedBalance));
         setUserTotalStaked(new BigNumber(userTotalStakedBalance));
-
+        setUserTotalClaimed(new BigNumber(userTotalClaimedBalance));
       }
     }
 
@@ -137,10 +145,10 @@ function Pool({ user, poolAddress, pools }: {
           <BalanceBlock asset={t("Total Staked")} balance={userTotalStaked} suffix={"Cook"} type={"block"} size={titleSize} />
         </Col>
         <Col xs={12} lg={3} >
-          <BalanceBlock asset={t("Total Rewarded")} balance={userTotalRewarded} suffix={"Cook"} type={"block"} size={titleSize} />
+          <BalanceBlock asset={t("Avaible to Harvest")} balance={userTotalRewarded} suffix={"Cook"} type={"block"} size={titleSize} />
         </Col>
         <Col xs={12} lg={6} >
-          <BalanceBlock asset={t("Avaible to Harvest")} balance={userTotalRewarded} suffix={"Cook"} type={"block"} size={titleSize} />
+          <BalanceBlock asset={t("Total Claimed")} balance={userTotalClaimed} suffix={"Cook"} type={"block"} size={titleSize} />
         </Col>
         <Col xs={12} lg={3}  >
           <BalanceBlock asset={t("Vesting Tokens")} balance={userTotalInVesting} suffix={"Cook"} type={"block"} size={titleSize} />
@@ -169,7 +177,8 @@ function Pool({ user, poolAddress, pools }: {
         <Col xs={12} lg={2} style={{ margin: 'auto', padding: 5 }}>
           <Zap
             user={user}
-            pools={poolList}
+            setSelectedPool={setSelectedPool}
+            pools={pools}
             cookAvailable={userTotalVested}
             selected={poolAddress}
           />

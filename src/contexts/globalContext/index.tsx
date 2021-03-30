@@ -1,4 +1,4 @@
-import { TransactionProgressModal } from "components/Modal";
+import { TransactionProgressModal, InformModal } from "components/Modal";
 import React, { useState } from "react";
 
 export interface IGlobalData {
@@ -7,6 +7,10 @@ export interface IGlobalData {
     txId: string;
     description?: string;
     title?: string;
+  };
+  informModalInfo: {
+    visible: boolean;
+    text?: string;
   };
 }
 
@@ -17,13 +21,23 @@ const GlobalContext = React.createContext<
       txId?: string,
       description?: string
     ) => void;
+    setInformModalVisible: (
+      visible: boolean,
+      text?: string,
+    ) => void;
+
   }
 >({
   transactionModalInfo: {
     visible: false,
     txId: "",
   },
-  setTransactionModalVisible: (_: boolean) => {},
+  informModalInfo: {
+    visible: false,
+    text: ""
+  },
+  setTransactionModalVisible: (_: boolean) => { },
+  setInformModalVisible: (_: boolean) => { },
 });
 
 export const useGlobal = () => {
@@ -42,6 +56,10 @@ export const GlobalProvider: React.FC = (props) => {
       visible: false,
       txId: "",
     },
+    informModalInfo: {
+      visible: false,
+      text: ""
+    },
   });
 
   const setTransactionModalVisible = (
@@ -59,8 +77,21 @@ export const GlobalProvider: React.FC = (props) => {
     }));
   };
 
+  const setInformModalVisible = (
+    visible: boolean,
+    text?: string
+  ) => {
+    setState((prev) => ({
+      ...prev,
+      informModalInfo: {
+        visible,
+        text,
+      },
+    }));
+  };
+
   return (
-    <GlobalContext.Provider value={{ ...state, setTransactionModalVisible }}>
+    <GlobalContext.Provider value={{ ...state, setTransactionModalVisible, setInformModalVisible }}>
       {props.children}
       {state.transactionModalInfo.visible && (
         <TransactionProgressModal
@@ -70,6 +101,12 @@ export const GlobalProvider: React.FC = (props) => {
           }}
         />
       )}
+      <InformModal
+        {...state.informModalInfo}
+        onClose={() => {
+          setInformModalVisible(false, "");
+        }}
+      />
     </GlobalContext.Provider>
   );
 };
