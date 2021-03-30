@@ -104,7 +104,7 @@ function Zap({ user, pools, cookAvailable, selected, setSelectedPool }: ZapProps
                   type="filled"
                   onClick={() => {
                     if (selected) {
-                      if (zapAmount.isZero || zapAmount.comparedTo(cookAvailable) > 0) {
+                      if (zapAmount.isZero() || zapAmount.comparedTo(cookAvailable) > 0) {
                         setInformModalVisible(true, "Invalid Number");
                         return
                       }

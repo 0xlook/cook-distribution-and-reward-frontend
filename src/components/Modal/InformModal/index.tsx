@@ -15,7 +15,7 @@ export const InformModal: React.FC<Props> = ({ visible, onClose, text }) => {
   return (
     <>
       <Modal isOpen={visible} onRequestClose={() => onClose()}
-        className="Modal" overlayClassName="Overlay">
+        className="Modal" overlayClassName="Overlay" style={{ zIndex: 1000 }}>
         <Row justify="center">
           <Title>
             {text}

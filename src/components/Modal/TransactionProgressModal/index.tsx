@@ -55,6 +55,7 @@ export const TransactionProgressModal = (props: IProps) => {
       isOpen={props.visible}
       className="Modal"
       overlayClassName="Overlay"
+      style={{ zIndex: 1100 }}
     >
       <ContentWrapper>
         <TitleWrapper>{t(title)}</TitleWrapper>

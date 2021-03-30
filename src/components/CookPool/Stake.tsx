@@ -91,7 +91,7 @@ function Stake({
                   label={"Deposit"}
                   type="filled"
                   onClick={() => {
-                    if (stakeAmount.isZero || stakeAmount.comparedTo(balance) > 0) {
+                    if (stakeAmount.isZero() || stakeAmount.comparedTo(balance) > 0) {
                       setInformModalVisible(true, "Invalid Number");
                       return
                     }

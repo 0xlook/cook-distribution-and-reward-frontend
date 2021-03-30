@@ -163,7 +163,7 @@ function Zap({
                       type="filled"
                       onClick={() => {
                         if (selected) {
-                          if (zapAmount.isZero || zapAmount.comparedTo(cookAvailable) > 0) {
+                          if (zapAmount.isZero() || zapAmount.comparedTo(cookAvailable) > 0) {
                             setInformModalVisible(true, "Invalid Number");
                             return
                           }

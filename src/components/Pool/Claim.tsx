@@ -83,7 +83,7 @@ function Claim({ user, poolAddress, claimable, pools }: ClaimProps) {
                 type="filled"
                 label={"Claim"}
                 onClick={() => {
-                  if (claimAmount.isZero || claimAmount.comparedTo(claimable) > 0) {
+                  if (claimAmount.isZero() || claimAmount.comparedTo(claimable) > 0) {
                     setInformModalVisible(true, "Invalid Number");
                     return
                   }

@@ -94,7 +94,7 @@ function Unstake({
                 label={"Withdraw"}
                 type="filled"
                 onClick={() => {
-                  if (unstakeAmount.isZero || unstakeAmount.comparedTo(unstakable) > 0) {
+                  if (unstakeAmount.isZero() || unstakeAmount.comparedTo(unstakable) > 0) {
                     setInformModalVisible(true, "Invalid Number");
                     return
                   }

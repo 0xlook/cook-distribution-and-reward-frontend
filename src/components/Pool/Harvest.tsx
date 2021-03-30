@@ -101,7 +101,7 @@ function Harvest({
                 label={"Harvest"}
                 type="filled"
                 onClick={() => {
-                  if (harvestAmount.isZero || harvestAmount.comparedTo(userTotalRewarded) > 0) {
+                  if (harvestAmount.isZero() || harvestAmount.comparedTo(userTotalRewarded) > 0) {
                     setInformModalVisible(true, "Invalid Number");
                     return
                   }

@@ -20,6 +20,9 @@ type WithdrawProps = {
   records: Array<{ transactionHash: string; returnValues: { amount: string } }>;
 };
 
+
+
+
 function Withdraw({
   user,
   vestingAmount,
@@ -31,7 +34,7 @@ function Withdraw({
   const { setTransactionModalVisible, setInformModalVisible } = useGlobal();
 
   const onWithdraw = () => {
-    if (withdrawAmount.isZero || withdrawAmount.comparedTo(availableAmount) > 0) {
+    if (withdrawAmount.isZero() || withdrawAmount.comparedTo(availableAmount) > 0) {
       setInformModalVisible(true, "Invalid Number");
       return
     }
@@ -51,6 +54,11 @@ function Withdraw({
         setTransactionModalVisible(false);
       }
     );
+  };
+
+  const onChangeAmountCOOK = (amountCOOK) => {
+    const amountCOOKBN = new BigNumber(amountCOOK);
+    setWithdrawAmount(amountCOOKBN);
   };
 
   return (
@@ -96,7 +104,7 @@ function Withdraw({
                   setWithdrawAmount(availableAmount);
                 }}
                 value={withdrawAmount}
-                setter={setWithdrawAmount}
+                setter={onChangeAmountCOOK}
               />
             </Col>
             <Col xs={6} style={{ textAlign: "center" }}>
