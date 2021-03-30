@@ -11,7 +11,7 @@ import ConnectModal from './ConnectModal';
 import { useWallet } from 'use-wallet';
 import { storePreference, getPreference } from '../../utils/storage';
 import { useTranslation } from "react-i18next" 
-
+import { isMobile } from "react-device-detect";
 type connectButtonProps = {
   user: string,
   setUser: Function,
@@ -60,6 +60,11 @@ function ConnectButton({ user, setUser, css, mobile }: connectButtonProps) {
     setVisible(!visible)
   };
 
+  const mobileConnect = async () => {
+    wallet.connect("walletconnect")
+    connectWeb3(wallet)
+  };
+
   useEffect(() => {
     // console.log('wallet', wallet.status)
     // console.log('storedAccount', storedAccount)
@@ -97,10 +102,9 @@ function ConnectButton({ user, setUser, css, mobile }: connectButtonProps) {
         </div>
       )
   ) : (
-      mobile ? (
+    isMobile ? (
         <>
-          <ConnectModal visible={isModalOpen} onClose={closeModal} onConnect={connectWeb3} />
-          <StyledButton style={{ width: '100%', height: '55px', marginTop: '28px' }} label={t("Connect Wallet")} onClick={openModal} />
+          <StyledButton style={{ width: '100%', height: '55px', marginTop: '28px' }} label={t("Connect Wallet")} onClick={mobileConnect} />
         </>
       ) : (
           <>

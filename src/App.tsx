@@ -21,6 +21,11 @@ setConfiguration({
   maxScreenClass: "xl",
 });
 
+//TODO: change from rinkeby to mainnet, chainId from 4 to 1
+// const rpcUrl = "https://mainnet.eth.aragon.network/"
+const chainId = 4
+const rpcUrl = "https://rinkeby.eth.aragon.network/"
+
 function App() {
   const storedTheme = getPreference("theme", "light");
 
@@ -35,9 +40,9 @@ function App() {
   return (
     <Router>
       <UseWalletProvider
-        chainId={4}
+        chainId={chainId}
         connectors={{
-          walletconnect: { rpcUrl: "https://mainnet.eth.aragon.network/" },
+          walletconnect: { rpcUrl: rpcUrl },
           walletlink: {
             url: "https://mainnet.eth.aragon.network/",
             appName: "Coinbase Wallet",
